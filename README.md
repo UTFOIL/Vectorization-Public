@@ -1,2 +1,2 @@
-# Vascular-Vectorization-Public
+# Vectorization-Public
 Public-facing repository for SLAVV software
