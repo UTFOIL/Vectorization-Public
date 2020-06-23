@@ -1,5 +1,5 @@
 # Vectorization-Public
-Public-facing repository for SLAVV software (GNU GPL v3 license).
+Public (GNU GPL-3.0 license) repository for SLAVV software.
 
 The main function is called 'vectorization_V200'
 
