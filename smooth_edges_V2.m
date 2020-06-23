@@ -8,7 +8,8 @@ function [ edge_space_subscripts, edge_scale_subscripts, edge_energies ] = smoot
 
 edge_index_range = 1 : size( edge_scale_subscripts, 1 );
 
-parfor edge_index = edge_index_range
+% changed from PARFOR to FOR 6/8/20
+for edge_index = edge_index_range
     
     % set the energy of the manually added portion to be equal to the best energy elsewhere
     is_inf_position = edge_energies{ edge_index } == - Inf ;

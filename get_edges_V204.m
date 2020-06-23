@@ -214,7 +214,8 @@ vertex_image = sparse( double( vertex_locations ), 1, double( vertex_unique_rang
 % vertex_index_list = [ 1353 ];
 
 %% main PARFOR: loop through the vertices, searching for nearby vertices to connect to
-parfor vertex_index = vertex_unique_range
+% changed from PARFOR to FOR 6/8/20
+for vertex_index = vertex_unique_range
                
 %     if any( vertex_index == vertex_index_list )
 %        

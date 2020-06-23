@@ -10,15 +10,21 @@ function [ z_bin_ave_z, z_bin_length_densities, z_bin_SA_density, z_bin_vol_dens
 
 %% inner-position strand quantities
 
+% strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins 
+
+num_vectors_strand = cellfun( @numel, strand_subscripts ) / 4 ;
+
+strand_subscripts = strand_subscripts( num_vectors_strand > 1 );
+
 lumen_radius_in_pixels_range = lumen_radius_in_microns_range ./ microns_per_voxel ;
 
-% interpolate vectors in z to be consistent with xy
-resolution_factors = lumen_radius_in_pixels_range( 1, 1 ) ./ lumen_radius_in_pixels_range( 1, : );
+% interpolate vectors to be isotropic consistent with the dimension with the best resolution
+resolution_factors = max( lumen_radius_in_pixels_range( 1, [ 1, 2 ])) ./ lumen_radius_in_pixels_range( 1, : );
 
 [ size_of_image, ~, strand_subscripts ] ...
                                             = resample_vectors( lumen_radius_in_pixels_range, [ resolution_factors, 1 ], strand_subscripts, size_of_image );
                                         
-microns_per_voxel = microns_per_voxel([ 1, 1, 1 ]);
+microns_per_voxel = [ 1, 1, 1 ] * min( microns_per_voxel([ 1, 2 ]));
 
 % length by strand
 strand_delta_lengths        = cellfun( @( x ) sum(((   x( 2 : end    , 1 : 3 )                                           ...
