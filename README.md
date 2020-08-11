@@ -1,17 +1,13 @@
 # Vectorization-Public
 ## Public (GNU GPL-3.0 license) repository for SLAVV software.
 
-## The main function is called 'vectorize_V200' (documentation at the end of this ReadMe document).
+The main function is called 'vectorize_V200' (documentation at the end of this ReadMe document).
 
-## Example calls/uses are shown in the 'vectorization_script_....' files 
+Example calls/uses are shown in the 'vectorization_script_....' files 
 
-## Enjoy, leave comments/suggestions, download, change, share (please include the 'licence' file), ....
+Enjoy, leave comments/suggestions, download, change, share (please include the 'licence' file), ....
 
-## please cite the methods paper: 
-
-```
-https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
-```
+## [please cite the methods paper:](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf)
 
 ## bibtex citation:
 
@@ -26,7 +22,7 @@ https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.
 ```
 
 ## Documentation for the main vectorization function,
-# [vectorize_V200](http://google.com):
+# [vectorize_V200](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m):
 
 ```
 %% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
