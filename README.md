@@ -26,11 +26,10 @@ https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.
 }
 ```
 
-### Documentation for the main vectorization function in MATLAB,
+### Documentation for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB,
 ```
 https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 ```
-## [vectorize_V200](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m):
 ```
 %% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
 % VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
