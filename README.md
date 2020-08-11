@@ -6,7 +6,7 @@ Clone this repo and run [it](https://github.com/UTFOIL/Vectorization-Public/blob
 
 Example inline calls are shown in the script files, 'vectorization_script_....' ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_michael.m), ...)
 
-### Enjoy, leave comments/suggestions, download, change, share (please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)), ....
+#### Enjoy, leave comments/suggestions, download, change, share (please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)), ....
 
 ## [please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
 ```
