@@ -3,9 +3,11 @@
 
 The main function is called [vectorize_V200](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) (documentation at the end of this README document).
 
-Example calls/uses are shown in the 'vectorization_script_....' files 
+Run it in the command window of MATLAB with no inputs to be walked through the inputs.
 
-Enjoy, leave comments/suggestions, download, change, share (please include the 'licence' file), ....
+Example inline calls are shown in the script files, 'vectorization_script_....' ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_Annie.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_Chakameh_OCT.m), 3)
+
+## Enjoy, leave comments/suggestions, download, change, share (please include the 'licence' file), ....
 
 ## [please cite the methods paper:](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf)
 ```
