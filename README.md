@@ -5,10 +5,10 @@ The main function is called [vectorize_V200](https://github.com/UTFOIL/Vectoriza
 
 Run it in the command window of MATLAB with no inputs to be walked through the inputs.
 
-Example inline calls are shown in the script files, 'vectorization_script_....' ([Example 1](https://github.com/UTFOIL/Vectorization-Public/edit/master/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_michael.m), ...)
+Example inline calls are shown in the script files, 'vectorization_script_....' ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_michael.m), ...)
 ## Enjoy, leave comments/suggestions, download, change, share (please include the 'licence' file), ....
 
-## [please cite the methods paper:](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf)
+## [please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
 ```
 https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
 ```
