@@ -21,6 +21,8 @@ bibtex citation:
   publisher={Cold Spring Harbor Laboratory}
 }
 
+Documentation for the main vectorization function, vectorize_V200
+Comment Format: Matlab Sections
 
 %% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
 % VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
