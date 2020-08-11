@@ -3,7 +3,7 @@
 ### repository for SLAVV software.
 #### The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) (documentation at the [end of this README](https://github.com/UTFOIL/Vectorization-Public#vectorize_v200)).
 
-Clone this repo and call [it](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be walked through the inputs.
+Clone [this repo](https://github.com/UTFOIL/Vectorization-Public.git) and call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be walked through the inputs.
 
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_.*.m```. ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/noise_sensitivity_study_V2.m).
 
