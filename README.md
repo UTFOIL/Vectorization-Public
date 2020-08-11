@@ -23,7 +23,7 @@ https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.
 }
 ```
 
-## Documentation for the main vectorization function,
+## Documentation for the main vectorization function in MATLAB,
 ```
 https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 ```
