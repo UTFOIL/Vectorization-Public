@@ -1,5 +1,5 @@
 # Vectorization-Public
-## Public (GNU GPL-3.0 license) repository for SLAVV software.
+## Public [GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE) repository for SLAVV software.
 
 The main function is called [vectorize_V200](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) (documentation at the end of this ReadMe document).
 
