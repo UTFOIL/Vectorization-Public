@@ -1,11 +1,11 @@
 # Vectorization-Public README
 ## Public [GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE) 
 ### repository for SLAVV software.
-#### The main function is called [vectorize_V200](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) (documentation at the [end of this README](https://github.com/UTFOIL/Vectorization-Public#vectorize_v200)).
+#### The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) (documentation at the [end of this README](https://github.com/UTFOIL/Vectorization-Public#vectorize_v200)).
 
 Clone this repo and run [it](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be walked through the inputs.
 
-Example inline calls are shown in the script files, ```vectorization_script_.*.m``` ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_michael.m), ...)
+Example inline calls are shown in the script files, ```vectorization_script_.*.m```. ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorization_script_michael.m), ...)
 
 #### Enjoy, leave comments/suggestions, download, change, share (please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)), ....
 
