@@ -1,18 +1,21 @@
-# Vectorization-Public
-Public (GNU GPL-3.0 license) repository for SLAVV software.
+## Vectorization-Public
+# Public (GNU GPL-3.0 license) repository for SLAVV software.
 
-The main function is called 'vectorize_V200' (documentation at the end of this ReadMe document).
+# The main function is called 'vectorize_V200' (documentation at the end of this ReadMe document).
 
-Example calls/uses are shown in the 'vectorization_script_....' files 
+# Example calls/uses are shown in the 'vectorization_script_....' files 
 
-Enjoy, leave comments/suggestions, download, change, share (please include the 'licence' file), ....
+# Enjoy, leave comments/suggestions, download, change, share (please include the 'licence' file), ....
 
-please cite the methods paper: 
+# please cite the methods paper: 
 
+```
 https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
+```
 
-bibtex citation:
+# bibtex citation:
 
+```
 @article{mihelic2020segmentation,
   title={Segmentation-less, automated vascular vectorization robustly extracts neurovascular network statistics from in vivo two-photon images},
   author={Mihelic, Samuel and Sikora, William and Hassan, Ahmed and Williamson, Michael and Jones, Theresa and Dunn, Andrew},
@@ -20,8 +23,11 @@ bibtex citation:
   year={2020},
   publisher={Cold Spring Harbor Laboratory}
 }
+```
 
-Documentation for the main vectorization function, vectorize_V200
+# Documentation for the main vectorization function,
+## vectorize_V200:
+
 ```
 %% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
 % VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
