@@ -425,14 +425,12 @@ Images 40's:   Edge Curator: Volume navigation, exploration, and )for "b" images
 ![](tutorial/46b.png)
 ![](tutorial/47b.png)
 
-
 Images 50's:   Edge Curator: Orthogonal Views
 ![](tutorial/50.png)
 ![](tutorial/51.png)
 ![](tutorial/52.png)
 ![](tutorial/53.png)
 ![](tutorial/54.png)
-
 
 Images 60's:   Edge Curator: Addition Tool
 ![](tutorial/60.png)
@@ -478,8 +476,3 @@ Images  90+: Visualizations of the output vectors using a .vmv file output to th
 ![](tutorial/94b.png)
 ![](tutorial/95b.png)
 ![](tutorial/96b.png)
-
-
-
-
-
