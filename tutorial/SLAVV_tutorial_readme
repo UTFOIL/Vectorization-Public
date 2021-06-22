@@ -6,11 +6,11 @@ Images 1-2: Wrapper script: OutputDirectory and start_workflow parameters
 
 Images 10's: Vertex Curator: Global threshold selection and application
 
-Images 20's: Vertex Curator: Local  threshold selection and application and (for "b" images) individual vertex toggling
+Images 20's: Vertex Curator: Local  threshold selection and application and (for "B" images) individual vertex toggling
 
 Image  30's: Vertex Curator: Final curated Vertex set for edge tracing
 
-Images 40's:   Edge Curator: Volume navigation, exploration, and )for "b" images) local thresholding.
+Images 40's:   Edge Curator: Volume navigation, exploration, and )for "B" and "C" images) local thresholding.
 
 Images 50's:   Edge Curator: Orthogonal Views
 
