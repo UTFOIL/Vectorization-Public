@@ -393,7 +393,10 @@ Images 10's: Vertex Curator: Global threshold selection and application
 ![](tutorial/11b.png)
 ![](tutorial/12b.png)
 ![](tutorial/13b.png)
-
+1XC
+![](tutorial/10c.png)
+![](tutorial/11c.png)
+![](tutorial/12c.png)
 Images 20's: Vertex Curator: Local  threshold selection and application and (for "B" images) individual vertex toggling  
 2XA
 ![](tutorial/21.png)
@@ -406,13 +409,15 @@ Images 20's: Vertex Curator: Local  threshold selection and application and (for
 ![](tutorial/24b.png)
 ![](tutorial/25b.png)
 ![](tutorial/26b.png)
+2XC
+![](tutorial/20c.png)
 Image  30's: Vertex Curator: Final curated Vertex set for edge tracing  
 3XA
 ![](tutorial/30.png)
 3XB
 ![](tutorial/30b.png)
 ![](tutorial/31b.png)
-Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" images) local thresholding.  
+Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" and "C" images) local thresholding.  
 4XA
 ![](tutorial/40.png)
 ![](tutorial/41.png)
@@ -431,6 +436,14 @@ Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" images
 ![](tutorial/45b.png)
 ![](tutorial/46b.png)
 ![](tutorial/47b.png)
+4XC
+![](tutorial/40c.png)
+![](tutorial/41c.png)
+![](tutorial/42c.png)
+![](tutorial/43c.png)
+![](tutorial/44c.png)
+![](tutorial/45c.png)
+![](tutorial/46c.png)
 Images 50's:   Edge Curator: Orthogonal Views  
 5XA
 ![](tutorial/50.png)
@@ -457,6 +470,8 @@ Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, dep
 ![](tutorial/80.png)
 8XB
 ![](tutorial/80b.png)
+8XC
+![](tutorial/80c.png)
 
 Image    81: Histograms of various statistics of interest from the vectors in the image.  
 81A
@@ -488,3 +503,10 @@ Images  90+: Visualizations of the output vectors using a .vmv file output to th
 ![](tutorial/94b.png)
 ![](tutorial/95b.png)
 ![](tutorial/96b.png)
+9XC
+![](tutorial/90c.png)
+![](tutorial/91c.png)
+![](tutorial/92c.png)
+![](tutorial/93c.png)
+![](tutorial/94c.png)
+![](tutorial/95c.png)
