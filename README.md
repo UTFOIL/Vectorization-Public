@@ -364,4 +364,32 @@ google drive link
 
 ### Tutorial
 
+SLAVV methods paper software tutorial ReadMe [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/SLAVV tutorial readme.m)
+
+This folder contains screenshots demonstrating the use of the SLAVV software on two large, tiled example images (Images ending in "b" are from the second image).
+
+Images 1-2: Wrapper script: OutputDirectory and start_workflow parameters
 ![](tutorial/1.png)
+![](tutorial/2.png)
+
+Images 10's: Vertex Curator: Global threshold selection and application
+
+Images 20's: Vertex Curator: Local  threshold selection and application and (for "b" images) individual vertex toggling
+
+Image  30's: Vertex Curator: Final curated Vertex set for edge tracing
+
+Images 40's:   Edge Curator: Volume navigation, exploration, and )for "b" images) local thresholding.
+
+Images 50's:   Edge Curator: Orthogonal Views
+
+Images 60's:   Edge Curator: Addition Tool
+
+Images 70's:   Edge Curator: Toggling Tool
+
+Image  79b :   Edge Curator: Final output MIP over the whole volume with graded edge color weighting.
+
+Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.
+
+Image    81: Histograms of various statistics of interest from the vectors in the image. 
+
+Images  90+: Visualizations of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.
