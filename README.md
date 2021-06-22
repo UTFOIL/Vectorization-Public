@@ -362,7 +362,7 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 
 google drive link
 
-### Tutorial [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
+### [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
 
 [SLAVV methods paper software tutorial ReadMe](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/SLAVV_tutorial_readme)
 
