@@ -394,7 +394,7 @@ Images 10's: Vertex Curator: Global threshold selection and application
 ![](tutorial/12b.png)
 ![](tutorial/13b.png)
 
-Images 20's: Vertex Curator: Local  threshold selection and application and (for "b" images) individual vertex toggling  
+Images 20's: Vertex Curator: Local  threshold selection and application and (for "B" images) individual vertex toggling  
 2XA
 ![](tutorial/21.png)
 ![](tutorial/22.png)
@@ -412,7 +412,7 @@ Image  30's: Vertex Curator: Final curated Vertex set for edge tracing
 3XB
 ![](tutorial/30b.png)
 ![](tutorial/31b.png)
-Images 40's:   Edge Curator: Volume navigation, exploration, and )for "b" images) local thresholding.  
+Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" images) local thresholding.  
 4XA
 ![](tutorial/40.png)
 ![](tutorial/41.png)
