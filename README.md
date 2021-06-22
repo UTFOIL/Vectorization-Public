@@ -360,12 +360,12 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 ```
 ### [Example Datasets](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing)
 
-This folder contains the three example images as they were processed for the SLAVV methods paper. 
-
-Each of the three "Image *" folders in this folder contains:
-	- The original image under its original title as a *.tif
-	- The wrapper script that was used to vectorize that image in a *.mat file
-	- All of the vectorization intermediates and outputs in a batch_* folder
+This folder contains the three example images as they were processed for the SLAVV methods paper.  
+  
+Each of the three "Image *" folders in this folder contains:  
+	- The original image under its original title as a *.tif  
+	- The wrapper script that was used to vectorize that image in a *.mat file  
+	- All of the vectorization intermediates and outputs in a batch_* folder  
 
 ### [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
 
