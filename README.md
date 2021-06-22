@@ -358,9 +358,7 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %     their strands and approximate local blood flow fields.
 % 
 ```
-### Example Datasets
-
-google drive link
+### [Example Datasets](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing)
 
 ### [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
 
@@ -372,7 +370,7 @@ Images 1-2: Wrapper script: OutputDirectory and start_workflow parameters
 ![](tutorial/1.png)
 ![](tutorial/2.png)
 
-Images 10's: Vertex Curator: Global threshold selection and application
+Images 10's: Vertex Curator: Global threshold selection and application  
 1XA:
 ![](tutorial/10.png)
 ![](tutorial/11.png)
@@ -389,7 +387,7 @@ Images 10's: Vertex Curator: Global threshold selection and application
 ![](tutorial/12b.png)
 ![](tutorial/13b.png)
 
-Images 20's: Vertex Curator: Local  threshold selection and application and (for "b" images) individual vertex toggling
+Images 20's: Vertex Curator: Local  threshold selection and application and (for "b" images) individual vertex toggling  
 2XA
 ![](tutorial/21.png)
 ![](tutorial/22.png)
@@ -401,13 +399,13 @@ Images 20's: Vertex Curator: Local  threshold selection and application and (for
 ![](tutorial/24b.png)
 ![](tutorial/25b.png)
 ![](tutorial/26b.png)
-Image  30's: Vertex Curator: Final curated Vertex set for edge tracing
+Image  30's: Vertex Curator: Final curated Vertex set for edge tracing  
 3XA
 ![](tutorial/30.png)
 3XB
 ![](tutorial/30b.png)
 ![](tutorial/31b.png)
-Images 40's:   Edge Curator: Volume navigation, exploration, and )for "b" images) local thresholding.
+Images 40's:   Edge Curator: Volume navigation, exploration, and )for "b" images) local thresholding.  
 4XA
 ![](tutorial/40.png)
 ![](tutorial/41.png)
