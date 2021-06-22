@@ -364,4 +364,4 @@ google drive link
 
 ### Tutorial
 
-![](tutorial/01.png)
+![](tutorial/1.png)
