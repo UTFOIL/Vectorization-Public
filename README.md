@@ -474,13 +474,15 @@ Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, dep
 ![](tutorial/80c.png)
 
 Image    81: Histograms of various statistics of interest from the vectors in the image.  
-81A
+81A  
 ![](tutorial/81.png)
-81B
+81B  
 ![](tutorial/81b.png)
+81C
+![](tutorial/81c.png)
 
 Images  90+: Visualizations of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
-9XA and 10XA
+9XA and 10XA  
 ![](tutorial/90.png)
 ![](tutorial/91.png)
 ![](tutorial/92.png)
@@ -495,7 +497,7 @@ Images  90+: Visualizations of the output vectors using a .vmv file output to th
 ![](tutorial/101.png)
 ![](tutorial/102.png)
 ![](tutorial/103.png)
-9XB
+9XB  
 ![](tutorial/90b.png)
 ![](tutorial/91b.png)
 ![](tutorial/92b.png)
@@ -503,7 +505,7 @@ Images  90+: Visualizations of the output vectors using a .vmv file output to th
 ![](tutorial/94b.png)
 ![](tutorial/95b.png)
 ![](tutorial/96b.png)
-9XC
+9XC  
 ![](tutorial/90c.png)
 ![](tutorial/91c.png)
 ![](tutorial/92c.png)
