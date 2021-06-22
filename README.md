@@ -360,6 +360,13 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 ```
 ### [Example Datasets](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing)
 
+This folder contains the three example images as they were processed for the SLAVV methods paper. 
+
+Each of the three "Image *" folders in this folder contains:
+	- The original image under its original title as a *.tif
+	- The wrapper script that was used to vectorize that image in a *.mat file
+	- All of the vectorization intermediates and outputs in a batch_* folder
+
 ### [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
 
 [SLAVV methods paper software tutorial ReadMe](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/SLAVV_tutorial_readme)
@@ -424,40 +431,40 @@ Images 40's:   Edge Curator: Volume navigation, exploration, and )for "b" images
 ![](tutorial/45b.png)
 ![](tutorial/46b.png)
 ![](tutorial/47b.png)
-Images 50's:   Edge Curator: Orthogonal Views
+Images 50's:   Edge Curator: Orthogonal Views  
 5XA
 ![](tutorial/50.png)
 ![](tutorial/51.png)
 ![](tutorial/52.png)
 ![](tutorial/53.png)
 ![](tutorial/54.png)
-Images 60's:   Edge Curator: Addition Tool
+Images 60's:   Edge Curator: Addition Tool  
 6XA
 ![](tutorial/60.png)
 ![](tutorial/61.png)
 ![](tutorial/62.png)
 ![](tutorial/63.png)
-Images 70's:   Edge Curator: Toggling Tool
+Images 70's:   Edge Curator: Toggling Tool  
 7XA
 ![](tutorial/70.png)
 ![](tutorial/71.png)
-Image  79b :   Edge Curator: Final output MIP over the whole volume with graded edge color weighting.
+Image  79b :   Edge Curator: Final output MIP over the whole volume with graded edge color weighting.  
 79B
 ![](tutorial/79b.png)
 
-Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.
+Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
 8XA
 ![](tutorial/80.png)
 8XB
 ![](tutorial/80b.png)
 
-Image    81: Histograms of various statistics of interest from the vectors in the image. 
+Image    81: Histograms of various statistics of interest from the vectors in the image.  
 81A
 ![](tutorial/81.png)
 81B
 ![](tutorial/81b.png)
 
-Images  90+: Visualizations of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.
+Images  90+: Visualizations of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
 9XA and 10XA
 ![](tutorial/90.png)
 ![](tutorial/91.png)
