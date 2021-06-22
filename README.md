@@ -364,7 +364,7 @@ google drive link
 
 ### Tutorial [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
 
-SLAVV methods paper software tutorial ReadMe [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/SLAVV_tutorial_readme)
+[SLAVV methods paper software tutorial ReadMe](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/SLAVV_tutorial_readme)
 
 This folder contains screenshots demonstrating the use of the SLAVV software on two large, tiled example images (Images ending in "b" are from the second image).
 
