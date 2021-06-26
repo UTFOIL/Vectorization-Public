@@ -27,7 +27,7 @@ https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.
 ```
 
 ### Documentation 
-for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB,
+for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
 ```
 https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 ```
@@ -358,6 +358,16 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %     doors.  For instance, we can smooth the positions and sizes of the extracted vectors along
 %     their strands and approximate local blood flow fields.
 % 
+%% ------------------------------------------- Output -------------------------------------------- 
+%
+% Standard network ouptut format(s): .casx
+%
+% The vectorization output is the set of 3-space locations and radii of all vessels as well as 
+% their connectivity. This information is stored in several matlab variables in the network output 
+% file in the vector directory of the batch_* directory output of the Vectorize function. This 
+% vector information is also available in the casx file format if the user selects the 
+% 'SpecialOutputs'/'casx' name/value pair input. The .casx standard file is due to LPPD at 
+% University of Illinois at Chicago, Department of Bioengineering (https://lppd.bioe.uic.edu/)
 ```
 ### [Example Datasets](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing)
 
