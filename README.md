@@ -9,22 +9,26 @@ Example inline calls can be found in the vectorization scripts, ```vectorization
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
-### [Please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
-```
-https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
-```
+### Example Datasets
 
-### bibtex citation:
+[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).  
+  
+Each of the three "Image *" folders in this folder contains:  
+	- The original image under its original title as a *.tif  
+	- The wrapper script that was used to vectorize that image in a *.mat file  
+	- All of the vectorization intermediates and outputs in a batch_* folder
 
-```
-@article{mihelic2020segmentation,
-  title={Segmentation-less, automated vascular vectorization robustly extracts neurovascular network statistics from in vivo two-photon images},
-  author={Mihelic, Samuel and Sikora, William and Hassan, Ahmed and Williamson, Michael and Jones, Theresa and Dunn, Andrew},
-  journal={bioRxiv},
-  year={2020},
-  publisher={Cold Spring Harbor Laboratory}
-}
-```
+### Tutorial
+
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
+
+![](tutorial/42b.png)
+![](tutorial/43b.png)
+![](tutorial/44b.png)
+![](tutorial/91.png)
+![](tutorial/92.png)
+![](tutorial/93.png)
+
 ### Documentation 
 for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
 ```
@@ -376,22 +380,19 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %     the order that they were passed to VECTORIZE.
 ```
 
-### Example Datasets
+### [Please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
+```
+https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
+```
 
-[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).  
-  
-Each of the three "Image *" folders in this folder contains:  
-	- The original image under its original title as a *.tif  
-	- The wrapper script that was used to vectorize that image in a *.mat file  
-	- All of the vectorization intermediates and outputs in a batch_* folder
+### bibtex citation:
 
-### Tutorial
-
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
-
-![](tutorial/42b.png)
-![](tutorial/43b.png)
-![](tutorial/44b.png)
-![](tutorial/91.png)
-![](tutorial/92.png)
-![](tutorial/93.png)
+```
+@article{mihelic2020segmentation,
+  title={Segmentation-less, automated vascular vectorization robustly extracts neurovascular network statistics from in vivo two-photon images},
+  author={Mihelic, Samuel and Sikora, William and Hassan, Ahmed and Williamson, Michael and Jones, Theresa and Dunn, Andrew},
+  journal={bioRxiv},
+  year={2020},
+  publisher={Cold Spring Harbor Laboratory}
+}
+```
