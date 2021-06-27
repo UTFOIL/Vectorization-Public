@@ -1,7 +1,7 @@
 # Vectorization-Public README
 ## Public [GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE) 
 ### Repository for SLAVV software.
-#### The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) (documentation at the [end of this README](https://github.com/UTFOIL/Vectorization-Public#documentation-for-the-main-vectorization-function-in-matlab)).
+#### The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
 Clone [this repo](https://github.com/UTFOIL/Vectorization-Public.git) and call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be walked through the inputs.
 
@@ -25,15 +25,6 @@ https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.
   publisher={Cold Spring Harbor Laboratory}
 }
 ```
-### Example Datasets
-
-[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).  
-  
-Each of the three "Image *" folders in this folder contains:  
-	- The original image under its original title as a *.tif  
-	- The wrapper script that was used to vectorize that image in a *.mat file  
-	- All of the vectorization intermediates and outputs in a batch_* folder
-
 ### Documentation 
 for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
 ```
@@ -384,6 +375,15 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %     also returns the FILE_NAMES that were used as input or the names assigned to the IMAGE_MATRICES in
 %     the order that they were passed to VECTORIZE.
 ```
+
+### Example Datasets
+
+[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).  
+  
+Each of the three "Image *" folders in this folder contains:  
+	- The original image under its original title as a *.tif  
+	- The wrapper script that was used to vectorize that image in a *.mat file  
+	- All of the vectorization intermediates and outputs in a batch_* folder
 
 ### Tutorial
 
