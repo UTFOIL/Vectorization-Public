@@ -358,7 +358,7 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %     doors.  For instance, we can smooth the positions and sizes of the extracted vectors along
 %     their strands and approximate local blood flow fields.
 % 
-%% ------------------------------------------- Output -------------------------------------------- 
+%% ------------------------------------------- Outputs -------------------------------------------- 
 %
 % Standard network ouptut format(s): .casx
 %
@@ -368,6 +368,13 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 % vector information is also available in the casx file format if the user selects the 
 % 'SpecialOutputs'/'casx' name/value pair input. The .casx standard file is due to LPPD at 
 % University of Illinois at Chicago, Department of Bioengineering (https://lppd.bioe.uic.edu/)
+
+% TIME_STAMP = VECTORIZE( ... )
+%     returns the TIME_STAMP that was assigned to any new data or settings output
+%
+% [ TIME_STAMP, ROI_NAMES ] = VECTORIZE( ... )
+%     also returns the FILE_NAMES that were used as input or the names assigned to the IMAGE_MATRICES in
+%     the order that they were passed to VECTORIZE.
 ```
 ### [Example Datasets](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing)
 
