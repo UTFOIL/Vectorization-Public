@@ -36,45 +36,6 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 ```
 ```
 %% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
-% VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
-%     whether to vectorize a new batch of images or continue with a previous batch.  A batch is a
-%     group of images that the VECTORIZE function organizes together with two properties:
-%
-%         1) The same set of input parameters applies to every image in a batch. 
-% 
-%         2) The images in a batch are processed in parallel at each step of the vectorization. 
-%            (see Methods below for descriptions of the four steps in the vectorization algorithm).
-%
-%       If the user continues with a previous batch, VECTORIZE prompts the user to select a previous
-%       batch folder with data to recycle.
-%
-%       Alternatively, if the user starts a new batch, VECTORIZE prompts the user to select a folder
-%       with some image file(s) to be vectorized.  It makes a new batch folder in a location
-%       specified by the user.
-% 
-%     In either case, VECTORIZE prompts the user for a few logistical inputs: which vectorization
-%     step(s) to execute, what previous data or settings (if any) to recycle, which visual(s) to
-%     output (if any), and whether or not to open a graphical curator interface. It also prompts the
-%     user for workflow-specific parameters: It displays imported parameters for review, and prompts
-%     the user for any missing required parameters.  VECTORIZE writes any outputs to the batch
-%     folder with a time stamp of the form YYMMDD_HHmmss.
-% 
-%   Conventions:  Greater values in the IMAGE_MATRIX correspond to greater vascular signal
-%                 The IMAGE_MATRIX dimensions correspond to the physical dimensions y, x, and z
-%                 (1,x,z) is the top  border of the x-y image at height z
-%                 (y,1,z) is the left border of the x-y image at height z
-%                 (y,x,1) is the x-y image nearest to the objective
-%
-%   Supported input image file types: .tif
-%
-% For in-line function calls that do not require manual interfacing (e.g. for writing wrapper
-% functions or for keeping a concise record of VECTORIZE function calls in a script file), see the
-% Optional Input, Logistical Parameters, and Workflow Specific Parameters Sections.
-% 
-% Note:  For more organizational/navigational control over this document in MATLAB:
-%           1) open the Preferences Window                                       (HOME>>PREFERENCES)
-%           2) enable Code Folding for Sections              (MATLAB>>Editor/Debugger>>Code Folding)
-%           3) fold all of the sections in this document                                    (ctrl,+)
 %
 %% ------------------------------------------- Overview ------------------------------------------- 
 %
@@ -371,13 +332,55 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 % vector information is also available in the casx file format if the user selects the 
 % 'SpecialOutputs'/'casx' name/value pair input. The .casx standard file is due to LPPD at 
 % University of Illinois at Chicago, Department of Bioengineering (https://lppd.bioe.uic.edu/)
-
+%
 % TIME_STAMP = VECTORIZE( ... )
 %     returns the TIME_STAMP that was assigned to any new data or settings output
 %
 % [ TIME_STAMP, ROI_NAMES ] = VECTORIZE( ... )
 %     also returns the FILE_NAMES that were used as input or the names assigned to the IMAGE_MATRICES in
 %     the order that they were passed to VECTORIZE.
+%
+%% -------------------------------------------  Notes  -------------------------------------------- 
+% VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
+%     whether to vectorize a new batch of images or continue with a previous batch.  A batch is a
+%     group of images that the VECTORIZE function organizes together with two properties:
+%
+%         1) The same set of input parameters applies to every image in a batch. 
+% 
+%         2) The images in a batch are processed in parallel at each step of the vectorization. 
+%            (see Methods below for descriptions of the four steps in the vectorization algorithm).
+%
+%       If the user continues with a previous batch, VECTORIZE prompts the user to select a previous
+%       batch folder with data to recycle.
+%
+%       Alternatively, if the user starts a new batch, VECTORIZE prompts the user to select a folder
+%       with some image file(s) to be vectorized.  It makes a new batch folder in a location
+%       specified by the user.
+% 
+%     In either case, VECTORIZE prompts the user for a few logistical inputs: which vectorization
+%     step(s) to execute, what previous data or settings (if any) to recycle, which visual(s) to
+%     output (if any), and whether or not to open a graphical curator interface. It also prompts the
+%     user for workflow-specific parameters: It displays imported parameters for review, and prompts
+%     the user for any missing required parameters.  VECTORIZE writes any outputs to the batch
+%     folder with a time stamp of the form YYMMDD_HHmmss.
+% 
+%   Conventions:  Greater values in the IMAGE_MATRIX correspond to greater vascular signal
+%                 The IMAGE_MATRIX dimensions correspond to the physical dimensions y, x, and z
+%                 (1,x,z) is the top  border of the x-y image at height z
+%                 (y,1,z) is the left border of the x-y image at height z
+%                 (y,x,1) is the x-y image nearest to the objective
+%
+%   Supported input image file types: .tif
+%
+% For in-line function calls that do not require manual interfacing (e.g. for writing wrapper
+% functions or for keeping a concise record of VECTORIZE function calls in a script file), see the
+% Optional Input, Logistical Parameters, and Workflow Specific Parameters Sections.
+% 
+% Note:  For more organizational/navigational control over this document in MATLAB:
+%           1) open the Preferences Window                                       (HOME>>PREFERENCES)
+%           2) enable Code Folding for Sections              (MATLAB>>Editor/Debugger>>Code Folding)
+%           3) fold all of the sections in this document                                    (ctrl,+)
+%
 ```
 
 ### [Please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
