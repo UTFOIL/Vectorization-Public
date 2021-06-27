@@ -25,7 +25,7 @@ https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.
   publisher={Cold Spring Harbor Laboratory}
 }
 ```
-### [Example Datasets](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing)
+### Example Datasets
 
 This [folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).  
   
@@ -34,9 +34,9 @@ Each of the three "Image *" folders in this folder contains:
 	- The wrapper script that was used to vectorize that image in a *.mat file  
 	- All of the vectorization intermediates and outputs in a batch_* folder
 
-### [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
+### Tutorial
 
-This folder contains screenshots [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
 
 ### Documentation 
 for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
