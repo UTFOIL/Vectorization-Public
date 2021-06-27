@@ -34,14 +34,6 @@ Each of the three "Image *" folders in this folder contains:
 	- The wrapper script that was used to vectorize that image in a *.mat file  
 	- All of the vectorization intermediates and outputs in a batch_* folder
 
-### Tutorial
-
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
-
-![](tutorial/42b.png)
-![](tutorial/43b.png)
-![](tutorial/44b.png)
-
 ### Documentation 
 for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
 ```
@@ -392,3 +384,14 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %     also returns the FILE_NAMES that were used as input or the names assigned to the IMAGE_MATRICES in
 %     the order that they were passed to VECTORIZE.
 ```
+
+### Tutorial
+
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
+
+![](tutorial/42b.png)
+![](tutorial/43b.png)
+![](tutorial/44b.png)
+![](tutorial/91.png)
+![](tutorial/92.png)
+![](tutorial/93.png)
