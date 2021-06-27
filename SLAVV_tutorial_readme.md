@@ -1,4 +1,4 @@
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots demonstrating the use of the SLAVV software on three (A, B, and C) large, tiled images.
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (A, B, and C) large, tiled images.
 
 Images 1-2: Wrapper script: OutputDirectory and start_workflow parameters
 ![](tutorial/1.png)
