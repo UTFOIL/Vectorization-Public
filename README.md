@@ -377,3 +377,7 @@ Each of the three "Image *" folders in this folder contains:
 	- The original image under its original title as a *.tif  
 	- The wrapper script that was used to vectorize that image in a *.mat file  
 	- All of the vectorization intermediates and outputs in a batch_* folder
+
+### [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/)
+
+This folder contains screenshots [demonstrating](https://github.com/UTFOIL/Vectorization-Public/edit/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
