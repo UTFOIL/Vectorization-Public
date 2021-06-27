@@ -387,7 +387,7 @@ Each of the three "Image *" folders in this folder contains:
 
 ### Tutorial
 
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
 
 ![](tutorial/42b.png)
 ![](tutorial/43b.png)
