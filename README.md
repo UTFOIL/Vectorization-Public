@@ -38,6 +38,10 @@ Each of the three "Image *" folders in this folder contains:
 
 [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
 
+![](tutorial/42b.png)
+![](tutorial/43b.png)
+![](tutorial/44b.png)
+
 ### Documentation 
 for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
 ```
