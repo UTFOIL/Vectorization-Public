@@ -327,12 +327,15 @@ function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
 %
 %% ------------------------------------------- Outputs -------------------------------------------- 
 %
-% The main output is the vectorized model of the vascular network depicted in the 3D input image.
-% The vectorized model is composed of a list of objects that we can think of as 5 dimensional
-% vectors (3D position, size, and energy). These objects, when thresholded by an appropriate
-% contrast value and rendered as volume-filled spheres are a 3-dimensional mask of the vascular
-% volume in the input image at a sensitivity determined by the threshold.
+% Standard network ouptut format(s): .casx
 %
+% The vectorization output is the set of 3-space locations and radii of all vessels as well as 
+% their connectivity. This information is stored in several matlab variables in the network output 
+% file in the vector directory of the batch_* directory output of the Vectorize function. This 
+% vector information is also available in the casx file format if the user selects the 
+% 'SpecialOutputs'/'casx' name/value pair input. The .casx standard file is due to LPPD at 
+% University of Illinois at Chicago, Department of Bioengineering (https://lppd.bioe.uic.edu/)
+
 % TIME_STAMP = VECTORIZE( ... )
 %     returns the TIME_STAMP that was assigned to any new data or settings output
 %
