@@ -405,15 +405,15 @@ parfor chunk_index = chunk_index_range
         
         for  voxel_index = voxel_index_range
                     
-            scale_index = round( energy_chunk_scale_indices( voxel_index ));
+            scale_index_2 = round( energy_chunk_scale_indices( voxel_index ));
             
             % accept wraparound artifact for expedited execution
-            valid_voxels = voxel_index + linear_strel{ scale_index } >= 1 & voxel_index + linear_strel{ scale_index } <= number_of_voxels_in_chunk ;
+            valid_voxels = voxel_index + linear_strel{ scale_index_2 } >= 1 & voxel_index + linear_strel{ scale_index_2 } <= number_of_voxels_in_chunk ;
             
-            current_strel = voxel_index + linear_strel{ scale_index }( valid_voxels );
+            current_strel = voxel_index + linear_strel{ scale_index_2 }( valid_voxels );
             
-                     weighting_image( current_strel ) =          weighting_image( current_strel ) +                                             gaussian_strel{ scale_index }( valid_voxels );
-            size_and_weighting_image( current_strel ) = size_and_weighting_image( current_strel ) + energy_chunk_scale_indices( voxel_index ) * gaussian_strel{ scale_index }( valid_voxels );
+                     weighting_image( current_strel ) =          weighting_image( current_strel ) +                                             gaussian_strel{ scale_index_2 }( valid_voxels );
+            size_and_weighting_image( current_strel ) = size_and_weighting_image( current_strel ) + energy_chunk_scale_indices( voxel_index ) * gaussian_strel{ scale_index_2 }( valid_voxels );
             
 %             voxel_subscripts( 1 ) = voxel_subscripts( 1 ) + 1 ;
 %             
