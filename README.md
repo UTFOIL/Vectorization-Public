@@ -9,6 +9,14 @@ Example inline calls can be found in the vectorization scripts, ```vectorization
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
+### Tutorial
+
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three large (~1 mm^{3}), tiled images.
+
+![](tutorial/42b.png)
+![](tutorial/43b.png)
+![](tutorial/44b.png)
+
 ### Example Datasets
 
 [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).  
@@ -17,14 +25,6 @@ Each of the three "Image *" folders in this folder contains:
 	- The original image under its original title as a *.tif  
 	- The wrapper script that was used to vectorize that image in a *.mat file  
 	- All of the vectorization intermediates and outputs in a batch_* folder
-
-### Tutorial
-
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three (A, B, and C) large, tiled images.
-
-![](tutorial/42b.png)
-![](tutorial/43b.png)
-![](tutorial/44b.png)
 
 ### Documentation 
 for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
