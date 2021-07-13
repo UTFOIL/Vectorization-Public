@@ -1,7 +1,15 @@
 [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (**A**, **B**, and **C**) large (~1 mm<sup>3</sup>), tiled images.
 
 # SLAVV overview
-The SLAVV method consists of five steps: linear "energy" filtering, 
+To vectorize an image, simply call 
+
+The SLAVV method consists of four steps:
+1. linear "energy" filtering
+2. vertex extraction
+3. edge extraction
+4. network organization
+
+
 
 <!--Images 1-2:-->
 # Wrapper script: OutputDirectory and start_workflow parameters
