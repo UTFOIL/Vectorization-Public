@@ -25,9 +25,6 @@ Each of the three "Image *" folders in this folder contains:
 ![](tutorial/42b.png)
 ![](tutorial/43b.png)
 ![](tutorial/44b.png)
-![](tutorial/91.png)
-![](tutorial/92.png)
-![](tutorial/93.png)
 
 ### Documentation 
 for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
