@@ -1,26 +1,32 @@
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (A, B, and C) large, tiled images.
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (**A**, **B**, and **C**) large (~1 mm<sup>3</sup>), tiled images.
 
-## Images 1-2: Wrapper script: OutputDirectory and start_workflow parameters
+# SLAVV overview
+The SLAVV method consists of five steps: linear "energy" filtering, 
+
+<!--Images 1-2:-->
+# Wrapper script: OutputDirectory and start_workflow parameters
 ![](tutorial/1.png)
 ![](tutorial/2.png)
 
-## Images 10's: Vertex Curator: Global threshold selection and application  
-1XA:
-![](tutorial/10.png)
-![](tutorial/11.png)
-![](tutorial/12.png)
+<!--Images 10's:-->
+## Vertex Curator: Global threshold selection and application  
+| A | B | C |
+| :---: | :---: | :---: |
+| ![](tutorial/11.png) | ![](tutorial/10b.png) | ![](tutorial/10c.png) |
+<!--![](tutorial/10.png)-->
+<!--![](tutorial/12.png)
 ![](tutorial/13.png)
 ![](tutorial/14.png)
 ![](tutorial/15.png)
 ![](tutorial/16.png)
-![](tutorial/17.png)
+![](tutorial/17.png)-->
 ![](tutorial/20.png)
-1XB
+# B
 ![](tutorial/10b.png)
 ![](tutorial/11b.png)
 ![](tutorial/12b.png)
 ![](tutorial/13b.png)
-1XC
+# C
 ![](tutorial/10c.png)
 ![](tutorial/11c.png)
 ![](tutorial/12c.png)
