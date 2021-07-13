@@ -1,10 +1,10 @@
 [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (A, B, and C) large, tiled images.
 
-Images 1-2: Wrapper script: OutputDirectory and start_workflow parameters
+## Images 1-2: Wrapper script: OutputDirectory and start_workflow parameters
 ![](tutorial/1.png)
 ![](tutorial/2.png)
 
-Images 10's: Vertex Curator: Global threshold selection and application  
+## Images 10's: Vertex Curator: Global threshold selection and application  
 1XA:
 ![](tutorial/10.png)
 ![](tutorial/11.png)
