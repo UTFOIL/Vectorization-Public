@@ -1,6 +1,6 @@
 [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (**A**, **B**, and **C**) large (~1 mm<sup>3</sup>), tiled images.
 
-&alpha
+\alpha
 
 # SLAVV overview
 To vectorize an image, simply call 
