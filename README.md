@@ -5,7 +5,7 @@
 For summarizing and analyzing vascular networks from grayscale, volumetric images. Use this software for locating, sizing, and mapping the connectivity of the depicted vascular networks.
 
 ### Table of Contents:
-- [Software (MATLAB) Overview](https://github.com/UTFOIL/Vectorization-Public#SLAVV-Software-Overview)
+- [Software (MATLAB) Overview](https://github.com/UTFOIL/Vectorization-Public#Software-Overview)
 - [Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 - [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
 - [Software (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
@@ -15,12 +15,12 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 
 #### Please cite the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation).
 
-## SLAVV Software Overview
+## Software Overview
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
 The supporting functions are in the [source](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) folder.
 
-To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
+To vectorize an image using the SLAVV software in MATLAB, simply call [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
 
 ## Tutorial
 
@@ -390,7 +390,7 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %
 ```
 
-## Citation:
+## SLAVV Methodology Manuscript
 
 BioRxiv pre-print:
 
