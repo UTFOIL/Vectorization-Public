@@ -1,9 +1,7 @@
 [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (**A**, **B**, and **C**) large (~1 mm<sup>3</sup>), tiled images.
 
-\alpha
-
 # SLAVV overview
-To vectorize an image, simply call 
+To vectorize an image, simply call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be prompted for all required inputs.
 
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_.*.m```. ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
 
