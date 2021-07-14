@@ -13,7 +13,7 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
-#### Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).
+#### Please [cite the methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation).
 
 ## SLAVV Software Overview
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
@@ -29,7 +29,7 @@ To vectorize an image using Segmentation-Less, Automated Vascular Vectorization 
 
 ## Example Datasets
 
-[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#citation) (_distinct_ from the three images used in the [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md)).  
+[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation) (_distinct_ from the three images used in the [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md)).  
   
 Each of the three ```Image *``` folders in [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains:  
 	- The original image under its original title as a ```*.tif```  
