@@ -24,11 +24,11 @@ Input image selection | Starting workflow selection
 ## Global threshold selection and application  
 A | B | C
 :---: | :---: | :---:
-![](tutorial/10.png)|![](tutorial/10b.png)|![](tutorial/10c.png)
-![](tutorial/11.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
-![](tutorial/12.png)|![](tutorial/12b.png)|![](tutorial/12c.png)
-![](tutorial/14.png)|![](tutorial/13b.png)|
-![](tutorial/15.png)||
+![](tutorial/10.png)||
+![](tutorial/11.png)|![](tutorial/10b.png)|![](tutorial/10c.png)
+![](tutorial/12.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
+![](tutorial/14.png)|![](tutorial/12b.png)|![](tutorial/12c.png)
+![](tutorial/15.png)|![](tutorial/13b.png)|
 ![](tutorial/16.png)||
 ![](tutorial/17.png)||
 
