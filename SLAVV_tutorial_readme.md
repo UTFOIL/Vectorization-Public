@@ -3,19 +3,19 @@
 #### Software ([source in MATLAB](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) Tutorial
 Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
 
+#### In the screenshots to follow in this tutorial, depictions of: 
+**Image A** are in the left column | **Image B** the center | and **Image C** the right
+:--------------------------------- | :--------------------: | ------------------------:
+
 ### Table of Contents:
 - [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
 - [Inputs and Parameters](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Inputs-and-Parameters)
-<!--  - [Wrapper script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)-->
+  - [Wrapper Script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)
 - [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
 - [Vertex Curator](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Curator)
-  - [Global threshold selection and application](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection)
-
-#### In the screenshots to follow, depictions of: 
-**Image A** are in the left column | **Image B** the center | and **Image C** the right
-:--------------------------------- | :--------------------: | ------------------------:
+  - [Global Threshold Selection](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection)
  
-#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.
+<!--#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
 
 ## SLAVV Methodology Overview
 
@@ -25,12 +25,10 @@ The SLAVV method consists of four workflow steps:
 3. edge extraction
 4. network organization
 
-
-
 ## Inputs and Parameters
 
 <!--Images 1-2:-->
-## Wrapper script
+## Wrapper Script
 Image A Input Selection | Starting Workflow Step Selection
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)-->
