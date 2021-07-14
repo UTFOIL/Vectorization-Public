@@ -6,7 +6,7 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 <!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
 
 ### Table of Contents:
-- SLAVV overview
+- [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
 
 ## SLAVV Methodology Overview
 
