@@ -11,7 +11,7 @@ Example inline calls can be found in the vectorization scripts, ```vectorization
 
 ### Tutorial
 
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) [demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three large (~1 mm^{3}), tiled images.
+<!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) -->[Demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three large (~1 mm^{3}), tiled images.
 
 ![](tutorial/42b.png)
 ![](tutorial/43b.png)
