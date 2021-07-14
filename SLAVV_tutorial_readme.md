@@ -7,11 +7,12 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 
 ### Table of Contents:
 - [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
-- [Input 
+- [Inputs and Parameters]()
+  -
 <!--  - [Wrapper script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)-->
-  - [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
-  - [Vertex Curator](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Curator)
-
+- [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
+- [Vertex Curator](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Curator)
+  - [Global threshold selection and application](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection-and-application)
 ## SLAVV Methodology Overview
 
 The SLAVV method consists of four workflow steps:
@@ -28,7 +29,7 @@ Image A Input Selection | Starting Workflow Step Selection
 
 <!--Images 10's:-->
 ## Vertex Curator
-### Global threshold selection and application  
+### Global threshold selection and application
 Image A | B | C
 :---: | :---: | :---:
 some_text | some_text | some_text
