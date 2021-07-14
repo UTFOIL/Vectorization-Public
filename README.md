@@ -1,6 +1,10 @@
 # Vectorization-Public README
 ## Public [GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE) 
 ### Repository for SLAVV software.
+
+Table of Contents:
+- asdf
+
 #### The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
 Clone [this repo](https://github.com/UTFOIL/Vectorization-Public.git) and call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be walked through the inputs.
@@ -17,7 +21,7 @@ https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.
 ### Tutorial
 
 <!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) -->
-[Demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), tiled images of living mouse brain vasculature.
+[Demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain vasculature. The three images are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
 
 ![](tutorial/42b.png)
 ![](tutorial/43b.png)
