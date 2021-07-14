@@ -4,16 +4,16 @@
 
 For summarizing and analyzing vascular networks from grayscale, volumetric images. Use this software for locating, sizing, and mapping the connectivity of the depicted vascular networks.
 
-Table of Contents:
+### Table of Contents:
 - [Software (MATLAB) Overview](https://github.com/UTFOIL/Vectorization-Public#SLAVV-Software-Overview)
 - [Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 - [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
 - [Software (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
 - [Methodology Reference](https://github.com/UTFOIL/Vectorization-Public#citation)
 
-Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
+### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
-Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).
+### Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).
 
 ## SLAVV Software Overview
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
