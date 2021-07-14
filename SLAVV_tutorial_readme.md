@@ -13,46 +13,38 @@ The SLAVV method consists of four steps:
 
 <!--Images 1-2:-->
 # Wrapper script: OutputDirectory and start_workflow parameters
-![](tutorial/1.png)
-![](tutorial/2.png)
+![](tutorial/1.png)|![](tutorial/2.png)
 
 <!--Images 10's:-->
-## Vertex Curator: Global threshold selection and application  
-| A | B | C |
-| :---: | :---: | :---: |
-| ![](tutorial/11.png) | ![](tutorial/10b.png) | ![](tutorial/10c.png) |
-<!--![](tutorial/10.png)-->
-<!--![](tutorial/12.png)
-![](tutorial/13.png)
-![](tutorial/14.png)
-![](tutorial/15.png)
-![](tutorial/16.png)
-![](tutorial/17.png)-->
-![](tutorial/20.png)
-# B
-![](tutorial/10b.png)
-![](tutorial/11b.png)
-![](tutorial/12b.png)
-![](tutorial/13b.png)
-# C
-![](tutorial/10c.png)
-![](tutorial/11c.png)
-![](tutorial/12c.png)
-Images 20's: Vertex Curator: Local  threshold selection and application and (for "B" images) individual vertex toggling  
-2XA
-![](tutorial/21.png)
-![](tutorial/22.png)
-![](tutorial/23.png)
-2XB
-![](tutorial/20b.png)
-![](tutorial/21b.png)
-![](tutorial/22b.png)
-![](tutorial/24b.png)
+# Vertex Curator: 
+## Global threshold selection and application  
+A | B | C
+:---: | :---: | :---:
+![](tutorial/10.png)|![](tutorial/10b.png)|![](tutorial/10c.png)
+![](tutorial/11.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
+![](tutorial/12.png)|![](tutorial/12b.png)|![](tutorial/12c.png)
+![](tutorial/14.png)|![](tutorial/13b.png)|
+![](tutorial/15.png)||
+![](tutorial/16.png)||
+![](tutorial/17.png)||
+
+<!--Images 20's:--> 
+## Local  threshold selection and application and (for "B" images) individual vertex toggling  
+A | B | C
+:---: | :---: | :---:
+![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
+![](tutorial/21.png)|![](tutorial/21b.png)|
+![](tutorial/22.png)|![](tutorial/22b.png)|
+
+
+![](tutorial/23b.png)
+![](tutorial/24b.png)|
+
 ![](tutorial/25b.png)
 ![](tutorial/26b.png)
-2XC
-![](tutorial/20c.png)
-Image  30's: Vertex Curator: Final curated Vertex set for edge tracing  
+
+<!--Image  30's: -->
+Vertex Curator: Final curated Vertex set for edge tracing  
 3XA
 ![](tutorial/30.png)
 3XB
