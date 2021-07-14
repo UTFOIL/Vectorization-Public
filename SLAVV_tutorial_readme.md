@@ -5,18 +5,17 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 
 ### Table of Contents:
 - [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
-- [Inputs and Parameters]()
-  -
+- [Inputs and Parameters](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Inputs-and-Parameters)
 <!--  - [Wrapper script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)-->
 - [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
 - [Vertex Curator](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Curator)
   - [Global threshold selection and application](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection-and-application)
 
-In the screenshots to follow, depictions of: 
+#### In the screenshots to follow, depictions of: 
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :--------------------------------- | :--------------------: | ------------------------:
  
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.
+#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.
 
 ## SLAVV Methodology Overview
 
@@ -26,8 +25,12 @@ The SLAVV method consists of four workflow steps:
 3. edge extraction
 4. network organization
 
+
+
+## Inputs and Parameters
+
 <!--Images 1-2:-->
-<!--## Wrapper script
+## Wrapper script
 Image A Input Selection | Starting Workflow Step Selection
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)-->
@@ -54,12 +57,12 @@ A | B | C
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
-
-![](tutorial/23b.png)
-![](tutorial/24b.png)|
-
-![](tutorial/25b.png)
-![](tutorial/26b.png)
+A | B | C
+:---: | :---: | :---:
+|![](tutorial/23b.png)|
+|![](tutorial/24b.png)|
+|![](tutorial/25b.png)|
+|![](tutorial/26b.png)|
 
 <!--Image  30's: -->
 ### Vertex Curator: Final curated Vertex set for edge tracing  
