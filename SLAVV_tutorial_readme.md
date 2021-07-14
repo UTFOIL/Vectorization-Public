@@ -1,6 +1,8 @@
 # Tutorial
 
-[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (**A**, **B**, and **C**) large (~1 mm<sup>3</sup>), tiled images.
+Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm3), images of living adult mouse brain vasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
+
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on three (**A**, **B**, and **C**) large (~1 mm<sup>3</sup>), tiled images.
 
 ## SLAVV overview
 To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
@@ -24,7 +26,7 @@ Image A Input Selection | Starting Workflow Step Selection
 <!--Images 10's:-->
 ## Vertex Curator: 
 ### Global threshold selection and application  
-A | B | C
+Image A | B | C
 :---: | :---: | :---:
 some_text | some_text | some_text
 ![](tutorial/10.png)||
