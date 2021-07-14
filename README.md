@@ -32,7 +32,7 @@ Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [meth
   
 Each of the three ```Image *``` folders in [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains:  
 	- The original image under its original title as a ```*.tif```  
-	- The wrapper script that was used to vectorize that image in a ```*vectorization_script_*.m``` file  
+	- The wrapper script that was used to vectorize that image in a ```vectorization_script_*.m``` file  
 	- All of the vectorization intermediates and outputs in a ```batch_*``` folder
 
 ## Documentation 
