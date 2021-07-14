@@ -389,7 +389,7 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 
 ## Citation:
 
-BioR\chiiv pre-print:
+BioRxiv pre-print:
 ```
 https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
 ```
