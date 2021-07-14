@@ -57,12 +57,12 @@ A | B | C
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
-A | B | C
-:---: | :---: | :---:
- |![](tutorial/23b.png)|
- |![](tutorial/24b.png)|
- |![](tutorial/25b.png)|
- |![](tutorial/26b.png)|
+| A | B | C
+| :---: | :---: | :---:
+||![](tutorial/23b.png)|
+||![](tutorial/24b.png)|
+||![](tutorial/25b.png)|
+||![](tutorial/26b.png)|
 
 <!--Image  30's: -->
 ### Vertex Curator: Final curated Vertex set for edge tracing  
