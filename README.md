@@ -15,7 +15,7 @@ The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/V
 
 The supporting functions are in the [source](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) folder.
 
-Call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be walked through the inputs.
+Call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be prompted for all required inputs.
 
 Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
