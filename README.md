@@ -8,7 +8,7 @@ Table of Contents:
 - [Graphical Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 - [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
 - [SLAVV Softawre (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
-- [SLAVV Methodology BioRxiv pre-print](https://github.com/UTFOIL/Vectorization-Public#bibtex-citation)
+- [SLAVV Methodology Reference](https://github.com/UTFOIL/Vectorization-Public#citation)
 
 ## Repository Guide
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
@@ -19,10 +19,7 @@ Example inline calls can be found in the vectorization scripts, ```vectorization
 
 Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
-Please [cite](https://github.com/UTFOIL/Vectorization-Public#bibtex-citation) the [methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
-```
-https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
-```
+Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
 
 ## Tutorial
 
@@ -396,7 +393,11 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %
 ```
 
-## bibtex citation:
+## Citation:
+
+```
+https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
+```
 
 ```
 @article{mihelic2020segmentation,
