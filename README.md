@@ -4,11 +4,11 @@ for the Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 Public ([GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)) code repository 
 
 Table of Contents:
-- [SLAVV Repository (in MATLAB) Guide](https://github.com/UTFOIL/Vectorization-Public#Repository-Guide)
+- [SLAVV Software (MATLAB) Repository Guide](https://github.com/UTFOIL/Vectorization-Public#Repository-Guide)
 - [Graphical Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
-- [Example Datasets Vectorized](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
-- [Documentation for SLAVV in MATLAB](https://github.com/UTFOIL/Vectorization-Public#Documentation)
-- [bibtex citation for BioRxiv pre-print](https://github.com/UTFOIL/Vectorization-Public#bibtex-citation)
+- [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
+- [SLAVV Softawre (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
+- [SLAVV Methodology BioRxiv pre-print](https://github.com/UTFOIL/Vectorization-Public#bibtex-citation)
 
 ## Repository Guide
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
