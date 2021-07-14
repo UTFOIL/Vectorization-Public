@@ -59,10 +59,10 @@ A | B | C
 
 A | B | C
 :---: | :---: | :---:
-|![](tutorial/23b.png)|
-|![](tutorial/24b.png)|
-|![](tutorial/25b.png)|
-|![](tutorial/26b.png)|
+ |![](tutorial/23b.png)|
+ |![](tutorial/24b.png)|
+ |![](tutorial/25b.png)|
+ |![](tutorial/26b.png)|
 
 <!--Image  30's: -->
 ### Vertex Curator: Final curated Vertex set for edge tracing  
