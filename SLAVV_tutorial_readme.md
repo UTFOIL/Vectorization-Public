@@ -1,8 +1,11 @@
-# Tutorial
+# **Tutorial ReadMe**
+## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 
 Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm3), images of living adult mouse brain vasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. The images are mosaic (2x3 tilings of smaller image stacks), hence the hash pattern in image intensity.
 
 <!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
+
+Table of Contents:
 
 ## SLAVV overview
 To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
