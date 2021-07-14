@@ -1,6 +1,6 @@
 # **ReadMe**
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
-### Public ([GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)) Code Repository 
+#### Public ([GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)) Code Repository 
 
 For summarizing and analyzing vascular networks from grayscale, volumetric images. Use this software for locating, sizing, and mapping the connectivity of the depicted vascular networks.
 
