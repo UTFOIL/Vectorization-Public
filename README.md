@@ -9,7 +9,7 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 - [Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 - [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
 - [Software (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
-- [Methodology Reference](https://github.com/UTFOIL/Vectorization-Public#citation)
+- [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#citation)
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
