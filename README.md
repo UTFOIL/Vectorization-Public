@@ -2,24 +2,23 @@
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 ### Public ([GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)) Code Repository 
 
+Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
+
+Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).
 
 Table of Contents:
-- [Software (MATLAB) Repository Guide](https://github.com/UTFOIL/Vectorization-Public#Repository-Guide)
+- [Software (MATLAB) Overview](https://github.com/UTFOIL/Vectorization-Public#SLAVV-Software-Overview)
 - [Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 - [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
-- [Softawre (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
+- [Software (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
 - [Methodology Reference](https://github.com/UTFOIL/Vectorization-Public#citation)
 
-## Repository Guide
+## SLAVV Software Overview
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
 The supporting functions are in the [source](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) folder.
 
 To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
-
-Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
-
-Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
 
 ## Tutorial
 
