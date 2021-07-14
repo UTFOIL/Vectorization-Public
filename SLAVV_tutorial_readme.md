@@ -7,12 +7,12 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 
 ### Table of Contents:
 - [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
-- [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
- - [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
+- [Input 
+<!--  - [Wrapper script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)-->
+  - [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
+  - [Vertex Curator](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Curator)
 
 ## SLAVV Methodology Overview
-
-Example inline calls can be found in the vectorization scripts, ```vectorization_script_*.m```. ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
 
 The SLAVV method consists of four workflow steps:
 1. linear "energy" filtering
@@ -20,16 +20,14 @@ The SLAVV method consists of four workflow steps:
 3. edge extraction
 4. network organization
 
-
-
 <!--Images 1-2:-->
-## Wrapper script
+<!--## Wrapper script
 Image A Input Selection | Starting Workflow Step Selection
 :---: | :---:
-![](tutorial/1.png)|![](tutorial/2.png)
+![](tutorial/1.png)|![](tutorial/2.png)-->
 
 <!--Images 10's:-->
-## Vertex Curator: 
+## Vertex Curator
 ### Global threshold selection and application  
 Image A | B | C
 :---: | :---: | :---:
