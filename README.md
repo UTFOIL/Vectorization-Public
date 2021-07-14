@@ -4,11 +4,11 @@ for the Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 Public ([GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE)) code repository 
 
 Table of Contents:
-- [SLAVV Software (MATLAB) Repository Guide](https://github.com/UTFOIL/Vectorization-Public#Repository-Guide)
-- [Graphical Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
+- [Software (MATLAB) Repository Guide](https://github.com/UTFOIL/Vectorization-Public#Repository-Guide)
+- [Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 - [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
-- [SLAVV Softawre (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
-- [SLAVV Methodology Reference](https://github.com/UTFOIL/Vectorization-Public#citation)
+- [Softawre (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
+- [Methodology Reference](https://github.com/UTFOIL/Vectorization-Public#citation)
 
 ## Repository Guide
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
@@ -389,10 +389,12 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 
 ## Citation:
 
+Biorxiv pre-print:
 ```
 https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
 ```
 
+bibtex:
 ```
 @article{mihelic2020segmentation,
   title={Segmentation-less, automated vascular vectorization robustly extracts neurovascular network statistics from in vivo two-photon images},
