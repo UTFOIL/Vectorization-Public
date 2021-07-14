@@ -15,8 +15,8 @@ The SLAVV method consists of four steps:
 
 <!--Images 1-2:-->
 # Wrapper script
-:---: | :---:
 Input image selection | Starting workflow selection
+:---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
 
 <!--Images 10's:-->
