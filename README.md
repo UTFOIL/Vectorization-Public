@@ -13,7 +13,7 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
-#### Please [cite the methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation).
+#### Please cite the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation).
 
 ## SLAVV Software Overview
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
