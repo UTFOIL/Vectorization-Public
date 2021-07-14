@@ -1,4 +1,6 @@
-# Segmentation-Less, Automated, Vascular Vectorization--Public-facing code repository **ReadMe**
+# Segmentation-Less, Automated, Vascular Vectorization
+## Public-facing code repository
+# **ReadMe**
 ## Public [GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE) 
 
 Table of Contents:
