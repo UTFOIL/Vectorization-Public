@@ -1,4 +1,4 @@
-# **ReadMe**
+# **Tutorial ReadMe**
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 #### Software ([source in MATLAB](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) Tutorial
 Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain vasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. The images are mosaic (2x3 tilings of smaller image stacks), hence the hash pattern in image intensity.
