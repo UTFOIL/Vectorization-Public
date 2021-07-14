@@ -3,8 +3,6 @@
 #### Software ([source in MATLAB](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) Tutorial
 Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
 
-<!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
-
 ### Table of Contents:
 - [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
 - [Inputs and Parameters]()
@@ -13,6 +11,13 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 - [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
 - [Vertex Curator](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Curator)
   - [Global threshold selection and application](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection-and-application)
+
+In the screenshots to follow, depictions of: 
+**Image A** are on the left column | **Image B** is in the center | and **Image C** is on the right
+ :---: | :---: | :---:
+ 
+[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.
+
 ## SLAVV Methodology Overview
 
 The SLAVV method consists of four workflow steps:
