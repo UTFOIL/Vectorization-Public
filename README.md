@@ -29,7 +29,7 @@ To vectorize an image using Segmentation-Less, Automated Vascular Vectorization 
 
 ## Example Datasets
 
-[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf) (distinct from the three images used in the Tutorial).  
+[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf) (_distinct_ from the three images used in the [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md)).  
   
 Each of the three ```Image *``` folders in [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains:  
 	- The original image under its original title as a ```*.tif```  
