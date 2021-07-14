@@ -9,7 +9,7 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 <!--  - [Wrapper script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)-->
 - [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
 - [Vertex Curator](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Curator)
-  - [Global threshold selection and application](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection-and-application)
+  - [Global threshold selection and application](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection)
 
 #### In the screenshots to follow, depictions of: 
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
@@ -37,7 +37,7 @@ Image A Input Selection | Starting Workflow Step Selection
 
 <!--Images 10's:-->
 ## Vertex Curator
-### Global threshold selection and application
+### Global threshold selection
 Image A | B | C
 :---: | :---: | :---:
 some_text | some_text | some_text
@@ -50,13 +50,14 @@ some_text | some_text | some_text
 ![](tutorial/17.png)||
 
 <!--Images 20's:--> 
-### Local  threshold selection and application and (for "B" images) individual vertex toggling  
+### Local  Threshold Selection
 A | B | C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
+### Individual Vertex Toggling
 | A | B | C
 | :---: | :---: | :---:
 ||![](tutorial/23b.png)|
