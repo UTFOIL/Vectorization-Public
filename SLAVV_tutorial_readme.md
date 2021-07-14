@@ -1,6 +1,6 @@
 # **ReadMe**
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
-### Software (MATLAB) Tutorial
+### Software ([source in MATLAB](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) Tutorial
 Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm3), images of living adult mouse brain vasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. The images are mosaic (2x3 tilings of smaller image stacks), hence the hash pattern in image intensity.
 
 <!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
@@ -9,7 +9,11 @@ Table of Contents:
 - SLAVV overview
 
 ## SLAVV overview
-To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
+The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
+
+The supporting functions are in the [source](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) folder.
+
+To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
 
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_*.m```. ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
 
