@@ -2,7 +2,7 @@
 
 [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the following screenshots demonstrating the use of the SLAVV software on three (**A**, **B**, and **C**) large (~1 mm<sup>3</sup>), tiled images.
 
-# SLAVV overview
+## SLAVV overview
 To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
 
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_.*.m```. ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
@@ -16,14 +16,14 @@ The SLAVV method consists of four workflow steps:
 
 
 <!--Images 1-2:-->
-# Wrapper script
+## Wrapper script
 Image A Input Selection | Starting Workflow Step Selection
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
 
 <!--Images 10's:-->
-# Vertex Curator: 
-## Global threshold selection and application  
+## Vertex Curator: 
+### Global threshold selection and application  
 A | B | C
 :---: | :---: | :---:
 some_text | some_text | some_text
@@ -36,7 +36,7 @@ some_text | some_text | some_text
 ![](tutorial/17.png)||
 
 <!--Images 20's:--> 
-## Local  threshold selection and application and (for "B" images) individual vertex toggling  
+### Local  threshold selection and application and (for "B" images) individual vertex toggling  
 A | B | C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
@@ -51,13 +51,13 @@ A | B | C
 ![](tutorial/26b.png)
 
 <!--Image  30's: -->
-Vertex Curator: Final curated Vertex set for edge tracing  
+### Vertex Curator: Final curated Vertex set for edge tracing  
 3XA
 ![](tutorial/30.png)
 3XB
 ![](tutorial/30b.png)
 ![](tutorial/31b.png)
-Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" and "C" images) local thresholding.  
+### Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" and "C" images) local thresholding.  
 4XA
 ![](tutorial/40.png)
 ![](tutorial/41.png)
@@ -84,28 +84,28 @@ Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" and "C
 ![](tutorial/44c.png)
 ![](tutorial/45c.png)
 ![](tutorial/46c.png)
-Images 50's:   Edge Curator: Orthogonal Views  
+### Images 50's:   Edge Curator: Orthogonal Views  
 5XA
 ![](tutorial/50.png)
 ![](tutorial/51.png)
 ![](tutorial/52.png)
 ![](tutorial/53.png)
 ![](tutorial/54.png)
-Images 60's:   Edge Curator: Addition Tool  
+### Images 60's:   Edge Curator: Addition Tool  
 6XA
 ![](tutorial/60.png)
 ![](tutorial/61.png)
 ![](tutorial/62.png)
 ![](tutorial/63.png)
-Images 70's:   Edge Curator: Toggling Tool  
+### Images 70's:   Edge Curator: Toggling Tool  
 7XA
 ![](tutorial/70.png)
 ![](tutorial/71.png)
-Image  79b :   Edge Curator: Final output MIP over the whole volume with graded edge color weighting.  
+### Image  79b :   Edge Curator: Final output MIP over the whole volume with graded edge color weighting.  
 79B
 ![](tutorial/79b.png)
 
-Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
+### Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
 8XA
 ![](tutorial/80.png)
 8XB
@@ -113,7 +113,7 @@ Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, dep
 8XC
 ![](tutorial/80c.png)
 
-Image    81: Histograms of various statistics of interest from the vectors in the image.  
+### Image    81: Histograms of various statistics of interest from the vectors in the image.  
 81A  
 ![](tutorial/81.png)
 81B  
@@ -121,7 +121,7 @@ Image    81: Histograms of various statistics of interest from the vectors in th
 81C
 ![](tutorial/81c.png)
 
-Images  90+: Visualizations of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
+### Images  90+: Visualizations of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
 9XA and 10XA  
 ![](tutorial/90.png)
 ![](tutorial/91.png)
