@@ -9,6 +9,11 @@ Example inline calls can be found in the vectorization scripts, ```vectorization
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
+### [Please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
+```
+https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
+```
+
 ### Tutorial
 
 <!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) -->[Demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the SLAVV software on three large (~1 mm^{3}), tiled images.
@@ -378,11 +383,6 @@ https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
 %           2) enable Code Folding for Sections              (MATLAB>>Editor/Debugger>>Code Folding)
 %           3) fold all of the sections in this document                                    (ctrl,+)
 %
-```
-
-### [Please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
-```
-https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
 ```
 
 ### bibtex citation:
