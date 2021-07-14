@@ -1,4 +1,5 @@
-# Segmentation-Less, Automated, Vascular Vectorization (SLAVV) Public-facing code repository **ReadMe**
+# **ReadMe**
+## for the Segmentation-Less, Automated, Vascular Vectorization (SLAVV)-public code repository
 ## Public [GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE) 
 
 ## Table of Contents:
