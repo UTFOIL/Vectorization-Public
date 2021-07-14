@@ -13,8 +13,8 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
   - [Global threshold selection and application](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection-and-application)
 
 In the screenshots to follow, depictions of: 
-**Image A** are on the left column | **Image B** is in the center | and **Image C** is on the right
- :---: | :---: | :---:
+**Image A** are in the left column | **Image B** the center | and **Image C** the right
+ :--- | :---: | ---:
  
 [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.
 
