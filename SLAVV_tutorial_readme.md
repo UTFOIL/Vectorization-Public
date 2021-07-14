@@ -8,12 +8,14 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 Table of Contents:
 - SLAVV overview
 
-## SLAVV overview
+## SLAVV Software Overview
 The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
 The supporting functions are in the [source](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) folder.
 
 To vectorize an image using Segmentation-Less, Automated Vascular Vectorization (SLAVV) software in MATLAB, simply call [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
+
+## SLAVV Methodology Overview
 
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_*.m```. ([Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
 
