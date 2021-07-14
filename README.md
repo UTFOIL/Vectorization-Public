@@ -1,10 +1,11 @@
-# Vectorization-Public README
+# Segmentation-Less, Automated, Vascular Vectorization--Public-facing code repository **ReadMe**
 ## Public [GNU GPL-3.0 license](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE) 
-### Repository for SLAVV software.
 
 Table of Contents:
 - [Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 
+
+### Repository for SLAVV software.
 #### The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
 Clone [this repo](https://github.com/UTFOIL/Vectorization-Public.git) and call [```vectorize_V200```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the command window of MATLAB with no inputs to be walked through the inputs.
@@ -13,7 +14,7 @@ Example inline calls can be found in the vectorization scripts, ```vectorization
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
-### [Please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
+#### [Please cite the methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf):
 ```
 https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf
 ```
