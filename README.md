@@ -26,10 +26,6 @@ Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [meth
 <!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots (previewed below) -->
 [Demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain vasculature. The three images are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
 
-![](tutorial/42b.png)
-![](tutorial/43b.png)
-![](tutorial/44b.png)
-
 ## Example Datasets
 
 [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf).  
