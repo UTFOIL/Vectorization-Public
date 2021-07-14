@@ -30,7 +30,7 @@ Please [cite](https://github.com/UTFOIL/Vectorization-Public#citation) the [meth
 
 [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methods paper](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf) (distinct from the three images used in the Tutorial).  
   
-Each of the three ```Image *``` folders in this folder contains:  
+Each of the three ```Image *``` folders in [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains:  
 	- The original image under its original title as a ```*.tif```  
 	- The wrapper script that was used to vectorize that image in a ```*vectorization_script_*.m``` file  
 	- All of the vectorization intermediates and outputs in a ```batch_*``` folder
