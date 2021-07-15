@@ -161,8 +161,17 @@ After making a low specificity global threshold, the user can navigate to the br
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
+
+Extending the depth in this FOV allows the user to apply this local threshold across all image slices.
+A|B|C
+:---: | :---: | :---:
 ![](tutorial/21.png)|![](tutorial/21b.png)|
-![](tutorial/22.png)|![](tutorial/22b.png)|
+<!--![](tutorial/22.png)|![](tutorial/22b.png)|-->
+
+#### The Sweep button on the Volume Display removes the false objects from the display (makes them transaparent and unselectable).
+|A|B|C
+|:---: | :---: | :---:
+||![](tutorial/22b.png)|-->
 
 ### Vertex Toggling
 Some vertices cannot be easily removed by thresholding and need to be selected individual by point-and-click or dragging a box over them.
