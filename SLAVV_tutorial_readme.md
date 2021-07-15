@@ -5,9 +5,9 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 
 ### Table of Contents:
 - [SLAVV Methodology Overview](#methodology-overview)
-- [Inputs and Parameters](#Inputs-and-Parameters)
+<!--- [Inputs and Parameters](#Inputs-and-Parameters)
   - [Wrapper Script](#Wrapper-script)
-- [Vertex Extraction](#Vertex-Extraction)
+- [Vertex Extraction](#Vertex-Extraction)-->
 - [Vertex Curator](#Vertex-Curator)
   - [Global Threshold Selection](#Global-threshold-selection)
 
@@ -15,7 +15,7 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :--------------------------------- | :--------------------: | ------------------------:
 
-## Methodology Overview
+<!-- ## Methodology Overview
 
 The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript):
 1. linear "energy" filtering
@@ -23,13 +23,13 @@ The SLAVV method consists of four workflow steps as described in the [Methodolog
 3. edge extraction
 4. network organization
 
-These steps must be executed sequentially, starting with the "energy" step.
+These steps must be executed sequentially, starting with the "energy" step.-->
 <!--#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
-
+<!--
 ## Inputs and Parameters
 
 ### Input Images
-Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation):
+Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation) quoted below. Call the main function in one of the following ways to vectorize one or more images.
 
 ```
 % VECTORIZE( IMAGE_MATRIX ) vectorizes the numerical array IMAGE_MATRIX.  A batch folder is made 
@@ -65,7 +65,7 @@ Input images can be TIF format or matrices loaded into the MATLAB workspace, as 
 %
 %   Supported FILE_NAMES variable types: Cell vector of character vectors
 ```
-
+-->
 #### Maximum intensity projections of the first 100 microns of each of the three input image stacks:
 A|B|C
 :---: | :---: | :---:
