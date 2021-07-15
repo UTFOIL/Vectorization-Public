@@ -11,8 +11,7 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 - [Vertex Curator](#Vertex-Curator)
   - [Global Threshold Selection](#Global-threshold-selection)
 
-## Note:
-### In the screenshots to follow in this tutorial, depictions of: 
+### In the following screenshots, depictions of: 
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :--------------------------------- | :--------------------: | ------------------------:
 
