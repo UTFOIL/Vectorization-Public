@@ -3,15 +3,14 @@
 #### Software ([source in MATLAB](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) Tutorial
 The SLAVV software gives the user the ability to curate the vectorization output with live visual feedback. This graphical curator interface automatically opens at the appropriate times during the default execution of the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m). 
 
+### SLAVV Methodology Overview
 The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript):
 1. linear "energy" filtering
 2. vertex extraction
 3. edge extraction
 4. network organization
 
-These steps must be executed sequentially, starting with the "energy" step. The graphical curator interface opens after the vertex and edge steps.
-
-The input image and parameter syntax is found in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
+These steps must be executed sequentially, starting with the "energy" step. The graphical curator interface opens after the vertex and edge steps. The input image and parameter syntax is found in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
 
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 
