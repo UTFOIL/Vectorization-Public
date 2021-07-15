@@ -163,17 +163,20 @@ A|B|C
 of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
 A|B|C
 :---: | :---: | :---:
-![](tutorial/90.png)|![](tutorial/90b.png)|![](tutorial/90c.png)
-![](tutorial/91.png)|![](tutorial/91b.png)|![](tutorial/91c.png)
-![](tutorial/92.png)|![](tutorial/92b.png)|![](tutorial/92c.png)
-![](tutorial/93.png)|![](tutorial/93b.png)|![](tutorial/93c.png)
-![](tutorial/94.png)|![](tutorial/94b.png)|![](tutorial/94c.png)
-![](tutorial/95.png)|![](tutorial/95b.png)|![](tutorial/95c.png)
-![](tutorial/96.png)|![](tutorial/96b.png)|
-![](tutorial/97.png)||
+![](tutorial/90.png)||
+![](tutorial/91.png)|![](tutorial/90b.png)|![](tutorial/90c.png)
+![](tutorial/92.png)|![](tutorial/91b.png)|![](tutorial/91c.png)
+![](tutorial/93.png)|![](tutorial/92b.png)|![](tutorial/92c.png)
+![](tutorial/94.png)|![](tutorial/93b.png)|![](tutorial/93c.png)
+![](tutorial/95.png)|![](tutorial/94b.png)|![](tutorial/94c.png)
+![](tutorial/96.png)|![](tutorial/95b.png)|![](tutorial/95c.png)
+
+A|B|C
+:---: | :---: | :---:
+![](tutorial/97.png)|![](tutorial/96b.png)|
 ![](tutorial/98.png)||
 ![](tutorial/99.png)||
-![](tutorial/100.png)
-![](tutorial/101.png)
-![](tutorial/102.png)
-![](tutorial/103.png)
+![](tutorial/100.png)||
+![](tutorial/101.png)||
+![](tutorial/102.png)||
+![](tutorial/103.png)||
