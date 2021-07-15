@@ -13,6 +13,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 ### Table of Contents
 - [Input Images](#Input-images)
 - [Energy Images](#Energy-images)
+- [Curator Interface Overview](#GCI-Overview)
 - [Vertex Curator](#Vertex-Curator)
   - [Global Thresholding](#Vertex-Global-thresholding)
   - [Local Thresholding](#Vertex-Local-Thresholding)
@@ -62,9 +63,21 @@ Image A Input Selection | Starting Workflow Step Selection
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)-->
 
+## GCI Overview
+The Graphical Curator Interface (GCI) has four panel (startig in top right and moving counter-clockwise):
+- Volume Map
+- Volume Display
+- Intensity Histogram
+- Energy Histogram
+### Example Graphical Curator Interface
+Example
+A|B|C
+:---: | :---: | :---:
+![](tutorial/10.png)||
+
 <!--Images 10's:-->
 ## Vertex Curator
-Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user has the ability to curate the vertices using local thresholding as well as individual/group toggling. 
+Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
 A|B|C
 :---: | :---: | :---:
