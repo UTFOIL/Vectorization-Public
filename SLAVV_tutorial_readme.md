@@ -200,7 +200,7 @@ A|B|C
 ### Edge Toggling
 ![](tutorial/70.png)
 ![](tutorial/71.png)
-### Final Curated Edge Set 
+### Final Curated Edge Set
 #### MIP over the whole volume with graded edge color weighting.  
 |A|B|C
 | :---: | :---: | :---:
