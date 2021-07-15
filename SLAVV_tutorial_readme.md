@@ -22,7 +22,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
   - [Edge Curation](Edge-Curation)
     - [Global Thresholding](#edge-Global-Thresholding)
     - [Local Thresholding](#edge-Local-Thresholding)
-    - [Orthogonal Views](#edge-orthogonal-views)
+    - [Orthogonal Views](#orthogonal-views)
     - [Edge Toggling](#edge-toggling)
     - [Final Curated Edge Set](Final-curated-edge-set)
 - [Projections](projections)
