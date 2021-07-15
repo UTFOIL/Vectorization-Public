@@ -70,25 +70,33 @@ Image A Input Selection | Starting Workflow Step Selection
 ![](tutorial/1.png)|![](tutorial/2.png)-->
 
 ## GCI Overview
-The Graphical Curator Interface (GCI) has four panels (startig in top right and moving counter-clockwise):
-- Volume Map
-- Volume Display
-- Intensity Histogram
-- Energy Histogram
+The Graphical Curator Interface (GCI) has four windows (startig in top right and moving counter-clockwise):
+1. Volume Map
+2. Volume Display
+3. Intensity Histogram
+4. Energy Histogram
 #### Graphical Curator Interface
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/10.png)||
 
-The volume map shows the user:
+The **Volume Map** window shows the user:
 - the current 3D field of view (FOV) by highlighting the 2D projections on the face of the box.
 - The dimensions of the entire 3D volumetric image on the axes of the box in real spatial dimensions.
 - The voxel coordinates and total number of voxels in all 3 dimensions of the current FOV in a table.
 - The volumes of influence of the previously applied threshold by painting red on the faces of the box.
 
-The Volume display shows the user:
+The **Volume Display** window shows the user:
 - A maximum intensity projection of the original image and overlayed vetors in the current 3D FOV.
-- 
+- The current depth of field in relation to the total possible depth of field in the two sliders.
+
+The **Volume Display** window gives the user control over the current FOV:
+- pan vertically and horizontally using the MATLAB panning tool for plots
+- zoom vertically and horizontally using the MATLAB magnifying glass for plots
+- navigate into/out-of the page using the depth scrollbar
+- Increase/decrease the thickness of the FOV in the depth dimension
+
+
 
 <!--Images 10's:-->
 ## Vertex Curator
