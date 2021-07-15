@@ -114,7 +114,7 @@ The **Energy Histogram** window shows the user the distribution of vector-energi
 - Set the energy threshold value, assigning all vectors above that energy value in the current FOV to false.
 
 ### Example Graphical Curator Interface (GCI)
-This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
+This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
 <!--A|B|C
 :---: | :---: | :---:
 ![](tutorial/40.png)||-->
