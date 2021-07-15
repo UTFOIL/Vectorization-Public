@@ -37,12 +37,12 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 ### Input Images
 Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation).
 
-#### Maximum intensity projections of the first 100 microns of each of the three input image stacks:
+#### _Maximum_ intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
-#### Minimum intensity projection of the first 100 microns of each the three energy-filtered images:
+#### _Minimum_ intensity projection of the first 100 microns of each the three **energy-filtered** images:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
