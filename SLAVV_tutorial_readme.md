@@ -19,16 +19,16 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 - [Input Images](#Input-images)
 - [Energy Images](#Energy-images)
 - [Vertex Curator](#Vertex-Curator)
-  - [Global Thresholding](#Global-thresholding)
-  - [Local Thresholding](#Local-Thresholding)
+  - [Global Thresholding](#Vertex-Global-thresholding)
+  - [Local Thresholding](#Vertex-Local-Thresholding)
   - [Vertex Toggling](#Vertex-Toggling)
-  - [Final Curated Vertex Set](Final-curated-Vertex-set-for-edge-tracing)
+  - [Final Curated Vertex Set](Final-curated-Vertex-set)
 - [Edge Curator](Edge-Curator)
-  - [Global Thresholding](#Global-Thresholding)
-  - [Local Thresholding](#Local-Thresholding)
-  - [Orthogonal Views](#orthogonal-views)
+  - [Global Thresholding](#edge-Global-Thresholding)
+  - [Local Thresholding](#edge-Local-Thresholding)
+  - [Orthogonal Views](#edge-orthogonal-views)
   - [Edge Toggling](#edge-toggling)
-  - [Final Curated Edge Set](Final-curated-Vertex-set-for-edge-tracing)
+  - [Final Curated Edge Set](Final-curated-edge-set)
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
   - [Wrapper Script](#Wrapper-script)
@@ -67,7 +67,7 @@ Image A Input Selection | Starting Workflow Step Selection
 <!--Images 10's:-->
 ## Vertex Curator
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user has the ability to curate the vertices using local thresholding as well as individual/group toggling. 
-### Global thresholding
+### Vertex Global thresholding
 A|B|C
 :---: | :---: | :---:
 some_text | some_text | some_text
@@ -80,7 +80,7 @@ some_text | some_text | some_text
 ![](tutorial/17.png)||
 
 <!--Images 20's:--> 
-### Local Thresholding
+### Vertex Local Thresholding
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
@@ -96,7 +96,8 @@ A|B|C
 ||![](tutorial/26b.png)|
 
 <!--Image  30's: -->
-### Final Curated Vertex Set for Edge Tracing
+### Final Curated Vertex Set
+To be passed to the Edge Tracing step.
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/30.png)|![](tutorial/30b.png)|
@@ -104,7 +105,7 @@ A|B|C
 
 <!--Images 40's:-->
 ## Edge Curator
-### Global Thresholding
+### Edge Global Thresholding
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/40.png)|![](tutorial/40b.png)|![](tutorial/40c.png)
@@ -116,7 +117,7 @@ A|B|C
 |![](tutorial/46.png)|![](tutorial/46b.png)|
 |![](tutorial/47.png)|![](tutorial/47b.png)|
 
-### Local Thresholding
+### Edge Local Thresholding
 |A|B|C
 | :---: | :---: | :---:
 |||![](tutorial/44c.png)
@@ -139,7 +140,7 @@ A|B|C
 ### Edge Toggling
 ![](tutorial/70.png)
 ![](tutorial/71.png)
-### Final output 
+### Final Curated Edge Set 
 #### MIP over the whole volume with graded edge color weighting.  
 |A|B|C
 | :---: | :---: | :---:
