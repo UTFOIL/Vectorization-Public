@@ -18,7 +18,7 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 
 ## Methodology Overview
 
-The SLAVV method consists of four workflow steps as described in the [methodology manuscript]([Methodology Manuscript]([Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript)):
+The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript):
 1. linear "energy" filtering
 2. vertex extraction
 3. edge extraction
