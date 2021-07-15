@@ -56,6 +56,7 @@ A|B|C
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
+After running the first step ("energy") of the SLAVV workflow, vessels in the requested size range should have dark centerlines in the "energy" image.
 
 <!--Images 1-2:
 ### Wrapper Script
@@ -64,13 +65,12 @@ Image A Input Selection | Starting Workflow Step Selection
 ![](tutorial/1.png)|![](tutorial/2.png)-->
 
 ## GCI Overview
-The Graphical Curator Interface (GCI) has four panel (startig in top right and moving counter-clockwise):
+The Graphical Curator Interface (GCI) has four panels (startig in top right and moving counter-clockwise):
 - Volume Map
 - Volume Display
 - Intensity Histogram
 - Energy Histogram
-### Example Graphical Curator Interface
-Example
+#### Graphical Curator Interface
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/10.png)||
