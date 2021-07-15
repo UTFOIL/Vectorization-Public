@@ -167,6 +167,7 @@ A|B|C
 Extending the depth in this FOV allows the user to apply this local threshold across all image slices.
 A|B|C
 :---: | :---: | :---:
+Before Thresholding|After Thresholding|
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 <!--![](tutorial/22.png)|![](tutorial/22b.png)|-->
 
