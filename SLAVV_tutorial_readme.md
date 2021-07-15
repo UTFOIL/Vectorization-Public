@@ -15,7 +15,7 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :--------------------------------- | :--------------------: | ------------------------:
 
-## SLAVV Methodology Overview
+<--## SLAVV Methodology Overview
 
 The SLAVV method consists of four workflow steps:
 1. linear "energy" filtering
@@ -23,11 +23,16 @@ The SLAVV method consists of four workflow steps:
 3. edge extraction
 4. network organization
 
+These steps must be executed sequentially, starting with the "energy" step.
 <!--#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
 
 ## Inputs and Parameters
 
 ### Input Images
+Image A | B | C
+:---: | :---: | :---:
+some_text | some_text | some_text
+![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
 <!--Images 1-2:-->
 ### Wrapper Script
