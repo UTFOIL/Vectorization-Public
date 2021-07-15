@@ -18,7 +18,7 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 ## Software Overview
 The [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) is called ```vectorize_V200.m``` ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
-The [supporting functions](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) are in the source folder.
+The [supporting functions](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) are in the ```source``` folder.
 
 To vectorize an image using the SLAVV software in MATLAB, simply call [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in the Command Window with no inputs to be prompted for all required inputs.
 
