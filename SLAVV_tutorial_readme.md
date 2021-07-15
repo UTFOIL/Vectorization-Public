@@ -80,9 +80,10 @@ The Graphical Curator Interface (GCI) has four windows (startig in top right and
 4. [Energy Histogram](#Energy-Histogram)
 
 #### Example Graphical Curator Interface (GCI)
-A|B|C
+<!--A|B|C
 :---: | :---: | :---:
-![](tutorial/40.png)||
+![](tutorial/40.png)||-->
+![](tutorial/40.png)
 
 This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
 
@@ -139,6 +140,8 @@ A|B|C
 ![](tutorial/16.png)||
 ![](tutorial/17.png)||
 
+To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity and OK specificity (i.e. leave most vertices blue, even if they are false positives). Then extend the thickness of the current field of view to span the entire depth of the image stack, and apply the threshold to the entire image (globally).
+
 <!--Images 20's:--> 
 ### Vertex Local Thresholding
 A|B|C
@@ -147,6 +150,8 @@ A|B|C
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
+After making a low specificity global threshold, the user can navigate to the brighter regions of the original image to apply more specific local thresholds.
+
 ### Vertex Toggling
 |A|B|C
 | :---: | :---: | :---:
@@ -154,6 +159,8 @@ A|B|C
 ||![](tutorial/24b.png)|
 ||![](tutorial/25b.png)|
 ||![](tutorial/26b.png)|
+
+Some vertices cannot be easily removed by thresholding and need to be selected individual by point-and-click or dragging a box over them.
 
 <!--Image  30's: -->
 ### Final Curated Vertex Set
