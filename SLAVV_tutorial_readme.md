@@ -32,7 +32,7 @@ These steps must be executed sequentially, starting with the "energy" step.
 The input images are TIF format
 
 #### Maximum intensity projections of the first 100 microns of each of the three input image stacks:
-Image A | B | C
+A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
