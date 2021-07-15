@@ -111,12 +111,15 @@ A|B|C
 |![](tutorial/41.png)|![](tutorial/41b.png)|![](tutorial/41c.png)
 |![](tutorial/42.png)|![](tutorial/42b.png)|![](tutorial/42c.png)
 |![](tutorial/43.png)|![](tutorial/43b.png)|![](tutorial/43c.png)
-|![](tutorial/44.png)|![](tutorial/44b.png)|![](tutorial/44c.png)
-|![](tutorial/45.png)|![](tutorial/45b.png)|![](tutorial/45c.png)
-|![](tutorial/46.png)|![](tutorial/46b.png)|![](tutorial/46c.png)
+|![](tutorial/44.png)|![](tutorial/44b.png)|![](tutorial/45c.png)
+|![](tutorial/45.png)|![](tutorial/45b.png)|![](tutorial/46c.png)
+|![](tutorial/46.png)|![](tutorial/46b.png)|
 |![](tutorial/47.png)|![](tutorial/47b.png)|
 
 ### Local Thresholding
+|A|B|C
+| :---: | :---: | :---:
+|||![](tutorial/44c.png)
 
 ### Orthogonal Views
 A|B|C
