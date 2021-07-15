@@ -14,12 +14,12 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 - [Input Images](#Input-images)
 - [Energy Images](#Energy-images)
 - [Curator Interface Overview](#GCI-Overview)
-- [Vertex Curator](#Vertex-Curator)
+- [Vertex Curation](#Vertex-Curation)
   - [Global Thresholding](#Vertex-Global-thresholding)
   - [Local Thresholding](#Vertex-Local-Thresholding)
   - [Vertex Toggling](#Vertex-Toggling)
   - [Final Curated Vertex Set](Final-curated-Vertex-set)
-- [Edge Curator](Edge-Curator)
+- [Edge Curation](Edge-Curation)
   - [Global Thresholding](#edge-Global-Thresholding)
   - [Local Thresholding](#edge-Local-Thresholding)
   - [Orthogonal Views](#edge-orthogonal-views)
@@ -122,7 +122,7 @@ The **Energy Histogram** window shows the user the distribution of vector-energi
 - Set the energy threshold value, assigning all vectors above that energy value in the current FOV to false.
 
 <!--Images 10's:-->
-## Vertex Curator
+## Vertex Curation
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
 A|B|C
@@ -161,7 +161,7 @@ To be passed to the Edge Tracing step.
 ||![](tutorial/31b.png)|
 
 <!--Images 40's:-->
-## Edge Curator
+## Edge Curation
 ### Edge Global Thresholding
 |A|B|C
 | :---: | :---: | :---:
