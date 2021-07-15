@@ -131,7 +131,20 @@ To select a good global threshold, go to the middle of the stack and choose a th
 #### After Threshold
 |A|B|C
 |:---: | :---: | :---:
-|![](tutorial/11.png)|![](tutorial/10b.png)|![](tutorial/10c.png)
+|![](tutorial/11.png)|||
+
+#### Original Image Intensity Inverted
+|A|B|C
+|:---: | :---: | :---:
+||![](tutorial/10b.png)|
+
+#### Graded vertex display
+|A|B|C
+|:---: | :---: | :---:
+|||![](tutorial/10c.png)
+
+
+||![](tutorial/10b.png)|![](tutorial/10c.png)
 |![](tutorial/12.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
 ||![](tutorial/12b.png)||
 
