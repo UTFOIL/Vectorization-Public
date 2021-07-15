@@ -8,9 +8,9 @@ The SLAVV software ([Supporting Functions](https://github.com/UTFOIL/Vectorizati
 4. network organization
 
 These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: **Workflow-Specific Parameters**. The graphical curator interface opens after the vertex and edge steps by default as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: **Logistical Parameters**.
-## Tutorial Contents
+# Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
-### Table of Contents
+## Table of Contents
 - [Input Images](#Input-images)
   - [Wrapper Script](#Wrapper-Script)
 - [Energy Images](#Energy-images)
