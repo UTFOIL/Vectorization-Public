@@ -59,6 +59,7 @@ There is no pre-processing (interpolation, filtering, etc.) required. The softwa
 **Image A Input File Location Selection** | **Starting Workflow Step Selection**
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
+
 Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), but not required, as all of this information is automatically saved in the output ```batch_*``` folder.
 
 ## Energy Images
