@@ -37,7 +37,8 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 
 ### In the following screenshots, depictions of: 
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
-:--------------------------------- | :--------------------: | ------------------------:
+:--------------------------------- | :----------------------------------: | -----------------------------------:
+:--------------------------------- | :----------------------------------: | -----------------------------------:
 
 <!--#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
 <!--
