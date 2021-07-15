@@ -10,11 +10,10 @@ The SLAVV method consists of four workflow steps as described in the [Methodolog
 3. edge extraction
 4. network organization
 
-These steps must be executed sequentially, starting with the "energy" step. The graphical curator interface opens after the vertex and edge steps. The input image and parameter syntax is found in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
+These steps must be executed sequentially, starting with the "energy" step. The graphical curator interface opens after the vertex and edge steps by default as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
 
+### Tutorial Contents:
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
-
-### Table of Contents:
 - [Vertex Curator](#Vertex-Curator)
   - [Global Threshold Selection](#Global-threshold-selection)
   - [Local Threshold Selection](#Local-Threshold-Selection)
