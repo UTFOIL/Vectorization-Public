@@ -44,16 +44,18 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 ## Inputs and Parameters
 -->
 ## Input Images
-Simply input a raw TIF from a file location or a matrix from the workspace, as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: Optional Input.
+To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: Optional Input.
 
 #### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
-There is no pre-processing (interpolation, filtering, etc.) required. 
+There is no pre-processing (interpolation, filtering, etc.) required. The software will prompt the user for the size and shape of the voxels in microns.
 
 ## Energy Images
+Default energy filtering processing parameters (purely Gaussian kernel) will work well for the images demonstrated here. If instead of the lumen, the vessel wall is illuminated, try starting with an 80/20 Gaussian/Ideal mixture, and a 50/50 annular/spherical ratio.
+
 #### _Minimum_ intensity projection of the first 100 microns of each the three **energy-filtered** images:
 A|B|C
 :---: | :---: | :---:
