@@ -124,9 +124,13 @@ The **Energy Histogram** window shows the user the distribution of vector-energi
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
 To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity and OK specificity (i.e. leave most vertices blue, even if they are false positives). 
+#### Before Threshold
 |A|B|C
 |:---: | :---: | :---:
 |![](tutorial/10.png)||
+#### After Threshold
+|A|B|C
+|:---: | :---: | :---:
 |![](tutorial/11.png)|![](tutorial/10b.png)|![](tutorial/10c.png)
 |![](tutorial/12.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
 ||![](tutorial/12b.png)||
@@ -135,9 +139,9 @@ Then extend the thickness of the current field of view to span the entire depth 
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/14.png)|![](tutorial/13b.png)|![](tutorial/12c.png)
-![](tutorial/15.png)||
+<!--![](tutorial/15.png)||
 ![](tutorial/16.png)||
-![](tutorial/17.png)||
+![](tutorial/17.png)||-->
 <!--Images 20's:--> 
 ### Vertex Local Thresholding
 After making a low specificity global threshold, the user can navigate to the brighter regions of the original image to apply more specific local thresholds.
