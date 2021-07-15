@@ -7,7 +7,7 @@ The SLAVV software ([supporting functions](https://github.com/UTFOIL/Vectorizati
 3. edge extraction
 4. network organization
 
-These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: _Workflow-Specific Parameters_. The graphical curator interface opens after the vertex and edge steps by default as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: Logistical Parameters.
+These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: **Workflow-Specific Parameters**. The graphical curator interface opens after the vertex and edge steps by default as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: **Logistical Parameters**.
 ## Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ### Table of Contents
@@ -44,7 +44,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 ## Inputs and Parameters
 -->
 ## Input Images
-To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: Optional Input.
+To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: **Optional Input**.
 
 #### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
