@@ -146,50 +146,33 @@ A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/79b.png)|
 
-### Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
-8XA
-![](tutorial/80.png)
-8XB
-![](tutorial/80b.png)
-8XC
-![](tutorial/80c.png)
+### Maximum Intensity Projection Outputs 
+(Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
+A|B|C
+:---: | :---: | :---:
+![](tutorial/80.png)|![](tutorial/80b.png)|![](tutorial/80c.png)
 
-### Image    81: Histograms of various statistics of interest from the vectors in the image.  
-81A  
-![](tutorial/81.png)
-81B  
-![](tutorial/81b.png)
-81C
-![](tutorial/81c.png)
+### Histograms 
+of various statistics of interest from the vectors in the image.  
+A|B|C
+:---: | :---: | :---:
+![](tutorial/81.png)|![](tutorial/81b.png)|![](tutorial/81c.png)
 
-### Images  90+: Visualizations of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
-9XA and 10XA  
-![](tutorial/90.png)
-![](tutorial/91.png)
-![](tutorial/92.png)
-![](tutorial/93.png)
-![](tutorial/94.png)
-![](tutorial/95.png)
-![](tutorial/96.png)
-![](tutorial/97.png)
-![](tutorial/98.png)
-![](tutorial/99.png)
+### Visualizations 
+of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
+A|B|C
+:---: | :---: | :---:
+![](tutorial/90.png)|![](tutorial/90b.png)|![](tutorial/90c.png)
+![](tutorial/91.png)|![](tutorial/91b.png)|![](tutorial/91c.png)
+![](tutorial/92.png)|![](tutorial/92b.png)|![](tutorial/92c.png)
+![](tutorial/93.png)|![](tutorial/93b.png)|![](tutorial/93c.png)
+![](tutorial/94.png)|![](tutorial/94b.png)|![](tutorial/94c.png)
+![](tutorial/95.png)|![](tutorial/95b.png)|![](tutorial/95c.png)
+![](tutorial/96.png)|![](tutorial/96b.png)|
+![](tutorial/97.png)||
+![](tutorial/98.png)||
+![](tutorial/99.png)||
 ![](tutorial/100.png)
 ![](tutorial/101.png)
 ![](tutorial/102.png)
 ![](tutorial/103.png)
-9XB  
-![](tutorial/90b.png)
-![](tutorial/91b.png)
-![](tutorial/92b.png)
-![](tutorial/93b.png)
-![](tutorial/94b.png)
-![](tutorial/95b.png)
-![](tutorial/96b.png)
-9XC  
-![](tutorial/90c.png)
-![](tutorial/91c.png)
-![](tutorial/92c.png)
-![](tutorial/93c.png)
-![](tutorial/94c.png)
-![](tutorial/95c.png)
