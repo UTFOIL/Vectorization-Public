@@ -14,8 +14,8 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 - [Input Images](#Input-images)
 - [Energy Images](#Energy-images)
 - [Curator Interface Overview](#GCI-Overview)
-- [Vertex Curation](#Vertex-Curation)
-  - [Global Thresholding](#Vertex-Global-thresholding)
+  - [Vertex Curation](#Vertex-Curation)
+    - [Global Thresholding](#Vertex-Global-thresholding)
   - [Local Thresholding](#Vertex-Local-Thresholding)
   - [Vertex Toggling](#Vertex-Toggling)
   - [Final Curated Vertex Set](Final-curated-Vertex-set)
@@ -77,7 +77,7 @@ The Graphical Curator Interface (GCI) has four windows (startig in top right and
 1. [Volume Map](#Volume-Map)
 2. [Volume Display](#Volume-Display)
 3. [Intensity Histogram](#Intensity-Histogram)
-4. [Energy Histogram])#Energy-Histogram)
+4. [Energy Histogram](#Energy-Histogram)
 
 #### Example Graphical Curator Interface (GCI)
 A|B|C
