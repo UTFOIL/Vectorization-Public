@@ -134,7 +134,6 @@ To select a good global threshold, go to the middle of the stack and choose a th
 ||![](tutorial/12b.png)||
 
 Then extend the thickness of the current field of view to span the entire depth of the image stack, and apply the threshold to the entire image (globally).
-
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/14.png)|![](tutorial/13b.png)|![](tutorial/12c.png)
@@ -150,9 +149,8 @@ A|B|C
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
-
-
 ### Vertex Toggling
+Some vertices cannot be easily removed by thresholding and need to be selected individual by point-and-click or dragging a box over them.
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/23b.png)|
@@ -160,14 +158,14 @@ A|B|C
 ||![](tutorial/25b.png)|
 ||![](tutorial/26b.png)|
 
-Some vertices cannot be easily removed by thresholding and need to be selected individual by point-and-click or dragging a box over them.
-
 <!--Image  30's: -->
 ### Final Curated Vertex Set
 To be passed to the Edge Tracing step.
 |A|B|C
 | :---: | :---: | :---:
+||binary vertex display|
 |![](tutorial/30.png)|![](tutorial/30b.png)|
+||graded vertex display|
 ||![](tutorial/31b.png)|
 
 <!--Images 40's:-->
