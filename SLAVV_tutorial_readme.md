@@ -29,6 +29,8 @@ This tutorial demonstrates the use of the graphical curator interface on three l
   - [Orthogonal Views](#edge-orthogonal-views)
   - [Edge Toggling](#edge-toggling)
   - [Final Curated Edge Set](Final-curated-edge-set)
+- [Projections](projections)
+- [Hiztograms](histograms)
 - [Visualizations](#visualizations)
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
@@ -147,8 +149,8 @@ A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/79b.png)|
 
-### Maximum Intensity Projection Outputs 
-(Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
+### Projections
+Maximum intensity projection outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/80.png)|![](tutorial/80b.png)|![](tutorial/80c.png)
