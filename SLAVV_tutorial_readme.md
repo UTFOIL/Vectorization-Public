@@ -45,31 +45,31 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 <!--
 ## Inputs and Parameters
 -->
-### Input Image
+## Input Image
 To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [Main Function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: **Optional Input**. There is no pre-processing (interpolation, filtering, etc.) required. The software will prompt the user for all required inputs (e.g. size and shape of the voxels in microns, as well as processing parameters) if the inputs are not already input in NAME/VALUE pair format.
 
-Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
+#### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
 <!--Images 1-2:-->
-#### Wrapper Script
+### Wrapper Script
 Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), as well as running a subset (e.g. energy and vertices) of the consecutive workflows. The vectorization software allows the user to pick up in the middle or re-run parts of the vectorization with different parameters or curations. Wrapper scripts are not required, as all of the input parameters and image files and locations are automatically saved in the output ```batch_*``` folder.
 **Image A Input File Location Selection** | **Starting Workflow Step Selection**
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
 
-### Energy Image
+## Energy Image
 Default energy filtering processing parameters (purely Gaussian kernel) will work well for the images demonstrated here. If instead of the lumen, the vessel wall is illuminated, try starting with an 80/20 Gaussian/Ideal mixture, and a 50/50 annular/spherical ratio. After running the first step ("energy") of the SLAVV workflow, vessels in the requested size range should have dark centerlines in the "energy" image.
 
-Minimum intensity projection of the first 100 microns of each the three energy-filtered images:
+#### Minimum intensity projection of the first 100 microns of each the three energy-filtered images:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
 
 ## GCI Overview
-The Graphical Curator Interface (GCI) has four windows (startig in top right and moving counter-clockwise):
+The Graphical Curator Interface (GCI) has four windows (starting in top right and moving counter-clockwise):
 1. [Volume Map](#Volume-Map)
 2. [Volume Display](#Volume-Display)
 3. [Intensity Histogram](#Intensity-Histogram)
