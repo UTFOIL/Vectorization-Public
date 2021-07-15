@@ -78,6 +78,7 @@ The Graphical Curator Interface (GCI) has four windows (startig in top right and
 2. [Volume Display](#Volume-Display)
 3. [Intensity Histogram](#Intensity-Histogram)
 4. [Energy Histogram])#Energy-Histogram)
+
 #### Example Graphical Curator Interface (GCI)
 A|B|C
 :---: | :---: | :---:
@@ -94,15 +95,15 @@ The **Volume Map** window shows the user:
 
 ### Volume Display
 The **Volume Display** window shows the user:
-- A maximum intensity projection of the original image and overlayed vetors in the current 3D FOV.
-- The current depth of field in relation to the total possible depth of field in the two sliders.
+- A maximum intensity projection of the original image and overlayed vetors in the current 3D FOV,
+- The relative depth and thickness of the 2D projection displayed using the two sliders ("Depth" and "Thickness"), and
 - Which vector objects in the current field of view are status true (color:blue) or false (color:red).
 
 The **Volume Display** window gives the user control over the current FOV:
-- pan vertically and horizontally using the MATLAB panning tool for plots
-- zoom vertically and horizontally using the MATLAB magnifying glass for plots
-- navigate into/out-of the page using the depth scrollbar
-- Increase/decrease the thickness of the FOV in the depth dimension
+- pan vertically and horizontally using the MATLAB panning tool for plots,
+- zoom vertically and horizontally using the MATLAB magnifying glass for plots,
+- navigate into/out-of the page using the depth scrollbar, and
+- Increase/decrease the thickness of the FOV in the depth dimension.
 
 The **Volume Display** window also gives the user control over the direction of projection for the displayed MIP, (i.e. permute X, Y, and Z dimensions; change X or Y to the depth dimension (instead of Z)).
 
@@ -211,13 +212,13 @@ A|B|C
 :---: | :---: | :---:
 ![](tutorial/80.png)|![](tutorial/80b.png)|![](tutorial/80c.png)
 
-### Histograms 
+### Histograms
 of various statistics of interest from the vectors in the image.  
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/81.png)|![](tutorial/81b.png)|![](tutorial/81c.png)
 
-### Visualizations 
+### Visualizations
 of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
 
 ![](tutorial/90.png)
