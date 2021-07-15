@@ -9,7 +9,9 @@ The SLAVV method consists of four workflow steps as described in the [Methodolog
 3. edge extraction
 4. network organization
 
-These steps must be executed sequentially, starting with the "energy" step. The graphical curator interface opens after the vertex and edge steps by default as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
+These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: _Workflow-Specific Parameters_.
+
+The graphical curator interface opens after the vertex and edge steps by default as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) section: Logistical Parameters.
 
 ## Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
@@ -35,9 +37,9 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 ## Inputs and Parameters
 -->
 ### Input Images
-Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation).
+There is no pre-processing (interpolation, filtering, etc.) required. Simply input a raw TIF from a file location or a matrix from the workspace, as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: Optional Input.
 
-#### _Maximum_ intensity projections of the first 100 microns of each of the three **input** image stacks:
+#### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
