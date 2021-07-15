@@ -75,10 +75,12 @@ The Graphical Curator Interface (GCI) has four windows (startig in top right and
 2. Volume Display
 3. Intensity Histogram
 4. Energy Histogram
-#### Graphical Curator Interface
+#### Example Graphical Curator Interface (GCI)
 A|B|C
 :---: | :---: | :---:
-![](tutorial/10.png)||
+![](tutorial/40.png)||
+
+This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
 
 The **Volume Map** window shows the user:
 - the current 3D field of view (FOV) by highlighting the 2D projections on the face of the box.
@@ -89,6 +91,7 @@ The **Volume Map** window shows the user:
 The **Volume Display** window shows the user:
 - A maximum intensity projection of the original image and overlayed vetors in the current 3D FOV.
 - The current depth of field in relation to the total possible depth of field in the two sliders.
+- Which vector objects in the current field of view are status true (color:blue) or false (color:red).
 
 The **Volume Display** window gives the user control over the current FOV:
 - pan vertically and horizontally using the MATLAB panning tool for plots
@@ -96,6 +99,21 @@ The **Volume Display** window gives the user control over the current FOV:
 - navigate into/out-of the page using the depth scrollbar
 - Increase/decrease the thickness of the FOV in the depth dimension
 
+The **Volume Display** window also gives the user control over the direction of projection for the displayed MIP:
+- Permute X, Y, and Z dimensions; change X or Y to the depth dimension (instead of Z)
+
+The **Volume Display** window gives the user vector object classification ("Toggling") ability:
+- Vertices
+  - point-and-click individual vertex to swap its true/false (blue/red) status
+  - drag a box around a group of vertices to change all of them to true/false (blue/red)
+- edges
+  - point-and-click individual edge to swap its true/false (blue/red)
+
+The **Intensity Histogram** window shows the user the distribution of pixel-intensities in the FOV, allowing the user to:
+- set brightness and contrast accordingly.
+- toggle the dispaly mode between "original" and "inverted"
+
+The **Energy Histogram** window shows the user the distribution of vector-energies in the FOV, allowing the user to set brightness and contrast of these objects accordingly (provided that they have set the "Graded"/"Binary" toggler to "Graded" display of these objects.
 
 
 <!--Images 10's:-->
