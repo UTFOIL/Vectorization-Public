@@ -1,6 +1,5 @@
-# **Interactive Curator Tutorial ReadMe**
+# **Graphical Curation Interface Tutorial ReadMe**
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
-#### Graphical Curation Interface Tutorial
 The SLAVV software ([supporting functions](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) gives the user the ability to curate the vectorization output with live visual feedback. This graphical curator interface automatically opens at the appropriate times during the default execution of the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m). 
 
 ### SLAVV Methodology Overview
@@ -15,6 +14,7 @@ These steps must be executed sequentially, starting with the "energy" step. The 
 ## Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ### Table of Contents
+- [Input Images](#Input-images)
 - [Vertex Curator](#Vertex-Curator)
   - [Global Threshold Selection](#Global-threshold-selection)
   - [Local Threshold Selection](#Local-Threshold-Selection)
@@ -33,15 +33,19 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 <!--#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
 <!--
 ## Inputs and Parameters
-
-### Input Images
-Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation) quoted below. Call the main function in one of the following ways to vectorize one or more images.
-
 -->
+### Input Images
+Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation).
+
 #### Maximum intensity projections of the first 100 microns of each of the three input image stacks:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
+
+#### Minimum intensity projection of the first 100 microns of each the three energy-filtered images:
+A|B|C
+:---: | :---: | :---:
+![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
 
 <!--Images 1-2:
 ### Wrapper Script
