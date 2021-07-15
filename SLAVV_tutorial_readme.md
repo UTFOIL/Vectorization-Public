@@ -1,15 +1,20 @@
 # **Interactive Curator Tutorial ReadMe**
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 #### Software ([source in MATLAB](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) Tutorial
-Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
+Demonstrating the use of the graphical curator interface (built-into the [main function](https://github.com/UTFOIL/Vectorization-Public/vectorize_V200.m)) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 
 ### Table of Contents:
+- [Vertex Curator](#Vertex-Curator)
+  - [Global Threshold Selection](#Global-threshold-selection)
+
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
   - [Wrapper Script](#Wrapper-script)
 - [Vertex Extraction](#Vertex-Extraction)-->
-- [Vertex Curator](#Vertex-Curator)
-  - [Global Threshold Selection](#Global-threshold-selection)
+
+The SLAVV methodology is described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript). 
+
+The input image and parameter syntax is found in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
 
 ### In the following screenshots, depictions of: 
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
