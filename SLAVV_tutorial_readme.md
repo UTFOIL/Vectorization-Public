@@ -181,10 +181,11 @@ A|B|C
 Some vertices cannot be easily removed by thresholding and need to be selected individually by point-and-click or dragging a box over them.
 |A|B|C
 | :---: | :---: | :---:
-||![](tutorial/23b.png)|
 ||![](tutorial/24b.png)|
 ||![](tutorial/25b.png)|
 ||![](tutorial/26b.png)|
+
+<!--||![](tutorial/23b.png)|-->
 
 <!--Image  30's: -->
 ### Final Curated Vertex Set
