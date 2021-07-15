@@ -113,11 +113,10 @@ The **Energy Histogram** window shows the user the distribution of vector-energi
 - toggle the display mode between the "Graded" and "Binary" versions of the vector object brightnesses, and
 - Set the energy threshold value, assigning all vectors above that energy value in the current FOV to false.
 
-#### This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
-<!--A|B|C
+#### This example curator screenshot of shows how the curator looks when the user first opens the edge objects for Image A. The vectors shown are the unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
+A|B|C
 :---: | :---: | :---:
-![](tutorial/40.png)||-->
-![](tutorial/40.png)
+![](tutorial/40.png)||
 
 <!--Images 10's:-->
 ## Vertex Curation
@@ -143,14 +142,15 @@ To select a good global threshold, go to the middle of the stack and choose a th
 |:---: | :---: | :---:
 |||![](tutorial/10c.png)
 
-
+<!--
 ||![](tutorial/10b.png)|![](tutorial/10c.png)
 |![](tutorial/12.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
-||![](tutorial/12b.png)||
+||![](tutorial/12b.png)||-->
 
 Then extend the thickness of the current field of view to span the entire depth of the image stack, and apply the threshold to the entire image (globally).
 A|B|C
 :---: | :---: | :---:
+Full FOV | Full FOV | Partial FOV
 ![](tutorial/14.png)|![](tutorial/13b.png)|![](tutorial/12c.png)
 <!--![](tutorial/15.png)||
 ![](tutorial/16.png)||
