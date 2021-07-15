@@ -132,6 +132,7 @@ To select a good global threshold, go to the middle of the stack and choose a th
 |:---: | :---: | :---:
 |![](tutorial/11.png)|||
 
+Use the display option on the Intensity and Energy Histogram windows to better inspect the effect of the threshold.
 #### Original Image Intensity Inverted
 |A|B|C
 |:---: | :---: | :---:
@@ -171,7 +172,7 @@ A|B|C
 #### The Sweep button on the Volume Display removes the false objects from the display (makes them transaparent and unselectable).
 |A|B|C
 |:---: | :---: | :---:
-||![](tutorial/22b.png)|-->
+||![](tutorial/22b.png)|
 
 ### Vertex Toggling
 Some vertices cannot be easily removed by thresholding and need to be selected individual by point-and-click or dragging a box over them.
