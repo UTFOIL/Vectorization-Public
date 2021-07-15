@@ -44,18 +44,21 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 ## Inputs and Parameters
 -->
 ## Input Images
-There is no pre-processing (interpolation, filtering, etc.) required. Simply input a raw TIF from a file location or a matrix from the workspace, as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: Optional Input.
+Simply input a raw TIF from a file location or a matrix from the workspace, as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: Optional Input.
 
 #### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
+There is no pre-processing (interpolation, filtering, etc.) required. 
+
 ## Energy Images
 #### _Minimum_ intensity projection of the first 100 microns of each the three **energy-filtered** images:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
+
 After running the first step ("energy") of the SLAVV workflow, vessels in the requested size range should have dark centerlines in the "energy" image.
 
 <!--Images 1-2:
@@ -74,6 +77,16 @@ The Graphical Curator Interface (GCI) has four panels (startig in top right and 
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/10.png)||
+
+The volume map shows the user:
+- the current 3D field of view (FOV) by highlighting the 2D projections on the face of the box.
+- The dimensions of the entire 3D volumetric image on the axes of the box in real spatial dimensions.
+- The voxel coordinates and total number of voxels in all 3 dimensions of the current FOV in a table.
+- The volumes of influence of the previously applied threshold by painting red on the faces of the box.
+
+The Volume display shows the user:
+- A maximum intensity projection of the original image and overlayed vetors in the current 3D FOV.
+- 
 
 <!--Images 10's:-->
 ## Vertex Curator
