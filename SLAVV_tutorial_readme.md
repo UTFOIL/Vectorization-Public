@@ -3,7 +3,7 @@
 The SLAVV software ([supporting functions](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) gives the user the ability to curate the vectorization output with live visual feedback. This graphical curator interface automatically opens at the appropriate times during the default execution of the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m). 
 
 ### SLAVV Methodology Overview
-The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript):
+The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript) section: Automated Vascular Vectorization:
 1. linear "energy" filtering
 2. vertex extraction
 3. edge extraction
@@ -20,6 +20,8 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 - [Vertex Curator](#Vertex-Curator)
   - [Global Threshold Selection](#Global-threshold-selection)
   - [Local Threshold Selection](#Local-Threshold-Selection)
+  - [Individual Vertex Toggling](#Individual-Vertex-Toggling)
+  - [Final curated Vertex set](Final-curated-Vertex-set-for-edge-tracing)
 
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
@@ -59,7 +61,7 @@ Image A Input Selection | Starting Workflow Step Selection
 ## Vertex Curator
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user has the ability to curate the vertices using local thresholding as well as individual/group toggling. 
 ### Global threshold selection
-Image A | B | C
+A|B|C
 :---: | :---: | :---:
 some_text | some_text | some_text
 ![](tutorial/10.png)||
@@ -72,14 +74,14 @@ some_text | some_text | some_text
 
 <!--Images 20's:--> 
 ### Local Threshold Selection
-A | B | C
+A|B|C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
 ### Individual Vertex Toggling
-| A | B | C
+|A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/23b.png)|
 ||![](tutorial/24b.png)|
@@ -87,13 +89,20 @@ A | B | C
 ||![](tutorial/26b.png)|
 
 <!--Image  30's: -->
-### Vertex Curator: Final curated Vertex set for edge tracing  
-3XA
-![](tutorial/30.png)
-3XB
-![](tutorial/30b.png)
-![](tutorial/31b.png)
-### Images 40's:   Edge Curator: Volume navigation, exploration, and (for "B" and "C" images) local thresholding.  
+### Final curated Vertex set for edge tracing
+|A|B|C
+| :---: | :---: | :---:
+|![](tutorial/30.png)|![](tutorial/30b.png)|
+||![](tutorial/31b.png)|
+
+<!--Images 40's:-->
+## Edge Curator: 
+### Volume Navigation
+|A|B|C
+| :---: | :---: | :---:
+|![](tutorial/30.png)|![](tutorial/30b.png)|
+
+
 4XA
 ![](tutorial/40.png)
 ![](tutorial/41.png)
@@ -120,6 +129,9 @@ A | B | C
 ![](tutorial/44c.png)
 ![](tutorial/45c.png)
 ![](tutorial/46c.png)
+
+### Local Thresholding
+
 ### Images 50's:   Edge Curator: Orthogonal Views  
 5XA
 ![](tutorial/50.png)
