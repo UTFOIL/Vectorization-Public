@@ -39,10 +39,10 @@ Each of the three ```Image *``` folders in [This folder](https://drive.google.co
 	- All of the vectorization intermediates and outputs in a ```batch_*``` folder
 
 ## Documentation 
-for the [main vectorization function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) in MATLAB:
-```
-https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m
-```
+For the main vectorization function in MATLAB:
+
+[```https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m)
+
 ```
 %% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
 %
