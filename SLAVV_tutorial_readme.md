@@ -15,9 +15,9 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :--------------------------------- | :--------------------: | ------------------------:
 
-<--## SLAVV Methodology Overview
+## SLAVV Methodology Overview
 
-The SLAVV method consists of four workflow steps:
+The SLAVV method consists of four workflow steps as described in the [methodology manuscript]([Methodology Manuscript](#Methodology-Manuscript)):
 1. linear "energy" filtering
 2. vertex extraction
 3. edge extraction
@@ -29,7 +29,7 @@ These steps must be executed sequentially, starting with the "energy" step.
 ## Inputs and Parameters
 
 ### Input Images
-The input images are TIF format
+Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation)
 
 #### Maximum intensity projections of the first 100 microns of each of the three input image stacks:
 A|B|C
