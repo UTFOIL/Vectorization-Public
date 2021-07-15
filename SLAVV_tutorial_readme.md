@@ -17,6 +17,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 - [Curator Interface Overview](#GCI-Overview)
   - [Vertex Curation](#Vertex-Curation)
     - [Global Thresholding](#Vertex-Global-thresholding)
+    - [Display Options](#Display-Options)
     - [Local Thresholding](#Vertex-Local-Thresholding)
     - [Sweeping](#Sweeping)
     - [Vertex Toggling](#Vertex-Toggling)
@@ -133,6 +134,7 @@ To select a good global threshold, go to the middle of the stack and choose a th
 |:---: | :---: | :---:
 |![](tutorial/11.png)|||
 
+### Display Options
 Use the display option on the Intensity and Energy Histogram windows to better inspect the effect of the threshold.
 #### Original Image Intensity Inverted
 |A|B|C
