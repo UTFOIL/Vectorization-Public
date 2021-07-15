@@ -178,7 +178,7 @@ A|B|C
 ||![](tutorial/22b.png)|
 
 ### Vertex Toggling
-Some vertices cannot be easily removed by thresholding and need to be selected individual by point-and-click or dragging a box over them.
+Some vertices cannot be easily removed by thresholding and need to be selected individually by point-and-click or dragging a box over them.
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/23b.png)|
