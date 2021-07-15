@@ -4,8 +4,8 @@
 Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
 
 ### Table of Contents:
-- [SLAVV Methodology Overview](#methodology-overview)
-<!--- [Inputs and Parameters](#Inputs-and-Parameters)
+<!---- [SLAVV Methodology Overview](#methodology-overview)
+- [Inputs and Parameters](#Inputs-and-Parameters)
   - [Wrapper Script](#Wrapper-script)
 - [Vertex Extraction](#Vertex-Extraction)-->
 - [Vertex Curator](#Vertex-Curator)
