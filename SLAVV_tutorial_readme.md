@@ -33,7 +33,7 @@ The SLAVV method consists of four workflow steps:
 ### Wrapper Script
 Image A Input Selection | Starting Workflow Step Selection
 :---: | :---:
-![](tutorial/1.png)|![](tutorial/2.png)-->
+![](tutorial/1.png)|![](tutorial/2.png)
 
 <!--Images 10's:-->
 ## Vertex Curator
