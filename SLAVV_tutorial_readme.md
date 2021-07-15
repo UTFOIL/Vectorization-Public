@@ -124,11 +124,11 @@ A|B|C
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
 To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity and OK specificity (i.e. leave most vertices blue, even if they are false positives). 
-#### Before Threshold
+#### Before Thresholding
 |A|B|C
 |:---: | :---: | :---:
 |![](tutorial/10.png)||
-#### After Threshold
+#### After Thresholding
 |A|B|C
 |:---: | :---: | :---:
 |![](tutorial/11.png)|||
@@ -172,17 +172,27 @@ Before Thresholding|After Thresholding|
 <!--![](tutorial/22.png)|![](tutorial/22b.png)|-->
 
 ### Sweeping
-#### The Sweep button on the Volume Display removes the false objects from the display and histogram making it easier to see other objects.
+The Sweep button on the Volume Display removes the false objects from the display and histogram making it easier to see other objects.
+#### Before Sweeping
 |A|B|C
 |:---: | :---: | :---:
 ||![](tutorial/21b.png)|
+
+#### After Sweeping
+|A|B|C
+|:---: | :---: | :---:
 ||![](tutorial/22b.png)|
 
 ### Vertex Toggling
 Some vertices cannot be easily removed by thresholding and need to be selected individually by point-and-click or dragging a box over them.
+#### Before Toggling
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/24b.png)|
+
+#### After Toggling
+|A|B|C
+| :---: | :---: | :---:
 ||![](tutorial/25b.png)|
 
 
