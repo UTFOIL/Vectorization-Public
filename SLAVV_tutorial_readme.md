@@ -18,6 +18,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
   - [Vertex Curation](#Vertex-Curation)
     - [Global Thresholding](#Vertex-Global-thresholding)
     - [Local Thresholding](#Vertex-Local-Thresholding)
+      - Sweeping
     - [Vertex Toggling](#Vertex-Toggling)
     - [Final Curated Vertex Set](#Final-curated-Vertex-set)
   - [Edge Curation](#Edge-Curation)
