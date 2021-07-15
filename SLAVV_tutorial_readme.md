@@ -139,7 +139,7 @@ Use the display option on the Intensity and Energy Histogram windows to better i
 |:---: | :---: | :---:
 ||![](tutorial/10b.png)|
 
-#### Graded vertex display
+#### Graded Vertex Display
 |A|B|C
 |:---: | :---: | :---:
 |||![](tutorial/10c.png)
@@ -149,7 +149,7 @@ Use the display option on the Intensity and Energy Histogram windows to better i
 |![](tutorial/12.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
 ||![](tutorial/12b.png)||-->
 
-Then extend the thickness of the current field of view to span the entire depth of the image stack, and apply the threshold to the entire image (globally).
+Extend the thickness of the current field of view to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
 A|B|C
 :---: | :---: | :---:
 Full FOV | Full FOV | Partial FOV
