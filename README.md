@@ -16,7 +16,7 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 #### Please cite the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation).
 
 ## Software Overview
-The main function is called [```vectorize_V200.m```](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
+The [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) is called ```vectorize_V200.m``` ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
 
 The supporting functions are in the [source](https://github.com/UTFOIL/Vectorization-Public/blob/master/source) folder.
 
