@@ -71,10 +71,10 @@ Image A Input Selection | Starting Workflow Step Selection
 
 ## GCI Overview
 The Graphical Curator Interface (GCI) has four windows (startig in top right and moving counter-clockwise):
-1. Volume Map
-2. Volume Display
-3. Intensity Histogram
-4. Energy Histogram
+1. [Volume Map](#Volume-Map)
+2. [Volume Display](#Volume-Display)
+3. [Intensity Histogram](#Intensity-Histogram)
+4. [Energy Histogram])#Energy-Histogram)
 #### Example Graphical Curator Interface (GCI)
 A|B|C
 :---: | :---: | :---:
@@ -82,12 +82,14 @@ A|B|C
 
 This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
 
+### Volume Map
 The **Volume Map** window shows the user:
 - the current 3D field of view (FOV) by highlighting the 2D projections on the face of the box.
 - The dimensions of the entire 3D volumetric image on the axes of the box in real spatial dimensions.
 - The voxel coordinates and total number of voxels in all 3 dimensions of the current FOV in a table.
 - The volumes of influence of the previously applied threshold by painting red on the faces of the box.
 
+### Volume Display
 The **Volume Display** window shows the user:
 - A maximum intensity projection of the original image and overlayed vetors in the current 3D FOV.
 - The current depth of field in relation to the total possible depth of field in the two sliders.
@@ -99,22 +101,25 @@ The **Volume Display** window gives the user control over the current FOV:
 - navigate into/out-of the page using the depth scrollbar
 - Increase/decrease the thickness of the FOV in the depth dimension
 
-The **Volume Display** window also gives the user control over the direction of projection for the displayed MIP:
-- Permute X, Y, and Z dimensions; change X or Y to the depth dimension (instead of Z)
+The **Volume Display** window also gives the user control over the direction of projection for the displayed MIP, (i.e. permute X, Y, and Z dimensions; change X or Y to the depth dimension (instead of Z)).
 
-The **Volume Display** window gives the user vector object classification ("Toggling") ability:
-- Vertices
-  - point-and-click individual vertex to swap its true/false (blue/red) status
-  - drag a box around a group of vertices to change all of them to true/false (blue/red)
-- edges
-  - point-and-click individual edge to swap its true/false (blue/red)
+The **Volume Display** window gives the user vector object classification ("Toggling") ability to:
+- (for Vertices)
+  - point-and-click individual vertex to swap its true/false (blue/red) status,
+  - drag a box around a group of vertices to change all of them to true/false (blue/red), and
+- (for edges)
+  - point-and-click individual edge to swap its true/false (blue/red).
 
+### Intensity Histogram
 The **Intensity Histogram** window shows the user the distribution of pixel-intensities in the FOV, allowing the user to:
-- set brightness and contrast accordingly.
-- toggle the dispaly mode between "original" and "inverted"
+- set brightness and contrast for the underlying original image, and
+- toggle the dispaly mode between "original" and "inverted" for the underlying original image.
 
-The **Energy Histogram** window shows the user the distribution of vector-energies in the FOV, allowing the user to set brightness and contrast of these objects accordingly (provided that they have set the "Graded"/"Binary" toggler to "Graded" display of these objects.
-
+### Energy Histogram
+The **Energy Histogram** window shows the user the distribution of vector-energies in the FOV, allowing the user to:
+- set brightness and contrast of these objects accordingly,
+- toggle the display mode between the "Graded" and "Binary" versions of the vector object brightnesses, and
+- Set the energy threshold value, assigning all vectors above that energy value in the current FOV to false.
 
 <!--Images 10's:-->
 ## Vertex Curator
