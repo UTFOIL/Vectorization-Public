@@ -171,7 +171,7 @@ A|B|C
 <!--![](tutorial/22.png)|![](tutorial/22b.png)|-->
 
 ### Sweeping
-#### The Sweep button on the Volume Display removes the false objects from the display (makes them transaparent and unselectable).
+#### The Sweep button on the Volume Display removes the false objects from the display and histogram making it easier to see other objects.
 |A|B|C
 |:---: | :---: | :---:
 ||![](tutorial/21b.png)|
