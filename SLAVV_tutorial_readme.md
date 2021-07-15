@@ -18,7 +18,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
   - [Vertex Curation](#Vertex-Curation)
     - [Global Thresholding](#Vertex-Global-thresholding)
     - [Local Thresholding](#Vertex-Local-Thresholding)
-      - Sweeping
+    - [Sweeping](#Sweeping)
     - [Vertex Toggling](#Vertex-Toggling)
     - [Final Curated Vertex Set](#Final-curated-Vertex-set)
   - [Edge Curation](#Edge-Curation)
@@ -170,9 +170,11 @@ A|B|C
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 <!--![](tutorial/22.png)|![](tutorial/22b.png)|-->
 
+### Sweeping
 #### The Sweep button on the Volume Display removes the false objects from the display (makes them transaparent and unselectable).
 |A|B|C
 |:---: | :---: | :---:
+||![](tutorial/21b.png)|
 ||![](tutorial/22b.png)|
 
 ### Vertex Toggling
