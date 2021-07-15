@@ -30,7 +30,42 @@ These steps must be executed sequentially, starting with the "energy" step.
 ## Inputs and Parameters
 
 ### Input Images
-Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation)
+Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation):
+
+```
+% VECTORIZE( IMAGE_MATRIX ) vectorizes the numerical array IMAGE_MATRIX.  A batch folder is made 
+%     in the OutputDirectory specified by the user. The user is prompted for the other logistical
+%     and workflow specific parameters as in the VECTORIZE( ) call.
+%
+%   Supported IMAGE_MATRIX variable types: 3D array of doubles
+% 
+%   -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   
+%
+% VECTORIZE( IMAGE_MATRICES ) vectorizes each IMAGE_MATRIX in the cell vector IMAGE_MATRICES.  The
+%     outputs in the batch folder are numbered by the input order of the images in the cell vector.
+% 
+%   Supported IMAGE_MATRICES variable types: Cell vector of 3D array of doubles
+%
+%    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   
+%
+% VECTORIZE( FILE_NAME ) vectorizes the IMAGE_MATRIX(-CES) specified by the path(s) in FILE_NAME.
+%
+%   Supported FILE_NAME variable types: character vectors
+%
+%   FILE_NAME is an absolute or relative paths to current working folder. Wild card commands (i.e.
+%       '*' or '**' ) in the FILE_NAME are also supported. For example:
+%
+%     VECTORIZE(    '*.tif'  ) vectorizes all .tif files in the current directory.
+%
+%     VECTORIZE([ '**', filesep, '*.tif' ]) vectorizes all .tif files in the current directory or any
+%         subdirectory thereof.
+% 
+%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+%
+% VECTORIZE( FILE_NAMES ) vectorizes the IMAGE_MATRICES specified by the cell vector of FILE_NAMES.
+%
+%   Supported FILE_NAMES variable types: Cell vector of character vectors
+```
 
 #### Maximum intensity projections of the first 100 microns of each of the three input image stacks:
 A|B|C
