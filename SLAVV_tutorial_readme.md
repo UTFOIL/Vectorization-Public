@@ -129,7 +129,6 @@ Vertices have both point-location and radial-sizing components, and should be co
 ### Vertex Global thresholding
 A|B|C
 :---: | :---: | :---:
-some_text | some_text | some_text
 ![](tutorial/10.png)||
 ![](tutorial/11.png)|![](tutorial/10b.png)|![](tutorial/10c.png)
 ![](tutorial/12.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
