@@ -4,18 +4,19 @@
 Demonstrating the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
 
 ### Table of Contents:
-- [SLAVV Methodology Overview](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-methodology-overview)
-- [Inputs and Parameters](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Inputs-and-Parameters)
-  - [Wrapper Script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)
-- [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
+- [SLAVV Methodology Overview](#methodology-overview)
+- [Inputs and Parameters](#Inputs-and-Parameters)
+  - [Wrapper Script](#Wrapper-script)
+- [Vertex Extraction](#Vertex-Extraction)
 - [Vertex Curator](#Vertex-Curator)
-  - [Global Threshold Selection](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection)
+  - [Global Threshold Selection](#Global-threshold-selection)
 
+## Note:
 ### In the screenshots to follow in this tutorial, depictions of: 
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :--------------------------------- | :--------------------: | ------------------------:
 
-## SLAVV Methodology Overview
+## Methodology Overview
 
 The SLAVV method consists of four workflow steps as described in the [methodology manuscript]([Methodology Manuscript]([Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript)):
 1. linear "energy" filtering
