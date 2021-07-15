@@ -22,9 +22,13 @@ This tutorial demonstrates the use of the graphical curator interface on three l
   - [Global Thresholding](#Global-thresholding)
   - [Local Thresholding](#Local-Thresholding)
   - [Vertex Toggling](#Vertex-Toggling)
-  - [Final curated Vertex set](Final-curated-Vertex-set-for-edge-tracing)
+  - [Final Curated Vertex Set](Final-curated-Vertex-set-for-edge-tracing)
 - [Edge Curator](Edge-Curator)
--   
+  - [Global Thresholding](#Global-Thresholding)
+  - [Local Thresholding](#Local-Thresholding)
+  - [Orthogonal Views](#orthogonal-views)
+  - [Edge Toggling](#edge-toggling)
+  - [Final Curated Edge Set](Final-curated-Vertex-set-for-edge-tracing)
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
   - [Wrapper Script](#Wrapper-script)
@@ -40,7 +44,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 <!--
 ## Inputs and Parameters
 -->
-### Input Images
+## Input Images
 There is no pre-processing (interpolation, filtering, etc.) required. Simply input a raw TIF from a file location or a matrix from the workspace, as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: Optional Input.
 
 #### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
@@ -48,7 +52,7 @@ A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
-### Energy Images
+## Energy Images
 #### _Minimum_ intensity projection of the first 100 microns of each the three **energy-filtered** images:
 A|B|C
 :---: | :---: | :---:
@@ -92,14 +96,14 @@ A|B|C
 ||![](tutorial/26b.png)|
 
 <!--Image  30's: -->
-### Final curated Vertex set for edge tracing
+### Final Curated Vertex Set for Edge Tracing
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/30.png)|![](tutorial/30b.png)|
 ||![](tutorial/31b.png)|
 
 <!--Images 40's:-->
-## Edge Curator: 
+## Edge Curator
 ### Global Thresholding
 |A|B|C
 | :---: | :---: | :---:
@@ -122,19 +126,21 @@ A|B|C
 ![](tutorial/52.png)||
 ![](tutorial/53.png)||
 ![](tutorial/54.png)||
-### Addition  
+### Edge Addition  
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/60.png)||
 ![](tutorial/61.png)||
 ![](tutorial/62.png)||
 ![](tutorial/63.png)||
-### Toggling
+### Edge Toggling
 ![](tutorial/70.png)
 ![](tutorial/71.png)
-### Image  79b :   Edge Curator: Final output MIP over the whole volume with graded edge color weighting.  
-79B
-![](tutorial/79b.png)
+### Final output 
+#### MIP over the whole volume with graded edge color weighting.  
+|A|B|C
+| :---: | :---: | :---:
+||![](tutorial/79b.png)|
 
 ### Image    80: Maximum Intensity Projection Outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
 8XA
