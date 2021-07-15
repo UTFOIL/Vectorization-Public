@@ -97,11 +97,10 @@ The **Volume Display** window gives the user control over the current FOV:
 The **Volume Display** window also gives the user control over the direction of projection for the displayed MIP, (i.e. permute X, Y, and Z dimensions; change X or Y to the depth dimension (instead of Z)).
 
 The **Volume Display** window gives the user vector object classification ("Toggling") ability to:
-- (for Vertices)
-  - point-and-click individual vertex to swap its true/false (blue/red) status,
-  - drag a box around a group of vertices to change all of them to true/false (blue/red), and
-- (for edges)
-  - point-and-click individual edge to swap its true/false (blue/red).
+- (for vertices and edges)
+  - point-and-click individual object to swap its true/false (blue/red) status and
+- (just for vertices)
+  - drag a box around a group of objects to change all of them to true/false (blue/red), and
 
 ### Intensity Histogram
 The **Intensity Histogram** window shows the user the distribution of pixel-intensities in the FOV, allowing the user to:
