@@ -1,7 +1,7 @@
 # **Graphical Curation Interface Tutorial ReadMe**
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 ### Methodology Overview
-The SLAVV software ([supporting functions](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) gives the user the ability to curate the vectorization output with live visual feedback. This Graphical Curator Interface (GCI) automatically opens at the appropriate times during the default execution of the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m). The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript) section: Automated Vascular Vectorization:
+The SLAVV software ([Supporting Functions](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) gives the user the ability to curate the vectorization output with live visual feedback. This Graphical Curator Interface (GCI) automatically opens at the appropriate times during the default execution of the [Main Function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m). The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript) section: Automated Vascular Vectorization:
 1. linear "energy" filtering
 2. vertex extraction
 3. edge extraction
@@ -45,7 +45,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 ## Inputs and Parameters
 -->
 ## Input Images
-To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: **Optional Input**.
+To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [Main Function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: **Optional Input**.
 
 #### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
@@ -59,7 +59,7 @@ There is no pre-processing (interpolation, filtering, etc.) required. The softwa
 **Image A Input File Location Selection** | **Starting Workflow Step Selection**
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
-Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), but not required, as all of this information is automatically saved in the output ```batch_*``` folder.
+Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), but not required, as all of this information is automatically saved in the output ```batch_*``` folder.
 
 ## Energy Images
 Default energy filtering processing parameters (purely Gaussian kernel) will work well for the images demonstrated here. If instead of the lumen, the vessel wall is illuminated, try starting with an 80/20 Gaussian/Ideal mixture, and a 50/50 annular/spherical ratio.
