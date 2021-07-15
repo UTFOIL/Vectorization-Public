@@ -9,11 +9,11 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 - [Curator Interface Tutorial](https://github.com/UTFOIL/Vectorization-Public#tutorial)
 - [Vectorized Example Datasets](https://github.com/UTFOIL/Vectorization-Public#Example-Datasets)
 - [Software (MATLAB) Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)
-- [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#citation)
+- [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#SLAVV-Methodology-Manuscript)
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
-#### Please cite the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation).
+#### Please cite the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#SLAVV-Methodology-Manuscript).
 
 ## Software Overview
 The [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m) is called ```vectorize_V200.m``` ([documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation)).
@@ -31,7 +31,7 @@ Example inline calls can be found in the vectorization scripts, ```vectorization
 
 ## Example Datasets
 
-[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#citation) (_distinct_ from the three images used in the [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md)).  
+[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains the three example images as they were processed for the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#SLAVV-Methodology-Manuscript) (_distinct_ from the three images used in the [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md)).  
   
 Each of the three ```Image *``` folders in [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains:  
 	- The original image under its original title as a ```*.tif```  
