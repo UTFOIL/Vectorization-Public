@@ -162,8 +162,10 @@ A|B|C
 ### Visualizations 
 of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
 A|B|C
+
+![](tutorial/90.png)
+
 :---: | :---: | :---:
-![](tutorial/90.png)||
 ![](tutorial/91.png)|![](tutorial/90b.png)|![](tutorial/90c.png)
 ![](tutorial/92.png)|![](tutorial/91b.png)|![](tutorial/91c.png)
 ![](tutorial/93.png)|![](tutorial/92b.png)|![](tutorial/92c.png)
