@@ -134,6 +134,12 @@ To select a good global threshold, go to the middle of the stack and choose a th
 |:---: | :---: | :---:
 |![](tutorial/11.png)|||
 
+Extend the thickness of the current field of view to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
+A|B|C
+:---: | :---: | :---:
+Full FOV | Full FOV | Partial FOV
+![](tutorial/14.png)|![](tutorial/13b.png)|![](tutorial/12c.png)
+
 ### Display Options
 Use the display option on the Intensity and Energy Histogram windows to better inspect the effect of the threshold.
 #### Original Image Intensity Inverted
@@ -151,11 +157,7 @@ Use the display option on the Intensity and Energy Histogram windows to better i
 |![](tutorial/12.png)|![](tutorial/11b.png)|![](tutorial/11c.png)
 ||![](tutorial/12b.png)||-->
 
-Extend the thickness of the current field of view to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
-A|B|C
-:---: | :---: | :---:
-Full FOV | Full FOV | Partial FOV
-![](tutorial/14.png)|![](tutorial/13b.png)|![](tutorial/12c.png)
+
 <!--![](tutorial/15.png)||
 ![](tutorial/16.png)||
 ![](tutorial/17.png)||-->
