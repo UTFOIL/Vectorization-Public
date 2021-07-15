@@ -12,6 +12,7 @@ These steps must be executed sequentially, starting with the "energy" step. The 
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ### Table of Contents
 - [Input Images](#Input-images)
+  - [Wrapper Script](#Wrapper-Script)
 - [Energy Images](#Energy-images)
 - [Curator Interface Overview](#GCI-Overview)
   - [Vertex Curation](#Vertex-Curation)
@@ -44,25 +45,25 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 <!--
 ## Inputs and Parameters
 -->
-## Input Images
+### Input Image
 To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [Main Function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), section: **Optional Input**. There is no pre-processing (interpolation, filtering, etc.) required. The software will prompt the user for all required inputs (e.g. size and shape of the voxels in microns, as well as processing parameters) if the inputs are not already input in NAME/VALUE pair format.
 
-#### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
+Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
 <!--Images 1-2:-->
-### Wrapper Script
+#### Wrapper Script
 Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), as well as running a subset (e.g. energy and vertices) of the consecutive workflows. The vectorization software allows the user to pick up in the middle or re-run parts of the vectorization with different parameters or curations. Wrapper scripts are not required, as all of the input parameters and image files and locations are automatically saved in the output ```batch_*``` folder.
 **Image A Input File Location Selection** | **Starting Workflow Step Selection**
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
 
-## Energy Images
+### Energy Image
 Default energy filtering processing parameters (purely Gaussian kernel) will work well for the images demonstrated here. If instead of the lumen, the vessel wall is illuminated, try starting with an 80/20 Gaussian/Ideal mixture, and a 50/50 annular/spherical ratio. After running the first step ("energy") of the SLAVV workflow, vessels in the requested size range should have dark centerlines in the "energy" image.
 
-#### _Minimum_ intensity projection of the first 100 microns of each the three **energy-filtered** images:
+Minimum intensity projection of the first 100 microns of each the three energy-filtered images:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
@@ -73,14 +74,6 @@ The Graphical Curator Interface (GCI) has four windows (startig in top right and
 2. [Volume Display](#Volume-Display)
 3. [Intensity Histogram](#Intensity-Histogram)
 4. [Energy Histogram](#Energy-Histogram)
-
-#### Example Graphical Curator Interface (GCI)
-<!--A|B|C
-:---: | :---: | :---:
-![](tutorial/40.png)||-->
-![](tutorial/40.png)
-
-This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
 
 ### Volume Map
 The **Volume Map** window shows the user:
@@ -121,6 +114,13 @@ The **Energy Histogram** window shows the user the distribution of vector-energi
 - toggle the display mode between the "Graded" and "Binary" versions of the vector object brightnesses, and
 - Set the energy threshold value, assigning all vectors above that energy value in the current FOV to false.
 
+### Example Graphical Curator Interface (GCI)
+This example curator screenshot shows how the curator looks when the user first opens the edge objects. The vectors shown are the unedited automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
+<!--A|B|C
+:---: | :---: | :---:
+![](tutorial/40.png)||-->
+![](tutorial/40.png)
+
 <!--Images 10's:-->
 ## Vertex Curation
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
@@ -143,13 +143,14 @@ A|B|C
 ![](tutorial/17.png)||
 <!--Images 20's:--> 
 ### Vertex Local Thresholding
+After making a low specificity global threshold, the user can navigate to the brighter regions of the original image to apply more specific local thresholds.
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
-After making a low specificity global threshold, the user can navigate to the brighter regions of the original image to apply more specific local thresholds.
+
 
 ### Vertex Toggling
 |A|B|C
