@@ -188,9 +188,9 @@ Some vertices cannot be easily removed by thresholding and need to be selected i
 To be passed to the Edge Tracing step.
 |A|B|C
 | :---: | :---: | :---:
-||binary vertex display|
+|Full FOV|Full FOV|
 |![](tutorial/30.png)|![](tutorial/30b.png)|
-||graded vertex display|
+||Partial FOV|
 ||![](tutorial/31b.png)|
 
 <!--Images 40's:-->
