@@ -29,6 +29,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
   - [Orthogonal Views](#edge-orthogonal-views)
   - [Edge Toggling](#edge-toggling)
   - [Final Curated Edge Set](Final-curated-edge-set)
+- [Visualizations](#visualizations)
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
   - [Wrapper Script](#Wrapper-script)
