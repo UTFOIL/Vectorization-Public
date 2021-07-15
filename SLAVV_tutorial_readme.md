@@ -25,7 +25,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
   - [Edge Toggling](#edge-toggling)
   - [Final Curated Edge Set](Final-curated-edge-set)
 - [Projections](projections)
-- [Hiztograms](histograms)
+- [Histograms](histograms)
 - [Visualizations](#visualizations)
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
