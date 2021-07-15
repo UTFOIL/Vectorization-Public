@@ -17,12 +17,14 @@ The graphical curator interface opens after the vertex and edge steps by default
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ### Table of Contents
 - [Input Images](#Input-images)
+- [Energy Images](#Energy-images)
 - [Vertex Curator](#Vertex-Curator)
-  - [Global Threshold Selection](#Global-threshold-selection)
-  - [Local Threshold Selection](#Local-Threshold-Selection)
-  - [Individual Vertex Toggling](#Individual-Vertex-Toggling)
+  - [Global Thresholding](#Global-thresholding)
+  - [Local Thresholding](#Local-Thresholding)
+  - [Vertex Toggling](#Vertex-Toggling)
   - [Final curated Vertex set](Final-curated-Vertex-set-for-edge-tracing)
-
+- [Edge Curator](Edge-Curator)
+-   
 <!---- [SLAVV Methodology Overview](#methodology-overview)
 - [Inputs and Parameters](#Inputs-and-Parameters)
   - [Wrapper Script](#Wrapper-script)
@@ -46,6 +48,7 @@ A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
+### Energy Images
 #### _Minimum_ intensity projection of the first 100 microns of each the three **energy-filtered** images:
 A|B|C
 :---: | :---: | :---:
@@ -60,7 +63,7 @@ Image A Input Selection | Starting Workflow Step Selection
 <!--Images 10's:-->
 ## Vertex Curator
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user has the ability to curate the vertices using local thresholding as well as individual/group toggling. 
-### Global threshold selection
+### Global thresholding
 A|B|C
 :---: | :---: | :---:
 some_text | some_text | some_text
@@ -73,14 +76,14 @@ some_text | some_text | some_text
 ![](tutorial/17.png)||
 
 <!--Images 20's:--> 
-### Local Threshold Selection
+### Local Thresholding
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
 ![](tutorial/21.png)|![](tutorial/21b.png)|
 ![](tutorial/22.png)|![](tutorial/22b.png)|
 
-### Individual Vertex Toggling
+### Vertex Toggling
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/23b.png)|
@@ -97,56 +100,36 @@ A|B|C
 
 <!--Images 40's:-->
 ## Edge Curator: 
-### Volume Navigation
+### Global Thresholding
 |A|B|C
 | :---: | :---: | :---:
-|![](tutorial/30.png)|![](tutorial/30b.png)|
-
-
-4XA
-![](tutorial/40.png)
-![](tutorial/41.png)
-![](tutorial/42.png)
-![](tutorial/43.png)
-![](tutorial/44.png)
-![](tutorial/45.png)
-![](tutorial/46.png)
-![](tutorial/47.png)
-4XB
-![](tutorial/40b.png)
-![](tutorial/41b.png)
-![](tutorial/42b.png)
-![](tutorial/43b.png)
-![](tutorial/44b.png)
-![](tutorial/45b.png)
-![](tutorial/46b.png)
-![](tutorial/47b.png)
-4XC
-![](tutorial/40c.png)
-![](tutorial/41c.png)
-![](tutorial/42c.png)
-![](tutorial/43c.png)
-![](tutorial/44c.png)
-![](tutorial/45c.png)
-![](tutorial/46c.png)
+|![](tutorial/40.png)|![](tutorial/40b.png)|![](tutorial/40c.png)
+|![](tutorial/41.png)|![](tutorial/41b.png)|![](tutorial/41c.png)
+|![](tutorial/42.png)|![](tutorial/42b.png)|![](tutorial/42c.png)
+|![](tutorial/43.png)|![](tutorial/43b.png)|![](tutorial/43c.png)
+|![](tutorial/44.png)|![](tutorial/44b.png)|![](tutorial/44c.png)
+|![](tutorial/45.png)|![](tutorial/45b.png)|![](tutorial/45c.png)
+|![](tutorial/46.png)|![](tutorial/46b.png)|![](tutorial/46c.png)
+|![](tutorial/47.png)|![](tutorial/47b.png)|
 
 ### Local Thresholding
 
-### Images 50's:   Edge Curator: Orthogonal Views  
-5XA
-![](tutorial/50.png)
-![](tutorial/51.png)
-![](tutorial/52.png)
-![](tutorial/53.png)
-![](tutorial/54.png)
-### Images 60's:   Edge Curator: Addition Tool  
-6XA
-![](tutorial/60.png)
-![](tutorial/61.png)
-![](tutorial/62.png)
-![](tutorial/63.png)
-### Images 70's:   Edge Curator: Toggling Tool  
-7XA
+### Orthogonal Views
+A|B|C
+:---: | :---: | :---:
+![](tutorial/50.png)||
+![](tutorial/51.png)||
+![](tutorial/52.png)||
+![](tutorial/53.png)||
+![](tutorial/54.png)||
+### Addition  
+A|B|C
+:---: | :---: | :---:
+![](tutorial/60.png)||
+![](tutorial/61.png)||
+![](tutorial/62.png)||
+![](tutorial/63.png)||
+### Toggling
 ![](tutorial/70.png)
 ![](tutorial/71.png)
 ### Image  79b :   Edge Curator: Final output MIP over the whole volume with graded edge color weighting.  
