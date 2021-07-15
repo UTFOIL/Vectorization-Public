@@ -8,7 +8,7 @@ Demonstrating the use of the graphical curator interface (built-into the SLAVV s
 - [Inputs and Parameters](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Inputs-and-Parameters)
   - [Wrapper Script](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Wrapper-script)
 - [Vertex Extraction](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#slavv-Vertex-Extraction)
-- [Vertex Curator](#slavv-Vertex-Curator)
+- [Vertex Curator](#Vertex-Curator)
   - [Global Threshold Selection](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md#Global-threshold-selection)
 
 ### In the screenshots to follow in this tutorial, depictions of: 
