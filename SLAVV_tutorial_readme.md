@@ -52,7 +52,14 @@ A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
-There is no pre-processing (interpolation, filtering, etc.) required. The software will prompt the user for the size and shape of the voxels in microns.
+There is no pre-processing (interpolation, filtering, etc.) required. The software will prompt the user for all required inputs (e.g. size and shape of the voxels in microns, as well as processing parameters) if the inputs are not already presented in NAME/VALUE pair format.
+
+<!--Images 1-2:-->
+### Wrapper Script
+**Image A Input File Location Selection** | **Starting Workflow Step Selection**
+:---: | :---:
+![](tutorial/1.png)|![](tutorial/2.png)
+Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), but not required, as all of this information is automatically saved in the output ```batch_*``` folder.
 
 ## Energy Images
 Default energy filtering processing parameters (purely Gaussian kernel) will work well for the images demonstrated here. If instead of the lumen, the vessel wall is illuminated, try starting with an 80/20 Gaussian/Ideal mixture, and a 50/50 annular/spherical ratio.
@@ -63,12 +70,6 @@ A|B|C
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
 
 After running the first step ("energy") of the SLAVV workflow, vessels in the requested size range should have dark centerlines in the "energy" image.
-
-<!--Images 1-2:
-### Wrapper Script
-Image A Input Selection | Starting Workflow Step Selection
-:---: | :---:
-![](tutorial/1.png)|![](tutorial/2.png)-->
 
 ## GCI Overview
 The Graphical Curator Interface (GCI) has four windows (startig in top right and moving counter-clockwise):
