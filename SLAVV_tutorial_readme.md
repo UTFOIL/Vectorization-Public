@@ -71,11 +71,11 @@ A|B|C
 :---: | :---: | :---:
 ![](tutorial/000.png)|![](tutorial/000b.png)|![](tutorial/000c.png)
 
-<!--Images 1-2:-->
+<!--Images 1-2:
 ### Wrapper Script
 Image A Input Selection | Starting Workflow Step Selection
 :---: | :---:
-![](tutorial/1.png)|![](tutorial/2.png)
+![](tutorial/1.png)|![](tutorial/2.png)-->
 
 <!--Images 10's:-->
 ## Vertex Curator
