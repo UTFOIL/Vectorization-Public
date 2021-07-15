@@ -1,26 +1,7 @@
 # **Interactive Curator Tutorial ReadMe**
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 #### Software ([source in MATLAB](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) Tutorial
-Demonstrating the use of the graphical curator interface (built-into the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m)) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
-
-### Table of Contents:
-- [Vertex Curator](#Vertex-Curator)
-  - [Global Threshold Selection](#Global-threshold-selection)
-
-<!---- [SLAVV Methodology Overview](#methodology-overview)
-- [Inputs and Parameters](#Inputs-and-Parameters)
-  - [Wrapper Script](#Wrapper-script)
-- [Vertex Extraction](#Vertex-Extraction)-->
-
-The SLAVV methodology is described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript). 
-
-The input image and parameter syntax is found in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
-
-### In the following screenshots, depictions of: 
-**Image A** are in the left column | **Image B** the center | and **Image C** the right
-:--------------------------------- | :--------------------: | ------------------------:
-
-<!-- ## Methodology Overview
+The SLAVV software gives the user the ability to curate the vectorization output with live visual feedback. This graphical curator interface automatically opens at the appropriate times during the default execution of the [main function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m). 
 
 The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript):
 1. linear "energy" filtering
@@ -28,7 +9,28 @@ The SLAVV method consists of four workflow steps as described in the [Methodolog
 3. edge extraction
 4. network organization
 
-These steps must be executed sequentially, starting with the "energy" step.-->
+These steps must be executed sequentially, starting with the "energy" step. The graphical curator interface opens after the vertex and edge steps.
+
+The input image and parameter syntax is found in the [documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation).
+
+This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
+
+### Table of Contents:
+- [Vertex Curator](#Vertex-Curator)
+  - [Global Threshold Selection](#Global-threshold-selection)
+  - [Local Threshold Selection](#Local-Threshold-Selection)
+
+<!---- [SLAVV Methodology Overview](#methodology-overview)
+- [Inputs and Parameters](#Inputs-and-Parameters)
+  - [Wrapper Script](#Wrapper-script)
+- [Vertex Extraction](#Vertex-Extraction)-->
+
+<!--The SLAVV methodology is described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript). -->
+
+### In the following screenshots, depictions of: 
+**Image A** are in the left column | **Image B** the center | and **Image C** the right
+:--------------------------------- | :--------------------: | ------------------------:
+
 <!--#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
 <!--
 ## Inputs and Parameters
@@ -36,40 +38,6 @@ These steps must be executed sequentially, starting with the "energy" step.-->
 ### Input Images
 Input images can be TIF format or matrices loaded into the MATLAB workspace, as described in the [documentation](https://github.com/UTFOIL/Vectorization-Public#documentation) quoted below. Call the main function in one of the following ways to vectorize one or more images.
 
-```
-% VECTORIZE( IMAGE_MATRIX ) vectorizes the numerical array IMAGE_MATRIX.  A batch folder is made 
-%     in the OutputDirectory specified by the user. The user is prompted for the other logistical
-%     and workflow specific parameters as in the VECTORIZE( ) call.
-%
-%   Supported IMAGE_MATRIX variable types: 3D array of doubles
-% 
-%   -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   
-%
-% VECTORIZE( IMAGE_MATRICES ) vectorizes each IMAGE_MATRIX in the cell vector IMAGE_MATRICES.  The
-%     outputs in the batch folder are numbered by the input order of the images in the cell vector.
-% 
-%   Supported IMAGE_MATRICES variable types: Cell vector of 3D array of doubles
-%
-%    -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   
-%
-% VECTORIZE( FILE_NAME ) vectorizes the IMAGE_MATRIX(-CES) specified by the path(s) in FILE_NAME.
-%
-%   Supported FILE_NAME variable types: character vectors
-%
-%   FILE_NAME is an absolute or relative paths to current working folder. Wild card commands (i.e.
-%       '*' or '**' ) in the FILE_NAME are also supported. For example:
-%
-%     VECTORIZE(    '*.tif'  ) vectorizes all .tif files in the current directory.
-%
-%     VECTORIZE([ '**', filesep, '*.tif' ]) vectorizes all .tif files in the current directory or any
-%         subdirectory thereof.
-% 
-%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
-%
-% VECTORIZE( FILE_NAMES ) vectorizes the IMAGE_MATRICES specified by the cell vector of FILE_NAMES.
-%
-%   Supported FILE_NAMES variable types: Cell vector of character vectors
-```
 -->
 #### Maximum intensity projections of the first 100 microns of each of the three input image stacks:
 A|B|C
@@ -84,6 +52,7 @@ Image A Input Selection | Starting Workflow Step Selection
 
 <!--Images 10's:-->
 ## Vertex Curator
+Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user has the ability to curate the vertices using local thresholding as well as individual/group toggling. 
 ### Global threshold selection
 Image A | B | C
 :---: | :---: | :---:
@@ -97,7 +66,7 @@ some_text | some_text | some_text
 ![](tutorial/17.png)||
 
 <!--Images 20's:--> 
-### Local  Threshold Selection
+### Local Threshold Selection
 A | B | C
 :---: | :---: | :---:
 ![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
