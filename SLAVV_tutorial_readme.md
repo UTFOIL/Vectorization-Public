@@ -346,10 +346,10 @@ Use the .vmv file output to export the vascular vectorization to the VessMorphoV
 |:---:|:---:|:---:
 ||![](tutorial/90b.png)|
 ||![](tutorial/91b.png)|
-||![](tutorial/92b.png)|
-||![](tutorial/93b.png)|
 ||![](tutorial/94b.png)|
 ||![](tutorial/95b.png)|
+||![](tutorial/92b.png)|
+||![](tutorial/93b.png)|
 
 <!--
 ![](tutorial/94.png)
