@@ -169,9 +169,9 @@ Use the display option on the Intensity and Energy Histogram windows to better i
 ### Vertex Local Thresholding
 After making a low specificity global threshold, navigate to the brighter regions of the original image to apply more specific local thresholds.
 #### Local Threshold Selection
-A|B|C
-:---: | :---: | :---:
-!|![](tutorial/20b.png)|![](tutorial/20c.png)
+|A|B|C
+|:---: | :---: | :---:
+||![](tutorial/20b.png)|![](tutorial/20c.png)
 <!--[](tutorial/20.png)-->
 Extending the depth in this FOV allows the user to apply this local threshold across all image slices.
 #### Local Threshold Application
