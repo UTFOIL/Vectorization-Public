@@ -124,16 +124,17 @@ A|B|C
 ## Vertex Curation
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
-#### To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity and OK specificity (i.e. leave most vertices blue, even if they are false positives). 
+To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity (i.e. leave most vertices blue, even if they are false positives), but removes the many vertices in the extravascular regions of the image (owing to image noise).
+#### Global Threshold Selection
 |A|B|C
 |:---: | :---: | :---:
 |Before Thresholding||
 |![](tutorial/10.png)||
 |After Thresholding||
-|:---: | :---: | :---:
 |![](tutorial/11.png)|||
 
-#### Extend the thickness of the current field of view to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
+Extend the thickness of the current field of view using the "Thickness" slider to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
+#### Global Threshold Application
 A|B|C
 :---: | :---: | :---:
 Full FOV || Partial FOV
@@ -165,11 +166,13 @@ Use the display option on the Intensity and Energy Histogram windows to better i
 <!--Images 20's:--> 
 ### Vertex Local Thresholding
 After making a low specificity global threshold, the user can navigate to the brighter regions of the original image to apply more specific local thresholds.
+#### Local Threshold Selection
 A|B|C
 :---: | :---: | :---:
 !|![](tutorial/20b.png)|![](tutorial/20c.png)
 <!--[](tutorial/20.png)-->
 Extending the depth in this FOV allows the user to apply this local threshold across all image slices.
+#### Local Threshold Application
 A|B|C
 :---: | :---: | :---:
 Before Thresholding|After Thresholding|
@@ -178,26 +181,22 @@ Before Thresholding|After Thresholding|
 
 ### Sweeping
 The Sweep button on the Volume Display removes the false objects from the display and histogram making it easier to see other objects.
-#### Before Sweeping
+#### Removing status:false (color:red) vertices from the display and histograms
 |A|B|C
 |:---: | :---: | :---:
+||Before Sweeping|
 ||![](tutorial/21b.png)|
-
-#### After Sweeping
-|A|B|C
-|:---: | :---: | :---:
+||After Sweeping|
 ||![](tutorial/22b.png)|
 
 ### Vertex Toggling
 Some vertices cannot be easily removed by thresholding and need to be selected individually by point-and-click or dragging a box over them.
-#### Before Toggling
+#### Group Toggling to Status:False (Color:Red) of Vertices on Vessel Border
 |A|B|C
 | :---: | :---: | :---:
+||Before Toggling|
 ||![](tutorial/24b.png)|
-
-#### After Toggling
-|A|B|C
-| :---: | :---: | :---:
+||After Toggling|
 ||![](tutorial/25b.png)|
 
 
