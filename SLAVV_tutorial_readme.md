@@ -243,7 +243,7 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 | :---: | :---: | :---:
 ||Before Thresholding
 ||![](tutorial/40b.png)
-|| After Thresholding
+||After Thresholding and Sweeping
 ||![](tutorial/41b.png)|
 
 <!--
