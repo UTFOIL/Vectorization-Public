@@ -57,7 +57,7 @@ A|B|C
 
 <!--Images 1-2:-->
 ### Wrapper Script
-Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), as well as running a subset (e.g. Energy Filtering and Vertex Extraction) of the consecutive workflows. The vectorization software allows the user to pick up in the middle or re-run parts of the vectorization with different parameters or curations. Wrapper scripts are not required, as all of the input parameters and image files and locations are automatically saved in the output ```batch_*``` folder.
+Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), as well as re-running a subset (e.g. starting with ```'vertices'``` or ```'edges'```) of the workflows. The vectorization software allows the user to pick up in the middle or re-run parts of the vectorization with different parameters or curations. Wrapper scripts are not required, as all of the input parameters and image files and locations are automatically saved in the output ```batch_*``` folder.
 **Image A Input File Location Selection** | **Starting Workflow Step Selection**
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
@@ -235,7 +235,7 @@ Use the "Depth" slider to navigate deeper into the volume. Select in the margin 
 |![](tutorial/47.png)||
 
 ### Edge Global Thresholding
-Use the Energy thresholding 
+Use the "Threshold" text-entry box in the Energy Histogram window to set a threshold. Try to choose a threshold that labels edge objects outside of vessels as status:false (color:red).  
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/40c.png)
