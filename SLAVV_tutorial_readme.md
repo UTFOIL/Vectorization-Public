@@ -265,13 +265,13 @@ Use the "Z-Depth" or "Z-Thickness" button in the Volume Display window to change
 Note: Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
 A|B|C
 :---: | :---: | :---:
-Narrow Y-Projected FOV||
+Thin Y-Projected FOV||
 ![](tutorial/50.png)||
-Thicker Y-Projected FOV||
+Thick Y-Projected FOV||
 ![](tutorial/51.png)||
-Narrow X-Projected FOV||
+Thin X-Projected FOV||
 ![](tutorial/52.png)||
-Thicker X-Projected FOV (annotated)||
+Thick X-Projected FOV (annotated)||
 ![](tutorial/54.png)||
 <!--![](tutorial/53.png)||-->
 ### Edge Addition
