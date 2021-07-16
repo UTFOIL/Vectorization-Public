@@ -299,8 +299,9 @@ A|B|C
 ![](tutorial/81.png)|![](tutorial/81b.png)|![](tutorial/81c.png)
 
 ### Visualizations
-of the output vectors using a .vmv file output to the VessMorphoVis plugin to Blender.  
+Use the .vmv file output to export the vascular vectorization to the VessMorphoVis plugin to Blender to visualize the network in 3D with lighting and color-coding.  
 
+#### VessMorphoVis plugin to Blender: Loading .vmv file output from SLAVV
 ![](tutorial/90.png)
 
 #### Six faces of the box volume (colorful images are coded by vessel radius)
@@ -313,9 +314,6 @@ of the output vectors using a .vmv file output to the VessMorphoVis plugin to Bl
 |||![](tutorial/94c.png)
 |||![](tutorial/95c.png)
 
-<!--
-![](tutorial/94.png)
-![](tutorial/95.png)-->
 |A|B|C
 |:---:|:---:|:---:
 ||![](tutorial/90b.png)|
@@ -325,6 +323,10 @@ of the output vectors using a .vmv file output to the VessMorphoVis plugin to Bl
 ||![](tutorial/94b.png)|
 ||![](tutorial/95b.png)|
 
+<!--
+![](tutorial/94.png)
+![](tutorial/95.png)-->
+#### Lighting and color options built into VessMorphoVis for visualization
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/96.png)|![](tutorial/96b.png)|
