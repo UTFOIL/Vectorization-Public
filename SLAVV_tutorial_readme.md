@@ -120,7 +120,7 @@ The **Energy Histogram** window shows the user the distribution of vector-energi
 - toggle the display mode between the "Graded" and "Binary" versions of the vector object brightnesses, and
 - Set the Energy threshold value, assigning all vectors above that Energy value in the current FOV to false.
 
-Note: The example curator screenshot shown in the "Anatomy of the GCI" image above is how the curator looks when the user first opens the edge objects for Image A. The vectors shown are the unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the Edge Extraction step of SLAVV.
+Note: The example curator screenshot shown in the "Anatomy of the GCI" image above is how the curator looks when the user first opens the edge objects for Image A. The vectors shown are the uncurated/unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the Edge Extraction step of SLAVV.
 
 <!--Images 10's:-->
 ## Vertex Curation
@@ -222,7 +222,7 @@ These are the final curated vertex sets that were passed to the Edge Extraction 
 ## Edge Curation
 ### Volume Navigation
 Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
-#### Fly-through of (uncurated/unedited) automated Edge Extraction output
+#### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/40.png)||
