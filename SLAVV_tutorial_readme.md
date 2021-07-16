@@ -145,13 +145,13 @@ Full-Depth FOV || Partial-Depth FOV
 ![](tutorial/13b.png)-->
 
 ### Display Options
-Use the display option on the Intensity and Energy Histogram windows to better inspect the effect of the threshold.
-#### Original Image Intensity Inverted
+Use the display options on the Intensity and Energy Histogram windows to better inspect the effect of the threshold.
+#### "Inverted" Original Image Intensity Option
 |A|B|C
 |:---: | :---: | :---:
 ||![](tutorial/10b.png)|
 
-#### Graded Vertex Display
+#### "Graded" Vertex Display Option
 |A|B|C
 |:---: | :---: | :---:
 |||![](tutorial/10c.png)
@@ -291,19 +291,21 @@ A|B|C
 ![](tutorial/71.png)||
 
 ### Final Curated Edge Set
+This is the final curated edge set that was passed to the Network Organization step and represented in the [histograms](#histograms) and [visualizations](visualizations).
 #### MIP over the whole volume with graded edge color weighting.  
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/79b.png)|
 
 ### Projections
-Maximum intensity projection outputs (Coloring: strand uniques, depth, and direction) from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.  
+Maximum intensity projection outputs from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image. From left to right the color coding is: strand uniques, depth, and direction.
+#### Color-Coded Projections
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/80.png)|![](tutorial/80b.png)|![](tutorial/80c.png)
 
 ### Histograms
-of various statistics of interest from the vectors in the image.  
+Lateral area- or strand-weighted histograms of various statistics of interest from the vectors in the image. (Strands are vessel segments that connect bifurcations/endpoints to bifurcations/endpoints.)
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/81.png)|![](tutorial/81b.png)|![](tutorial/81c.png)
