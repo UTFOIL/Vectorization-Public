@@ -7,7 +7,7 @@ The SLAVV software ([Supporting Functions](https://github.com/UTFOIL/Vectorizati
 3. Edge Extraction
 4. Network Organization
 
-These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) Section: **Workflow-Specific Parameters**. The SLAVV software automatically extracts vertices and edges from the Energy Image, and automatically organizes the edges and vertices into a graph representation of the network. The [Graphical Curator Interface (GCI)](GCI-Overview) opens after the Vertex and Edge Extraction steps by default as described in the Documentation Section: **Logistical Parameters**.
+These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) Section: **Workflow-Specific Parameters**. The SLAVV software automatically extracts vertices and edges from the Energy Image, and automatically organizes the edges and vertices into a graph representation of the network. The [Graphical Curator Interface (GCI)](#GCI-Overview) opens after the Vertex and Edge Extraction steps by default as described in the Documentation Section: **Logistical Parameters**.
 # Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ## Table of Contents
