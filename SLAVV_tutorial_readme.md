@@ -329,7 +329,7 @@ A|B|C
 |||![](tutorial/81c.png)
 
 ## Visualizations
-Use the ```*.vmv``` file output in the ```vectors``` directory of the ```batch_*``` folder to export the vascular vectorization to the VessMorphoVis plugin to Blender to visualize the network in 3D with lighting and color-coding.  
+Use the ```network_*.vmv``` file output in the ```vectors``` directory of the ```batch_*``` folder to export the vascular vectorization to the VessMorphoVis plugin to Blender to visualize the network in 3D with lighting and color-coding.  
 
 #### VessMorphoVis plugin to Blender: Loading .vmv file output from SLAVV
 ![](tutorial/90.png)
