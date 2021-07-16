@@ -23,8 +23,8 @@ This tutorial demonstrates the use of the graphical curator interface on three l
     - [Vertex Toggling](#Vertex-Toggling)
     - [Final Curated Vertex Set](#Final-curated-Vertex-set)
   - [Edge Curation](#Edge-Curation)
-    - [Global Thresholding](#edge-Global-Thresholding)
-    - [Local Thresholding](#edge-Local-Thresholding)
+    - [Volume Navigation](#Volume-Navigation)
+    - [Edge Thresholding](#Edge-Thresholding)
     - [Orthogonal Views](#orthogonal-views)
     - [Edge Toggling](#edge-toggling)
     - [Final Curated Edge Set](#Final-curated-edge-set)
@@ -105,9 +105,9 @@ The **Volume Display** window also gives the user control over the direction of 
 
 The **Volume Display** window gives the user vector object classification ("Toggling") ability to:
 - (for vertices and edges)
-  - point-and-click individual object to swap its true/false (blue/red) status and
+  - point-and-click individual object to swap its true/false status (blue/red color) and
 - (just for vertices)
-  - drag a box around a group of objects to change all of them to true/false (blue/red).
+  - drag a box around a group of objects to change all of them to status:true/false (color:blue/red).
 
 ### Intensity Histogram
 The **Intensity Histogram** window shows the user the distribution of pixel-intensities in the FOV, allowing the user to:
@@ -124,7 +124,7 @@ Note: The example curator screenshot shown in the "Anatomy of the GCI" image abo
 
 <!--Images 10's:-->
 ## Vertex Curation
-After the vertices are automatically extracted (as local minima) from the Energy Image, the user can curate these vertex objects. Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
+After the vertices are automatically extracted (as local minima) from the Energy Image, the user can curate these vertex objects. Vertices have both point-location and radial-sizing components, and should be considered status:true (color:blue) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false status) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
 To select a threshold, use the middle text-entry box in the Energy Histogram window labeled "Threshold." Try to choose a threshold that ensures high sensitivity (i.e. leave most vertices blue, even if they are false positives), but removes the many vertices in the extravascular regions of the image (owing to image noise).
 #### Global Threshold Selection
@@ -220,7 +220,7 @@ These are the final curated vertex sets that were passed to the Edge Extraction 
 
 <!--Images 40's:-->
 ## Edge Curation
-
+After the edges are automatically extracted (by tracing the Energy Image with the vertices as termini), the user can curate these edge objects. Edges consist of ordered lists of locations and sizes, which connect one vertex to another along the path of the edge. Edges should be considered status:true (color:blue) when both the locations and sizes match a vessel segment in the underlying original image. The user can curate (classify as true/false status) the edges using local thresholding as well as point-and-click toggling.
 ### Volume Navigation
 Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
 #### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step of SLAVV. Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
@@ -235,8 +235,9 @@ Use the "Depth" slider to navigate deeper into the volume. Select in the margin 
 |![](tutorial/46.png)||
 |![](tutorial/47.png)||
 
-### Edge Global Thresholding
+### Edge Thresholding
 Use the "Threshold" text-entry box in the Energy Histogram window to set a threshold. Try to choose a threshold that labels edge objects outside of vessels as status:false (color:red).  
+#### Global Edge Thresholding 
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/40c.png)
@@ -248,7 +249,7 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 ||![](tutorial/46b.png)|
 ||![](tutorial/47b.png)|
 
-### Edge Local Thresholding
+#### Local Edge Thresholding
 |A|B|C
 | :---: | :---: | :---:
 |||![](tutorial/44c.png)
