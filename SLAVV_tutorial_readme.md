@@ -357,7 +357,7 @@ Use the .vmv file output to export the vascular vectorization to the VessMorphoV
 #### Lighting and color options built into VessMorphoVis for visualization
 A|B|C
 :---: | :---: | :---:
-![](tutorial/96.png)|![](tutorial/96b.png)|
+![](tutorial/96.png)||
 ![](tutorial/97.png)||
 ![](tutorial/98.png)||
 ![](tutorial/99.png)||
@@ -365,3 +365,4 @@ A|B|C
 ![](tutorial/101.png)||
 ![](tutorial/102.png)||
 ![](tutorial/103.png)||
+<!--![](tutorial/96b.png)-->
