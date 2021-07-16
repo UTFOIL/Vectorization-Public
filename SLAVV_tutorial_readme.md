@@ -224,10 +224,10 @@ After the edges are automatically extracted (by tracing the Energy Image with th
 ### Volume Navigation
 Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
 #### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step of SLAVV. 
-Note:Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
+Note: Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
 |A|B|C
 | :---: | :---: | :---:
-|![](tutorial/40.png)||
+|||![](tutorial/40c.png)
 |![](tutorial/41.png)||![](tutorial/41c.png)
 |![](tutorial/42.png)||![](tutorial/42c.png)
 |![](tutorial/43.png)||![](tutorial/43c.png)
