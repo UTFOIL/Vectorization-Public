@@ -71,7 +71,7 @@ A|B|C
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
 
 ## GCI Overview
-After vertices are automatically extracted (as local minima) from the Energy Image, the user can curate the vertex objects. The Graphical Curator Interface (GCI) has four windows (starting in top right and moving counter-clockwise):
+After the vertices are automatically extracted (as local minima) from the Energy Image, the user can curate these vertex objects. The Graphical Curator Interface (GCI, shown below) has four windows (starting in top right and moving counter-clockwise):
 1. [Volume Map](#Volume-Map)
 2. [Volume Display](#Volume-Display)
 3. [Intensity Histogram](#Intensity-Histogram)
