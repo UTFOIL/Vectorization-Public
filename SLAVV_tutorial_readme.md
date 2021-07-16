@@ -314,8 +314,9 @@ A|B|C
 |||![](tutorial/80c.png)
 
 ## Histograms
-Lateral area- or strand-weighted histograms of various statistics of interest from the vectorized vascular network in the input image. (Note: strands are vessel segments that connect bifurcations/endpoints to bifurcations/endpoints.)
+Lateral area- or strand-weighted histograms of various statistics of interest from the vectorized vascular network in the input image can be used to analyze the anatomy in question.
 #### Network Histograms
+Note: Strands are vessel segments that connect bifurcations/endpoints to bifurcations/endpoints. The left histograms are strand-weighted, the right lateral area-.
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/81.png)||
