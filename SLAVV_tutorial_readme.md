@@ -302,13 +302,29 @@ Maximum intensity projection outputs from the middle (1/3 in all 3 dimensions) o
 #### Color-Coded Projections
 A|B|C
 :---: | :---: | :---:
-![](tutorial/80.png)|![](tutorial/80b.png)|![](tutorial/80c.png)
+![](tutorial/80.png)||
+
+|A|B|C
+|:---: | :---: | :---:
+||![](tutorial/80b.png)|
+
+|A|B|C
+|:---: | :---: | :---:
+|||![](tutorial/80c.png)
 
 ### Histograms
 Lateral area- or strand-weighted histograms of various statistics of interest from the vectors in the image. (Strands are vessel segments that connect bifurcations/endpoints to bifurcations/endpoints.)
 A|B|C
 :---: | :---: | :---:
-![](tutorial/81.png)|![](tutorial/81b.png)|![](tutorial/81c.png)
+![](tutorial/81.png)||
+
+|A|B|C
+|:---: | :---: | :---:
+||![](tutorial/81b.png)|
+
+|A|B|C
+|:---: | :---: | :---:
+|||![](tutorial/81c.png)
 
 ### Visualizations
 Use the .vmv file output to export the vascular vectorization to the VessMorphoVis plugin to Blender to visualize the network in 3D with lighting and color-coding.  
