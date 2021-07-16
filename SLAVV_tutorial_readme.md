@@ -241,14 +241,18 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 #### Global Edge Thresholding 
 |A|B|C
 | :---: | :---: | :---:
+||Before Thresholding
 ||![](tutorial/40b.png)
+|| After Thresholding
 ||![](tutorial/41b.png)|
+
+<!--
 ||![](tutorial/42b.png)|
 ||![](tutorial/43b.png)|
 ||![](tutorial/44b.png)|![](tutorial/45c.png)
 ||![](tutorial/45b.png)|![](tutorial/46c.png)
 ||![](tutorial/46b.png)|
-||![](tutorial/47b.png)|
+||![](tutorial/47b.png)|-->
 
 #### Local Edge Thresholding
 |A|B|C
