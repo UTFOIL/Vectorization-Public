@@ -215,17 +215,31 @@ To be passed to the Edge Tracing step.
 
 <!--Images 40's:-->
 ## Edge Curation
+### Volume Navigation
+Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
+#### Fly-through of (uncurated/unedited) automated edge extraction output
+|A|B|C
+| :---: | :---: | :---:
+|![](tutorial/40.png)||
+|![](tutorial/41.png)||
+|![](tutorial/42.png)||
+|![](tutorial/43.png)||
+|![](tutorial/44.png)||
+|![](tutorial/45.png)||
+|![](tutorial/46.png)||
+|![](tutorial/47.png)||
+
 ### Edge Global Thresholding
 |A|B|C
 | :---: | :---: | :---:
-|![](tutorial/40.png)|![](tutorial/40b.png)|![](tutorial/40c.png)
-|![](tutorial/41.png)|![](tutorial/41b.png)|![](tutorial/41c.png)
-|![](tutorial/42.png)|![](tutorial/42b.png)|![](tutorial/42c.png)
-|![](tutorial/43.png)|![](tutorial/43b.png)|![](tutorial/43c.png)
-|![](tutorial/44.png)|![](tutorial/44b.png)|![](tutorial/45c.png)
-|![](tutorial/45.png)|![](tutorial/45b.png)|![](tutorial/46c.png)
-|![](tutorial/46.png)|![](tutorial/46b.png)|
-|![](tutorial/47.png)|![](tutorial/47b.png)|
+||![](tutorial/40c.png)
+||![](tutorial/41b.png)|![](tutorial/41c.png)
+||![](tutorial/42b.png)|![](tutorial/42c.png)
+||![](tutorial/43b.png)|![](tutorial/43c.png)
+||![](tutorial/44b.png)|![](tutorial/45c.png)
+||![](tutorial/45b.png)|![](tutorial/46c.png)
+||![](tutorial/46b.png)|
+||![](tutorial/47b.png)|
 
 ### Edge Local Thresholding
 |A|B|C
