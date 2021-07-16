@@ -2,10 +2,10 @@
 ## Segmentation-Less, Automated, Vascular Vectorization (SLAVV)
 ### Methodology Overview
 The SLAVV software ([Supporting Functions](https://github.com/UTFOIL/Vectorization-Public/blob/master/source)) gives the user the ability to curate the vectorization output with live visual feedback. This Graphical Curator Interface (GCI) automatically opens at the appropriate times during the default execution of the [Main Function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m). The SLAVV method consists of four workflow steps as described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript) Section: Automated Vascular Vectorization:
-1. linear "energy" filtering
-2. vertex extraction
-3. edge extraction
-4. network organization
+1. Linear "Energy" Filtering
+2. Vertex Extraction
+3. Edge Extraction
+4. Network Organization
 
 These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) Section: **Workflow-Specific Parameters**. The graphical curator interface opens after the vertex and edge steps by default as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) Section: **Logistical Parameters**.
 # Tutorial Contents
@@ -57,21 +57,21 @@ A|B|C
 
 <!--Images 1-2:-->
 ### Wrapper Script
-Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), as well as running a subset (e.g. energy and vertices) of the consecutive workflows. The vectorization software allows the user to pick up in the middle or re-run parts of the vectorization with different parameters or curations. Wrapper scripts are not required, as all of the input parameters and image files and locations are automatically saved in the output ```batch_*``` folder.
+Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), as well as running a subset (e.g. Energy Filtering and Vertex Extraction) of the consecutive workflows. The vectorization software allows the user to pick up in the middle or re-run parts of the vectorization with different parameters or curations. Wrapper scripts are not required, as all of the input parameters and image files and locations are automatically saved in the output ```batch_*``` folder.
 **Image A Input File Location Selection** | **Starting Workflow Step Selection**
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
 
 ## Energy Image
-Default energy filtering processing parameters (purely Gaussian kernel) will work well for the images demonstrated here. If instead of the lumen, the vessel wall is illuminated, try starting with an 80/20 Gaussian/Ideal mixture, and a 50/50 annular/spherical ratio. After running the first step ("energy") of the SLAVV workflow, vessels in the requested size range should have dark centerlines in the "energy" image.
+Default Energy Filtering processing parameters (purely Gaussian kernel) will work well for the images demonstrated here. If instead of the lumen, the vessel wall is illuminated, try starting with an 80/20 Gaussian/Ideal mixture, and a 50/50 annular/spherical ratio. After running the first step (```'energy'```) of the SLAVV workflows, vessels in the requested size range should have dark centerlines in the "Energy" Image.
 
-#### Minimum intensity projection of the first 100 microns of each the three energy-filtered images:
+#### Minimum intensity projection of the first 100 microns of each the three Energy-Filtered images:
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
 
 ## GCI Overview
-After vertices are automatically extracted (as local minima) from the energy image, the user can curate the vertex objects. The Graphical Curator Interface (GCI) has four windows (starting in top right and moving counter-clockwise):
+After vertices are automatically extracted (as local minima) from the Energy Image, the user can curate the vertex objects. The Graphical Curator Interface (GCI) has four windows (starting in top right and moving counter-clockwise):
 1. [Volume Map](#Volume-Map)
 2. [Volume Display](#Volume-Display)
 3. [Intensity Histogram](#Intensity-Histogram)
@@ -113,9 +113,9 @@ The **Intensity Histogram** window shows the user the distribution of pixel-inte
 The **Energy Histogram** window shows the user the distribution of vector-energies in the FOV, allowing the user to:
 - set brightness and contrast of these objects accordingly,
 - toggle the display mode between the "Graded" and "Binary" versions of the vector object brightnesses, and
-- Set the energy threshold value, assigning all vectors above that energy value in the current FOV to false.
+- Set the Energy threshold value, assigning all vectors above that Energy value in the current FOV to false.
 
-#### This example curator screenshot of shows how the curator looks when the user first opens the edge objects for Image A. The vectors shown are the unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the edge extraction step of SLAVV.
+#### This example curator screenshot of shows how the curator looks when the user first opens the edge objects for Image A. The vectors shown are the unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the Edge Extraction step of SLAVV.
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/40.png)||
@@ -124,7 +124,7 @@ A|B|C
 ## Vertex Curation
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
-To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity (i.e. leave most vertices blue, even if they are false positives), but removes the many vertices in the extravascular regions of the image (owing to image noise).
+To select a threshold, use the middle text-entry box in the Energy Histogram window labeled "Threshold." Try to choose a threshold that ensures high sensitivity (i.e. leave most vertices blue, even if they are false positives), but removes the many vertices in the extravascular regions of the image (owing to image noise).
 #### Global Threshold Selection
 |A|B|C
 |:---: | :---: | :---:
@@ -137,7 +137,7 @@ Extend the thickness of the current field of view using the "Thickness" slider t
 #### Global Threshold Application
 A|B|C
 :---: | :---: | :---:
-Full FOV || Partial FOV
+Full-Depth FOV || Partial-Depth FOV
 ![](tutorial/14.png)||![](tutorial/12c.png)
 <!--Full FOV
 ![](tutorial/13b.png)-->
@@ -165,7 +165,7 @@ Use the display option on the Intensity and Energy Histogram windows to better i
 ![](tutorial/17.png)||-->
 <!--Images 20's:--> 
 ### Vertex Local Thresholding
-After making a low specificity global threshold, the user can navigate to the brighter regions of the original image to apply more specific local thresholds.
+After making a low specificity global threshold, navigate to the brighter regions of the original image to apply more specific local thresholds.
 #### Local Threshold Selection
 A|B|C
 :---: | :---: | :---:
@@ -205,11 +205,14 @@ Some vertices cannot be easily removed by thresholding and need to be selected i
 
 <!--Image  30's: -->
 ### Final Curated Vertex Set
-To be passed to the Edge Tracing step.
+These are the final curated vertex sets that were passed to the Edge Extraction step.
 |A|B|C
 | :---: | :---: | :---:
 |Full FOV|Full FOV|
 |![](tutorial/30.png)|![](tutorial/30b.png)|
+
+|A|B|C
+| :---: | :---: | :---:
 ||Partial FOV|
 ||![](tutorial/31b.png)|
 
@@ -217,7 +220,7 @@ To be passed to the Edge Tracing step.
 ## Edge Curation
 ### Volume Navigation
 Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
-#### Fly-through of (uncurated/unedited) automated edge extraction output
+#### Fly-through of (uncurated/unedited) automated Edge Extraction output
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/40.png)||
@@ -230,6 +233,7 @@ Use the "Depth" slider to navigate deeper into the volume. Select in the margin 
 |![](tutorial/47.png)||
 
 ### Edge Global Thresholding
+Use the Energy thresholding 
 |A|B|C
 | :---: | :---: | :---:
 ||![](tutorial/40c.png)
