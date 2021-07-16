@@ -11,7 +11,7 @@ These steps must be executed sequentially, starting with the "energy" step. The 
 # Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ## Table of Contents
-- [Input Images](#Input-images-and-Parameters)
+- [Input Images and Parameters](#Input-images-and-Parameters)
   - [Wrapper Script](#Wrapper-Script)
 - [Energy Images](#Energy-images)
 - [Curator Interface Overview](#GCI-Overview)
