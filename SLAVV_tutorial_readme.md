@@ -84,9 +84,9 @@ A|B|C
 
 ### Volume Map
 The **Volume Map** window shows the user:
-- the current 3D field of view (FOV) by highlighting the 2D projections on the face of the box.
-- The dimensions of the entire 3D volumetric image on the axes of the box in real spatial dimensions.
-- The voxel coordinates and total number of voxels in all 3 dimensions of the current FOV in a table.
+- the current 3D field of view (FOV) by highlighting the 2D projections on the face of the box,
+- The dimensions of the entire 3D volumetric image on the axes of the box in real spatial dimensions,
+- The voxel coordinates and total number of voxels in all 3 dimensions of the current FOV in a table, and
 - The volumes of influence of the previously applied threshold by painting red on the faces of the box.
 
 ### Volume Display
@@ -107,7 +107,7 @@ The **Volume Display** window gives the user vector object classification ("Togg
 - (for vertices and edges)
   - point-and-click individual object to swap its true/false (blue/red) status and
 - (just for vertices)
-  - drag a box around a group of objects to change all of them to true/false (blue/red), and
+  - drag a box around a group of objects to change all of them to true/false (blue/red).
 
 ### Intensity Histogram
 The **Intensity Histogram** window shows the user the distribution of pixel-intensities in the FOV, allowing the user to:
