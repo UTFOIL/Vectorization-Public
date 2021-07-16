@@ -124,17 +124,16 @@ A|B|C
 ## Vertex Curation
 Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
-To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity and OK specificity (i.e. leave most vertices blue, even if they are false positives). 
-#### Before Thresholding
+#### To select a good global threshold, go to the middle of the stack and choose a threshold that ensures high sensitivity and OK specificity (i.e. leave most vertices blue, even if they are false positives). 
 |A|B|C
 |:---: | :---: | :---:
+|Before Thresholding||
 |![](tutorial/10.png)||
-#### After Thresholding
-|A|B|C
+|After Thresholding||
 |:---: | :---: | :---:
 |![](tutorial/11.png)|||
 
-Extend the thickness of the current field of view to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
+#### Extend the thickness of the current field of view to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
 A|B|C
 :---: | :---: | :---:
 Full FOV || Partial FOV
