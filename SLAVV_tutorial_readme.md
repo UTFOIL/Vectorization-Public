@@ -303,16 +303,19 @@ of the output vectors using a .vmv file output to the VessMorphoVis plugin to Bl
 
 ![](tutorial/90.png)
 
-#### All six faces of the box volume (colorful images are coded by vessel radius)
+#### Six faces of the box volume (colorful images are coded by vessel radius)
 |A|B|C
 |:---:|:---:|:---:
 |![](tutorial/91.png)||![](tutorial/90c.png)
 |||![](tutorial/91c.png)
 |![](tutorial/92.png)||![](tutorial/92c.png)
 |![](tutorial/93.png)||![](tutorial/93c.png)
-|![](tutorial/94.png)||![](tutorial/94c.png)
-|![](tutorial/95.png)||![](tutorial/95c.png)
+|||![](tutorial/94c.png)
+|||![](tutorial/95c.png)
 
+<!--
+![](tutorial/94.png)
+![](tutorial/95.png)-->
 |A|B|C
 |:---:|:---:|:---:
 ||![](tutorial/90b.png)|
