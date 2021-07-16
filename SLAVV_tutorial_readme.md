@@ -7,7 +7,7 @@ The SLAVV software ([Supporting Functions](https://github.com/UTFOIL/Vectorizati
 3. Edge Extraction
 4. Network Organization
 
-These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) Section: **Workflow-Specific Parameters**. The graphical curator interface opens after the vertex and edge steps by default as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) Section: **Logistical Parameters**.
+These steps must be executed sequentially, starting with the "energy" step. The input parameters for each specific workflow are described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation) Section: **Workflow-Specific Parameters**. The SLAVV software automatically extracts vertices and edges from the Energy Image, and automatically organizes the edges and vertices into a graph representation of the network. The [Graphical Curator Interface (GCI)](GCI-Overview) opens after the Vertex and Edge Extraction steps by default as described in the Documentation Section: **Logistical Parameters**.
 # Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ## Table of Contents
@@ -71,7 +71,7 @@ A|B|C
 ![](tutorial/001.png)|![](tutorial/001b.png)|![](tutorial/001c.png)
 
 ## GCI Overview
-After the vertices are automatically extracted (as local minima) from the Energy Image, the user can curate these vertex objects. The Graphical Curator Interface (GCI, shown below) has four windows (starting in top right and moving counter-clockwise):
+The Graphical Curator Interface (GCI, shown below) has four windows (starting in top right and moving counter-clockwise):
 1. [Volume Map](#Volume-Map)
 2. [Volume Display](#Volume-Display)
 3. [Intensity Histogram](#Intensity-Histogram)
@@ -124,7 +124,7 @@ Note: The example curator screenshot shown in the "Anatomy of the GCI" image abo
 
 <!--Images 10's:-->
 ## Vertex Curation
-Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
+After the vertices are automatically extracted (as local minima) from the Energy Image, the user can curate these vertex objects. Vertices have both point-location and radial-sizing components, and should be considered true (blue color in curator) when both the location and size match a vessel in the underlying original image. The user can curate (classify as true/false) the vertices using local thresholding as well as point-and-click toggling. 
 ### Vertex Global thresholding
 To select a threshold, use the middle text-entry box in the Energy Histogram window labeled "Threshold." Try to choose a threshold that ensures high sensitivity (i.e. leave most vertices blue, even if they are false positives), but removes the many vertices in the extravascular regions of the image (owing to image noise).
 #### Global Threshold Selection
@@ -220,9 +220,10 @@ These are the final curated vertex sets that were passed to the Edge Extraction 
 
 <!--Images 40's:-->
 ## Edge Curation
+
 ### Volume Navigation
 Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
-#### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step
+#### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step of SLAVV. Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/40.png)||
@@ -253,6 +254,8 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 |||![](tutorial/44c.png)
 
 ### Orthogonal Views
+Use the "Z-Depth" or "Z-Thickness" button in the Volume Display window to change the direction of projection of the displayed MIP. Use an X or Y projection to get a better perspective on the penetrating vessels that are aligned with the Z-axis.
+#### Spotting missing vectors in descending vessels using a Y-projected display volume,
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/50.png)||
@@ -260,16 +263,23 @@ A|B|C
 ![](tutorial/52.png)||
 ![](tutorial/53.png)||
 ![](tutorial/54.png)||
-### Edge Addition  
+
+### Edge Addition
+Use the "Add" Button in the Volume Display window to add edges to existing vertices (shown in gold during edge curation). Select two vertices, one after the other, to connect them with a straight edge, which interpolates the vertex sizes across its length. Note: After selecting the add button, any vertices in the FOV that do not yet have connected edges (and are normally hidden to the user) will also be shown to the user in the Display Volume to serve as possible termini for the added edge.
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/60.png)||
 ![](tutorial/61.png)||
 ![](tutorial/62.png)||
 ![](tutorial/63.png)||
+
 ### Edge Toggling
-![](tutorial/70.png)
-![](tutorial/71.png)
+Use the "Toggle" button in the Volume Display window to point-and-click edges to toggle their true/false status. 
+A|B|C
+:---: | :---: | :---:
+![](tutorial/70.png)||
+![](tutorial/71.png)||
+
 ### Final Curated Edge Set
 #### MIP over the whole volume with graded edge color weighting.  
 |A|B|C
