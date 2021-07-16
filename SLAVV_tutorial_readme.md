@@ -298,8 +298,9 @@ This is the final curated edge set that was passed to the Network Organization s
 ||![](tutorial/79b.png)|
 
 ## Projections
-Maximum intensity projection outputs from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image. From left to right the color coding is: strand uniques, depth, and direction.
+Maximum intensity projection outputs from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.
 #### Color-Coded Projections
+Note: from left to right, the color coding is: strands (random color for each), depth, and direction.
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/80.png)||
@@ -328,7 +329,7 @@ A|B|C
 |||![](tutorial/81c.png)
 
 ## Visualizations
-Use the .vmv file output to export the vascular vectorization to the VessMorphoVis plugin to Blender to visualize the network in 3D with lighting and color-coding.  
+Use the ```*.vmv``` file output in the ```vectors``` directory of the ```batch_*``` folder to export the vascular vectorization to the VessMorphoVis plugin to Blender to visualize the network in 3D with lighting and color-coding.  
 
 #### VessMorphoVis plugin to Blender: Loading .vmv file output from SLAVV
 ![](tutorial/90.png)
