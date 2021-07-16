@@ -11,7 +11,7 @@ These steps must be executed sequentially, starting with the "energy" step. The 
 # Tutorial Contents
 This tutorial demonstrates the use of the graphical curator interface on three large (~1 mm<sup>3</sup>), images of living adult mouse brain microvasculature. The three images (**Image A**, **B**, and **C**) are all from the same mouse, approximately the same field of view, and timed 2 weeks apart. 
 ## Table of Contents
-- [Input Images](#Input-images)
+- [Input Images](#Input-images-and-Parameters)
   - [Wrapper Script](#Wrapper-Script)
 - [Energy Images](#Energy-images)
 - [Curator Interface Overview](#GCI-Overview)
@@ -47,7 +47,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 <!--
 ## Inputs and Parameters
 -->
-## Input Image
+## Input Images and Parameters
 To begin the vectorization process, input a raw TIF from a file location or a matrix from the MATLAB workspace into the [Main Function](https://github.com/UTFOIL/Vectorization-Public/blob/master/vectorize_V200.m), as described in the [Documentation](https://github.com/UTFOIL/Vectorization-Public#Documentation), Section: **Optional Input**. There is no pre-processing (interpolation, filtering, etc.) required. The software will prompt the user for all required inputs (e.g. size and shape of the voxels in microns, as well as processing parameters) if the inputs are not already input in NAME/VALUE pair format.
 
 #### Maximum intensity projections of the first 100 microns of each of the three **input** image stacks:
