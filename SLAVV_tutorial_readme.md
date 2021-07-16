@@ -228,9 +228,9 @@ Note:Red penned circles are pointing out missing parts of the vectorization that
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/40.png)||
-|![](tutorial/41.png)||
-|![](tutorial/42.png)||
-|![](tutorial/43.png)||
+|![](tutorial/41.png)||![](tutorial/41c.png)
+|![](tutorial/42.png)||![](tutorial/42c.png)
+|![](tutorial/43.png)||![](tutorial/43c.png)
 |![](tutorial/44.png)||
 |![](tutorial/45.png)||
 |![](tutorial/46.png)||
@@ -241,10 +241,10 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 #### Global Edge Thresholding 
 |A|B|C
 | :---: | :---: | :---:
-||![](tutorial/40c.png)
-||![](tutorial/41b.png)|![](tutorial/41c.png)
-||![](tutorial/42b.png)|![](tutorial/42c.png)
-||![](tutorial/43b.png)|![](tutorial/43c.png)
+||![](tutorial/40b.png)
+||![](tutorial/41b.png)|
+||![](tutorial/42b.png)|
+||![](tutorial/43b.png)|
 ||![](tutorial/44b.png)|![](tutorial/45c.png)
 ||![](tutorial/45b.png)|![](tutorial/46c.png)
 ||![](tutorial/46b.png)|
