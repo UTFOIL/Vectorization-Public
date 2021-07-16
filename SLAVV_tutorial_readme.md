@@ -261,15 +261,19 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 
 ### Orthogonal Views
 Use the "Z-Depth" or "Z-Thickness" button in the Volume Display window to change the direction of projection of the displayed MIP. Use an X or Y projection to get a better perspective on the penetrating vessels that are aligned with the Z-axis.
-#### Spotting missing vectors in descending vessels using a Y-projected display volume,
+#### Spotting missing vectors in descending vessels using a X- and Y-projected display volume
+Note: Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
 A|B|C
 :---: | :---: | :---:
+Narrow Y-Projected FOV||
 ![](tutorial/50.png)||
+Thicker Y-Projected FOV||
 ![](tutorial/51.png)||
+Narrow X-Projected FOV||
 ![](tutorial/52.png)||
-![](tutorial/53.png)||
+Thicker X-Projected FOV (annotated)||
 ![](tutorial/54.png)||
-
+<!--![](tutorial/53.png)||-->
 ### Edge Addition
 Use the "Add" Button in the Volume Display window to add edges to existing vertices (shown in gold during edge curation). Select two vertices, one after the other, to connect them with a straight edge, which interpolates the vertex sizes across its length. Note: After selecting the add button, any vertices in the FOV that do not yet have connected edges (and are normally hidden to the user) will also be shown to the user in the Display Volume to serve as possible termini for the added edge.
 A|B|C
