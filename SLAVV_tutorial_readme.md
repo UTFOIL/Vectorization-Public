@@ -77,7 +77,7 @@ The Graphical Curator Interface (GCI, shown below) has four windows (starting in
 3. [Intensity Histogram](#Intensity-Histogram)
 4. [Energy Histogram](#Energy-Histogram)
 
-#### Anatomy of the GCI
+### Anatomy of the GCI
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/40.png)||
