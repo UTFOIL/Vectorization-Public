@@ -137,8 +137,10 @@ To select a good global threshold, go to the middle of the stack and choose a th
 Extend the thickness of the current field of view to span the entire depth of the image stack in order to apply the threshold to the entire image (globally).
 A|B|C
 :---: | :---: | :---:
-Full FOV | Full FOV | Partial FOV
-![](tutorial/14.png)|![](tutorial/13b.png)|![](tutorial/12c.png)
+Full FOV || Partial FOV
+![](tutorial/14.png)||![](tutorial/12c.png)
+<!--Full FOV
+![](tutorial/13b.png)-->
 
 ### Display Options
 Use the display option on the Intensity and Energy Histogram windows to better inspect the effect of the threshold.
@@ -166,8 +168,8 @@ Use the display option on the Intensity and Energy Histogram windows to better i
 After making a low specificity global threshold, the user can navigate to the brighter regions of the original image to apply more specific local thresholds.
 A|B|C
 :---: | :---: | :---:
-![](tutorial/20.png)|![](tutorial/20b.png)|![](tutorial/20c.png)
-
+!|![](tutorial/20b.png)|![](tutorial/20c.png)
+<!--[](tutorial/20.png)-->
 Extending the depth in this FOV allows the user to apply this local threshold across all image slices.
 A|B|C
 :---: | :---: | :---:
