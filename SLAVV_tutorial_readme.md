@@ -223,7 +223,8 @@ These are the final curated vertex sets that were passed to the Edge Extraction 
 After the edges are automatically extracted (by tracing the Energy Image with the vertices as termini), the user can curate these edge objects. Edges consist of ordered lists of locations and sizes, which connect one vertex to another along the path of the edge. Edges should be considered status:true (color:blue) when both the locations and sizes match a vessel segment in the underlying original image. The user can curate (classify as true/false status) the edges using local thresholding as well as point-and-click toggling.
 ### Volume Navigation
 Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
-#### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step of SLAVV. Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
+#### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step of SLAVV. 
+Note:Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
 |A|B|C
 | :---: | :---: | :---:
 |![](tutorial/40.png)||
