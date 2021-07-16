@@ -38,7 +38,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 
 <!--The SLAVV methodology is described in the [Methodology Manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript). -->
 
-#### Note: In the following screenshots, depictions of: 
+#### Note: for the following screenshots, depictions of: 
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :---:|:---:|:---:
 ```-----------------A-----------------``` | ```-----------------B-----------------``` | ```-----------------C-----------------```
@@ -120,7 +120,7 @@ The **Energy Histogram** window shows the user the distribution of vector-energi
 - toggle the display mode between the "Graded" and "Binary" versions of the vector object brightnesses, and
 - Set the Energy threshold value, assigning all vectors above that Energy value in the current FOV to false.
 
-Note: The example curator screenshot shown in the "Anatomy of the GCI" image above is how the curator looks when the user first opens the edge objects for Image A. The vectors shown are the uncurated/unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the Edge Extraction step of SLAVV.
+Note: the example curator screenshot shown in the "Anatomy of the GCI" image above is how the curator looks when the user first opens the edge objects for Image A. The vectors shown are the uncurated/unedited (no red in Volume Map or Display) automatic output of the new (unreleased) version of the Edge Extraction step of SLAVV.
 
 <!--Images 10's:-->
 ## Vertex Curation
@@ -224,7 +224,7 @@ After the edges are automatically extracted (by tracing the Energy Image with th
 ### Volume Navigation
 Use the "Depth" slider to navigate deeper into the volume. Select in the margin of the slider to move the current FOV to the next adjacent, non-overlapping, FOV.
 #### Fly-through of the (uncurated/unedited) output of the new (unreleased) version of the automated Edge Extraction step of SLAVV. 
-Note: Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
+Note: red-penned circles are pointing out missing parts of the vectorization that need to be manually added.
 |A|B|C
 | :---: | :---: | :---:
 |||![](tutorial/40c.png)
@@ -262,7 +262,7 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 ### Orthogonal Views
 Use the "Z-Depth" or "Z-Thickness" button in the Volume Display window to change the direction of projection of the displayed MIP. Use an X or Y projection to get a better perspective on the penetrating vessels that are aligned with the Z-axis.
 #### Spotting missing vectors in descending vessels using a X- and Y-projected display volume
-Note: Red penned circles are pointing out missing parts of the vectorization that need to be manually added.
+Note: red-penned circles are pointing out missing parts of the vectorization that need to be manually added.
 A|B|C
 :---: | :---: | :---:
 Thin Y-Projected FOV||
@@ -275,7 +275,7 @@ Thick X-Projected FOV (annotated)||
 ![](tutorial/54.png)||
 <!--![](tutorial/53.png)||-->
 ### Edge Addition
-Use the "Add" Button in the Volume Display window to add edges to existing vertices (shown in gold during edge curation). Select two vertices, one after the other, to connect them with a straight edge, which interpolates the vertex sizes across its length. Note: After selecting the add button, any vertices in the FOV that do not yet have connected edges (and are normally hidden to the user) will also be shown to the user in the Display Volume to serve as possible termini for the added edge.
+Use the "Add" Button in the Volume Display window to add edges to existing vertices (shown in gold during edge curation). Select two vertices, one after the other, to connect them with a straight edge, which interpolates the vertex sizes across its length. Note: after selecting the add button, any vertices in the FOV that do not yet have connected edges (and are normally hidden to the user) will also be shown to the user in the Display Volume to serve as possible termini for the added edge.
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/60.png)||
@@ -297,7 +297,7 @@ This is the final curated edge set that was passed to the Network Organization s
 | :---: | :---: | :---:
 ||![](tutorial/79b.png)|
 
-### Projections
+## Projections
 Maximum intensity projection outputs from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image. From left to right the color coding is: strand uniques, depth, and direction.
 #### Color-Coded Projections
 A|B|C
@@ -312,8 +312,9 @@ A|B|C
 |:---: | :---: | :---:
 |||![](tutorial/80c.png)
 
-### Histograms
-Lateral area- or strand-weighted histograms of various statistics of interest from the vectors in the image. (Strands are vessel segments that connect bifurcations/endpoints to bifurcations/endpoints.)
+## Histograms
+Lateral area- or strand-weighted histograms of various statistics of interest from the vectorized vascular network in the input image. (Note: strands are vessel segments that connect bifurcations/endpoints to bifurcations/endpoints.)
+#### Network Histograms
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/81.png)||
@@ -326,7 +327,7 @@ A|B|C
 |:---: | :---: | :---:
 |||![](tutorial/81c.png)
 
-### Visualizations
+## Visualizations
 Use the .vmv file output to export the vascular vectorization to the VessMorphoVis plugin to Blender to visualize the network in 3D with lighting and color-coding.  
 
 #### VessMorphoVis plugin to Blender: Loading .vmv file output from SLAVV
