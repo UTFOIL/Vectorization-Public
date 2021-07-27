@@ -24,7 +24,7 @@ To vectorize an image using the SLAVV software in MATLAB, simply call [```vector
 
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_*.m```. (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
 
-The resulting vectorization can be export in standard file formats: ```*.vmv``` ([documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/btaa461_supplementary_data.pdf)) or ```*.casx``` ([documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/casxFileDocumentation.pdf)).
+The resulting vectorization can be exported in the standard file formats: ```*.vmv``` ([documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/btaa461_supplementary_data.pdf)) or ```*.casx``` ([documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/casxFileDocumentation.pdf)).
 
 ## Tutorial
 
