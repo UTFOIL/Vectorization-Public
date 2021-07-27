@@ -42,6 +42,7 @@ This tutorial demonstrates the use of the graphical curator interface on three l
 **Image A** are in the left column | **Image B** the center | and **Image C** the right
 :---:|:---:|:---:
 ```-----------------A-----------------``` | ```-----------------B-----------------``` | ```-----------------C-----------------```
+
 The three images (**Image A**, **B**, and **C**) are all from the same living mouse, approximately the same field of view, and timed 2 weeks apart. 
 
 <!--#### [This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains the screenshots demonstrating the use of the SLAVV software on **Images A**, **B**, and **C**.-->
