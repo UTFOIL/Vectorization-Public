@@ -25,9 +25,9 @@ To vectorize an image using the SLAVV software in MATLAB, simply call [```vector
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_*.m```. (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
 
 The resulting vectorization can be exported in the standard file formats: 
-- ```*.vmv``` ([VessMorphoVis plugin](https://github.com/BlueBrain/VessMorphoVis) to [Blender](https://www.blender.org/) due to [BBP](https://www.epfl.ch/research/domains/bluebrain/), described by [Abdellah et al. in Bioinformatics in 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7355309/) <!--and [documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/btaa461_supplementary_data.pdf)) -->
+- ```*.vmv``` [VessMorphoVis plugin](https://github.com/BlueBrain/VessMorphoVis) to [Blender](https://www.blender.org/) due to [BBP](https://www.epfl.ch/research/domains/bluebrain/), described by [Abdellah et al. in Bioinformatics in 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7355309/) <!--and [documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/btaa461_supplementary_data.pdf)) -->
 
-- ```*.casx```, Casx file format for storing vascular network data designed by G. Hartung and A. Linninger, UIC, 2016-2019. <!--[documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/casxFileDocumentation.pdf)) (due to [LPPD](https://lppd.bioe.uic.edu/)-->
+- ```*.casx``` Casx file format for storing vascular network data designed by G. Hartung and A. Linninger, UIC, 2016-2019. <!--[documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/casxFileDocumentation.pdf)) (due to [LPPD](https://lppd.bioe.uic.edu/)-->
 
 ## Tutorial
 
@@ -339,14 +339,16 @@ Copied here for reference:
 % 
 %% ------------------------------------------- Outputs -------------------------------------------- 
 %
-% Standard network ouptut format(s): .casx
+% Standard network ouptut format(s): .casx .vmv
 %
 % The vectorization output is the set of 3-space locations and radii of all vessels as well as 
 % their connectivity. This information is stored in several matlab variables in the network output 
 % file in the vector directory of the batch_* directory output of the Vectorize function. This 
 % vector information is also available in the casx file format if the user selects the 
-% 'SpecialOutputs'/'casx' name/value pair input. The .casx standard file is due to LPPD at 
-% University of Illinois at Chicago, Department of Bioengineering (https://lppd.bioe.uic.edu/)
+% 'SpecialOutputs'/'casx' name/value pair input. Casx file format for storing vascular network 
+% data designed by G. Hartung and A. Linninger, UIC, 2016-2019. Vmv file format is the VessMorphoVis 
+% plugin to Blender due to the Blue Brain Project, described by Abdellah et al. in Bioinformatics in 
+% 2020.
 %
 % TIME_STAMP = VECTORIZE( ... )
 %     returns the TIME_STAMP that was assigned to any new data or settings output
