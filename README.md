@@ -25,9 +25,10 @@ To vectorize an image using the SLAVV software in MATLAB, simply call [```vector
 Example inline calls can be found in the vectorization scripts, ```vectorization_script_*.m```. (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...), and in the [performance sensitivity to image quality testing script](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/noise_sensitivity_study_V2.m).
 
 The resulting vectorization can be exported in the standard file formats: 
-- ```*.vmv``` [VessMorphoVis plugin](https://github.com/BlueBrain/VessMorphoVis) to [Blender](https://www.blender.org/) due to [BBP](https://www.epfl.ch/research/domains/bluebrain/), described by [Abdellah et al. in Bioinformatics in 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7355309/) <!--and [documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/btaa461_supplementary_data.pdf)) -->
+- ```*.vmv``` [VessMorphoVis plugin](https://github.com/BlueBrain/VessMorphoVis) to [Blender](https://www.blender.org/) due to [BBP](https://www.epfl.ch/research/domains/bluebrain/), described by [Abdellah et al. in Bioinformatics in 2020](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7355309/) 
+- ```*.casx``` Casx file format ([documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/casxFileDocumentation.pdf)) for storing vascular network data designed by G. Hartung and A. Linninger, UIC, 2016-2019.
 
-- ```*.casx``` Casx file format for storing vascular network data designed by G. Hartung and A. Linninger, UIC, 2016-2019. <!--[documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/casxFileDocumentation.pdf)) (due to [LPPD](https://lppd.bioe.uic.edu/)-->
+<!--and [documentation](https://github.com/UTFOIL/Vectorization-Public/blob/master/references/btaa461_supplementary_data.pdf)) -->
 
 ## Tutorial
 
