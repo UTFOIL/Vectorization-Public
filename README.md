@@ -10,6 +10,7 @@ For summarizing and analyzing vascular networks from grayscale, volumetric image
 - [Vectorized Example Datasets](#Example-Datasets)
 - [Software (MATLAB) Documentation](#Documentation)
 - [Methodology Manuscript](#Methodology-Manuscript)
+- [Supplementary Figure](#Supplementary-Figure)
 
 #### Enjoy, leave comments/suggestions, download, change, share :) Please include the [LICENSE file](https://github.com/UTFOIL/Vectorization-Public/blob/master/LICENSE), ....
 
@@ -421,3 +422,7 @@ bibtex:
   publisher={Cold Spring Harbor Laboratory}
 }
 ```
+
+## Supplementary Figure
+
+Supplementary figure S1_fig is shared in [this folder](https://github.com/UTFOIL/Vectorization-Public/tree/master/S1_fig).
