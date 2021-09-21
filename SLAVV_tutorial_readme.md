@@ -60,7 +60,8 @@ A|B|C
 <!--Images 1-2:-->
 ### Wrapper Script
 Wrapper scripts (e.g. [Example 1](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_2017MMDD_TxRed_chronic.m), [Example 2](https://github.com/UTFOIL/Vectorization-Public/blob/master/source/vectorization_script_michael.m), ...) are useful for recording and rerunning the input parameters that were used (image locations, resolutions, etc.), as well as re-running a subset (e.g. starting with ```'vertices'``` or ```'edges'```) of the workflows. The vectorization software allows the user to pick up in the middle or re-run parts of the vectorization with different parameters or curations. Wrapper scripts are not required, as all of the input parameters and image files and locations are automatically saved in the output ```batch_*``` folder.
-**Image A Input File Location Selection** | **Starting Workflow Step Selection**
+
+**Image A Input File Location Selection**| **Starting Workflow Step Selection**
 :---: | :---:
 ![](tutorial/1.png)|![](tutorial/2.png)
 
@@ -265,6 +266,7 @@ Use the "Threshold" text-entry box in the Energy Histogram window to set a thres
 Use the "Z-Depth" or "Z-Thickness" button in the Volume Display window to change the direction of projection of the displayed MIP. Use an X or Y projection to get a better perspective on the penetrating vessels that are aligned with the Z-axis.
 #### Spotting missing vectors in descending vessels using a X- and Y-projected display volume
 Note: red-penned circles are pointing out missing parts of the vectorization that need to be manually added.
+
 A|B|C
 :---: | :---: | :---:
 Thin Y-Projected FOV||
@@ -278,6 +280,7 @@ Thick X-Projected FOV (annotated)||
 <!--![](tutorial/53.png)||-->
 ### Edge Addition
 Use the "Add" Button in the Volume Display window to add edges to existing vertices (shown in gold during edge curation). Select two vertices, one after the other, to connect them with a straight edge, which interpolates the vertex sizes across its length. Note: after selecting the add button, any vertices in the FOV that do not yet have connected edges (and are normally hidden to the user) will also be shown to the user in the Display Volume to serve as possible termini for the added edge.
+
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/60.png)||
@@ -287,6 +290,7 @@ A|B|C
 
 ### Edge Toggling
 Use the "Toggle" button in the Volume Display window to point-and-click edges to toggle their true/false status. 
+
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/70.png)||
@@ -303,6 +307,7 @@ This is the final curated edge set that was passed to the Network Organization s
 Maximum intensity projection outputs from the middle (1/3 in all 3 dimensions) of the vectors overlaying the image.
 #### Color-Coded Projections
 Note: from left to right, the color coding is: strands (random color for each), depth, and direction.
+
 A|B|C
 :---: | :---: | :---:
 ![](tutorial/80.png)||
