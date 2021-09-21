@@ -426,4 +426,4 @@ bibtex:
 ## Supplementary Figure
 
 Supplementary figure S1_fig is shared below and in [this folder](https://github.com/UTFOIL/Vectorization-Public/tree/master/S1_fig).
-![](https://github.com/UTFOIL/Vectorization-Public/blob/master/S1_fig/Figure2%20comparison.pdf)
+![](S1_fig/Figure2%20comparison.pdf)
