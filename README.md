@@ -408,6 +408,22 @@ Copied here for reference:
 
 ## Methodology Manuscript
 
+[```https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009451```](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009451)
+
+```
+@article{mihelic2021segmentation,
+  title={Segmentation-Less, Automated, Vascular Vectorization},
+  author={Mihelic, Samuel A and Sikora, William A and Hassan, Ahmed M and Williamson, Michael R and Jones, Theresa A and Dunn, Andrew K},
+  journal={PLOS Computational Biology},
+  volume={17},
+  number={10},
+  pages={e1009451},
+  year={2021},
+  publisher={Public Library of Science San Francisco, CA USA}
+}
+```
+
+
 BioRxiv pre-print:
 
 [```https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf```](https://www.biorxiv.org/content/biorxiv/early/2020/06/16/2020.06.15.151076.full.pdf)
