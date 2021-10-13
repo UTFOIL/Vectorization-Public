@@ -408,6 +408,8 @@ Copied here for reference:
 
 ## Methodology Manuscript
 
+Public Library of Science, Computational Biology (PLOS CompBio) publication:
+
 [```https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009451```](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1009451)
 
 ```
