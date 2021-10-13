@@ -38,7 +38,7 @@ The resulting vectorization can be exported in the documented file formats:
 ## Tutorial
 
 <!--[This folder](https://github.com/UTFOIL/Vectorization-Public/blob/master/tutorial/) contains screenshots-->
-[Demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>), images of living adult mouse brain vasculature. The three images are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
+[Demonstrating](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md) the use of the graphical curator interface (built-into the SLAVV software) on three large (~1 mm<sup>3</sup>) images of living adult mouse brain vasculature. The three images are all from the same mouse, approximately the same field of view, and timed 2 weeks apart.
 
 ## Example Datasets
 
