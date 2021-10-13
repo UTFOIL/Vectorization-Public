@@ -42,9 +42,9 @@ The resulting vectorization can be exported in the documented file formats:
 
 ## Example Datasets
 
-[This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) and [this repository](https://doi.org/10.18738/T8/NA08NU) contain the three example images as they were processed for the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript) (_distinct_ from the three images used in the [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md)).  
+[This Google Drive folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) and [this Texas Digital Library repository](https://doi.org/10.18738/T8/NA08NU) contain the three example images as they were processed for the [SLAVV methodology manuscript](https://github.com/UTFOIL/Vectorization-Public#Methodology-Manuscript) (_distinct_ from the three images used in the [Tutorial](https://github.com/UTFOIL/Vectorization-Public/blob/master/SLAVV_tutorial_readme.md)).  
   
-Each of the three ```Image *``` folders in [This folder](https://drive.google.com/drive/folders/1IO9PmpO0W_E1UaedvzdP5_PzHzfYGO_m?usp=sharing) contains:  
+Each of the three ```Image *``` directories contains:  
 	- The original image under its original title as a ```*.tif```  
 	- The wrapper script that was used to vectorize that image in a ```vectorization_script_*.m``` file  
 	- All of the vectorization intermediates and outputs in a ```batch_*``` folder
