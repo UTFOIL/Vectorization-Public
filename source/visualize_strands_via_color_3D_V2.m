@@ -1,6 +1,6 @@
 function visualize_strands_via_color_3D_V2( strand_subscripts, max_strand_energies,                 ...
-                                            microns_per_pixel_xy, lumen_radius_in_pixels_range,     ...
-                                            resolution_factor, y_limits, x_limits, z_limits, contrast_limit )
+                                            microns_per_pixel_min, lumen_radius_in_pixels_range,     ...
+                                            resolution_factor, y_limits, x_limits, z_limits, contrast_limit, ROI_name, network_handle, color_code )
 %% SAM 12/12/17 
 % adapted from the function with the same name in the folder AA
 %
@@ -116,12 +116,25 @@ strand_subscripts         =         strand_subscripts( indices_sorted_by_mean );
 max_strand_energies( max_strand_energies >   contrast_limit ) = 0   ;
 max_strand_energies( max_strand_energies <=  contrast_limit ) = 1   ;
 
-% interpolate vectors in z to be consistent with xy
-resolution_factors = resolution_factor * lumen_radius_in_pixels_range( 1, 1 ) ./ lumen_radius_in_pixels_range( 1, : );
+% interpolate vectors to be isotropic consistent with the dimension with the best resolution and
+% then scale by the resolution_factor
+resolution_factors = resolution_factor     * max( lumen_radius_in_pixels_range( 1, : )) ./ lumen_radius_in_pixels_range( 1, : );
+microns_per_voxel  = microns_per_pixel_min * max( lumen_radius_in_pixels_range( 1, : )) ./ lumen_radius_in_pixels_range( 1, : ); % SAM 4/23/21
 
 y_limits = round(( y_limits - 1 ) * resolution_factors( 1 )) + 1 ;
 x_limits = round(( x_limits - 1 ) * resolution_factors( 2 )) + 1 ;
 z_limits = round(( z_limits - 1 ) * resolution_factors( 3 )) + 1 ;
+
+% calculate unit vectors of strands
+
+strand_positions = cellfun( @( x ) x( :, 1 : 3 ) .* microns_per_voxel, strand_subscripts, 'UniformOutput', false );
+
+strand_starts  = cell2mat( cellfun( @( x ) x(   1, : ), strand_positions, 'UniformOutput', false ));
+strand_ends    = cell2mat( cellfun( @( x ) x( end, : ), strand_positions, 'UniformOutput', false ));
+strand_vectors = strand_starts - strand_ends ;
+strand_lengths = sum( strand_vectors .^ 2, 2 ) .^ 0.5 ;
+
+strand_unit_directions_abs = abs( strand_vectors ) ./ strand_lengths ;
 
 % double the number of entries in the size look up table ( resolution_factor( 4 ) == 2 )
 [ ~, lumen_radius_in_pixels_range, strand_subscripts ] ...
@@ -146,11 +159,11 @@ size_of_outer_crop = size_of_inner_crop + 2 * outer_crop_margin ;
 for scale_index = 1 : number_of_scales
 
     % find all pixel locations within the ellipsoid radii from the vertex position
-    structuring_element_linear_indexing{ scale_index }                                                        ...
-        = construct_structuring_element_V190( lumen_radius_in_pixels_range( scale_index, : ),     size_of_outer_crop );
+    structuring_element_linear_indexing{ scale_index }                                                               ...
+        = construct_structuring_element( lumen_radius_in_pixels_range( scale_index, : ),     size_of_outer_crop );
     
-    coloring_element_linear_indexing{ scale_index }                                                           ...
-        = construct_structuring_element_V190( lumen_radius_in_pixels_range( scale_index, : ) + 1, size_of_outer_crop );
+       coloring_element_linear_indexing{ scale_index }                                                               ...
+        = construct_structuring_element( lumen_radius_in_pixels_range( scale_index, : ) + 1, size_of_outer_crop );
             
 end % scale FOR
 
@@ -320,22 +333,34 @@ number_of_strands     = numel( strand_subscripts );
 
 if is_box_in_center
 
-    random_colormap = 0.1 + 0.8 * rand( number_of_strands + 1, 3 ); % default matlab colormaps have 64 values
+    custom_colormap = 0.1 + 0.8 * rand( number_of_strands + 1, 3 ); % default matlab colormaps have 64 values
 
     % % set the first entry to gray and reserve it for the box
-    random_colormap( 1, : ) = 0.9 ;
+    custom_colormap( 1, : ) = 0.9 ;
 
     strand_index_image = strand_index_image + 1 ;
 
 else
     
-    random_colormap = 0.1 + 0.8 * rand( number_of_strands, 3 ); % default matlab colormaps have 64 values
+    switch color_code
+    
+        case 'strands'
+            
+            custom_colormap = 0.1 + 0.8 * rand( number_of_strands, 3 ); % default matlab colormaps have 64 values
 
+        case 'directions'
+            
+            custom_colormap = strand_unit_directions_abs ;
+            
+    end
+            
 end
 
-figure
+h = figure;
 
-colormap( random_colormap )
+set( h, 'Name', [ network_handle, '_', ROI_name, ' Strands 3D' ])
+
+colormap( custom_colormap )
 
 strands_image = strands_image( 1 + outer_crop_margin : size_of_outer_crop( 1 ) - outer_crop_margin, ...
                                1 + outer_crop_margin : size_of_outer_crop( 2 ) - outer_crop_margin, ...
@@ -398,7 +423,7 @@ end
 isonormals( strands_image,p)
 
 % convert the vertex coordinates to microns
-p.Vertices      = ( p.Vertices      - 1 ) / resolution_factor * microns_per_pixel_xy ;
+p.Vertices      = ( p.Vertices      - 1 ) / resolution_factor * microns_per_pixel_min ;
 % p.VertexNormals =   p.VertexNormals       * resolution_factor / microns_per_pixel_xy ; % transpose of the inverse transformation is done to normals (simplifies to a purely scaling transformation)
 % p.VertexNormals = p.VertexNormals ./ sum( p.VertexNormals .^ 2, 2 ) .^ 0.5 ;
 

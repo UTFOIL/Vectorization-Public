@@ -59,7 +59,7 @@ for scale_index = 1 : number_of_scales
 
     % find all pixel locations within the ellipsoid radii from the vertex position
     structuring_element_linear_indexing{ scale_index }                                         ...
-        = construct_structuring_element_V190( ellipsoid_radii_in_voxels( scale_index, : ), size_of_image );
+        = construct_structuring_element( ellipsoid_radii_in_voxels( scale_index, : ), size_of_image );
         
 end % scale FOR
 

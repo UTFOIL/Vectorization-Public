@@ -1,6 +1,6 @@
 function visualize_strands_via_color_V200( strand_subscripts, vessel_directions, max_strand_energies, ...
                                            pixels_per_sigma_range, sigma_per_size, data_directory,          ...
-                                           original_handle, y_limits, x_limits, z_limits,                ...
+                                           original_handle, network_handle, y_limits, x_limits, z_limits,                ...
                                            intensity_limits, is_inverted_original, are_vectors_opaque, color_code, microns_per_voxel )
 %% SAM 12/12/17 
 % adapted from the function with the same name in the folder AA
@@ -199,7 +199,7 @@ for scale_index = 1 : number_of_scales
 
     % find all pixel locations within the ellipsoid radii from the vertex position
     structuring_element_linear_indexing{ scale_index }                                              ...
-        = construct_structuring_element_V190( radii_in_pixels_range( scale_index, : ), size_of_crop );
+        = construct_structuring_element( radii_in_pixels_range( scale_index, : ), size_of_crop );
     
 %     % erase redundant indices due to the smushing of the 3rd dimension
 %     structuring_element_linear_indexing{ scale_index }               ...
@@ -323,8 +323,10 @@ end % for strand
 
 if strcmp( color_code, 'directions' )
     
-    figure
+    h = figure;
 
+    set( h, 'Name', 'Directions Color Sphere' )
+    
     % from https://www.mathworks.com/help/matlab/ref/isocolors.html
     radius_of_sphere = 20 ;
 
@@ -409,23 +411,53 @@ else
         
 end
 
-figure
+h = figure;
+
+switch color_code
+
+    case        'depth' , name =       'Depth' ;
+    case      'strands' , name =     'Strands' ;
+    case   'directions' , name =   'Direction' ;
+    case 'z-directions' , name = 'Z-Direction' ;
+
+end
+
+set( h, 'Name', [ network_handle, '_', original_handle( 10 : end ), ' ', name, ' Projection' ]) % first 9 characters: original_
 
 image( composite_image )
 
 tick_spacing = 50 ; % microns
 
-set( gca, 'XTick',      0 : tick_spacing / microns_per_voxel( 2 ) :   size_of_crop( 2 )                         );
-set( gca, 'XtickLabel', 0 : tick_spacing                          :   size_of_crop( 2 ) * microns_per_voxel( 2 ));
+asdf =  ceil( y_limits( 1 ) * microns_per_voxel( 1 ) / tick_spacing ) ...
+     : floor( y_limits( 2 ) * microns_per_voxel( 1 ) / tick_spacing );...
+     
+y_Tick_labels = asdf * tick_spacing ;
+ 
+y_Ticks = y_Tick_labels / microns_per_voxel( 1 );
 
-set( gca, 'YTick',      0 : tick_spacing / microns_per_voxel( 1 ) :   size_of_crop( 1 )                         );
-set( gca, 'YtickLabel', 0 : tick_spacing                          :   size_of_crop( 1 ) * microns_per_voxel( 1 ));
+y_Ticks_registered = y_Ticks - y_limits( 1 ) ;
 
-set( gca, 'TickLength', [ 0, 0 ])
+set( gca, 'YTick',      y_Ticks_registered );
+set( gca, 'YtickLabel', y_Tick_labels      );
+
+asdf =  ceil( x_limits( 1 ) * microns_per_voxel( 2 ) / tick_spacing ) ...
+     : floor( x_limits( 2 ) * microns_per_voxel( 2 ) / tick_spacing );...
+     
+x_Tick_labels = asdf * tick_spacing ;
+ 
+x_Ticks = x_Tick_labels / microns_per_voxel( 2 );
+
+x_Ticks_registered = x_Ticks - x_limits( 1 ) ;
+
+set( gca, 'XTick',      x_Ticks_registered );
+set( gca, 'XtickLabel', x_Tick_labels      );
+
+set( gca, 'TickLength', [ 0.01, 0.01 ], 'TickDir', 'out' )
 
 xlabel('microns')
 
-daspect([ 1 1 1 ])
+% daspect([ 1 1 1 ])
+daspect( microns_per_voxel )
 
 switch color_code
     

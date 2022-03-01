@@ -59,8 +59,14 @@ function [ flow_field, tissue_type_image ]                                      
 % V3 also, removed the sigma_per_size factor and renamed pixels_per_sigma_range to
 % lumen_radius_in_pixels_range
 
+% !!! consider writing the flow field not in overwriting of cumulative fasion but in a cumulative
+% average fashion. (flow field cumulative and a weighting factor cumulative (which has a disk or
+% ellipsoidal shape containing the cross-section of interest). see the depth and direction
+% vissualizations for example). Keep in mind that two adjacent vessels with flows 180 degrees to
+% each other will average to no flow !!!
+
 % these dimensions will be permuted later to be consistent with the version comment above
-flow_field = zeros([ 3, size_of_image ]);
+flow_field = zeros([ 3, size_of_image ]); % ??? where does it get permuted???
 
 tissue_type_image = zeros( size_of_image );
 centerlines_image = zeros( size_of_image );
@@ -97,7 +103,7 @@ for scale_index = 1 : number_of_scales
 
     % find all pixel locations within the ellipsoid radii from the vertex position
     [ structuring_element_linear_indexing{ scale_index }, structuring_element_subscripts ]                      ...
-            = construct_structuring_element_V190( lumen_radius_in_pixels_range( scale_index, : ), size_of_image );
+            = construct_structuring_element( lumen_radius_in_pixels_range( scale_index, : ), size_of_image );
             
     structuring_element_distances_from_center{ scale_index } = sum( structuring_element_subscripts .^ 2, 2 ) .^ 0.5 ;
 
@@ -143,7 +149,7 @@ for edge_index = 1 : number_of_edges
                                 1                                                                                             )) ...
             = tissue_types( edge_index );
                 
-        % label flow field in overwriting fasion.  Fill everywhere that would be filled in the
+        % label flow field in overwriting fashion.  Fill everywhere that would be filled in the
         % spheres image above, but instead of writing a single value in, fill with the 3D vector
         % representing the vessel directions.
         

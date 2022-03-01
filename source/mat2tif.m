@@ -11,48 +11,52 @@ digit_indices = regexp( input_data_type, '\d' );
 
 if isempty( digit_indices ) % double input goes to int16 output
     
-    bits_per_sample = 16 ;
+%     tagstruct.SampleFormat = Tiff.SampleFormat.Int;    
+    sample_format = 2 ; % Int, same as line above commented out
     
+    bits_per_sample = 16 ;
+        
     image_matrix = int16( image_matrix );
     
-    tagstruct.SampleFormat = Tiff.SampleFormat.Int;
-    
-else % assume unsigned integer input !!!!!
-    
+else
+        
     bits_per_sample = sscanf( input_data_type( digit_indices( 1 ) : end ), '%f' );
-
+    
+    sample_format   =  input_data_type( 1 : digit_indices( 1 ) - 1 );
+  
+    switch sample_format
+        
+        case  'int', sample_format = 2 ; %  int % !!!!!! int8 not supported in imageJ
+        case 'uint', sample_format = 1 ; % uint
+            
+    end     
 end
 
 tagstruct.Photometric = Tiff.Photometric.MinIsBlack;
 tagstruct.BitsPerSample = bits_per_sample ;
-tagstruct.SamplesPerPixel = 1; %added 11/1
+tagstruct.SampleFormat = sample_format ;
+tagstruct.SamplesPerPixel = 1; %added 11/1 !!!!!!!!!!!!!!! addd color (mutliple channel) handling here ?????????????????????
 tagstruct.PlanarConfiguration = Tiff.PlanarConfiguration.Chunky;
 tagstruct.Software = 'MATLAB'; %added 11/1
 
-tRaw = Tiff( tif_path, 'w' ); %Create tif file
+tif_h = Tiff( tif_path, 'w' ); %Create tif file
 
-tRaw.setTag( tagstruct ); %instantiate parameters
+tif_h.setTag( tagstruct ); %instantiate parameters
 
-% temp_raw = int16( image_matrix( :, :, 1 )); %create 16 bit signed values for image slice i of raw data
-temp_raw = image_matrix( :, :, 1 ); 
+tif_h.write( image_matrix( :, :, 1 )); 
 
-tRaw.write( temp_raw ); 
-
-tRaw.close( );
+tif_h.close( );
 
 for slice_index = 2 : number_of_slices
     
-%     temp_raw = int16( image_matrix( :, :, slice_index)); %create 16 bit signed values for image slice i of raw data
-    temp_raw = image_matrix( :, :, slice_index );
+    tif_h = Tiff( tif_path, 'a' ); %Create tif file
 
-    tRaw = Tiff( tif_path, 'a' ); %Create tif file
+    tif_h.setTag( tagstruct ); %instantiate parameters
 
-    tRaw.setTag( tagstruct ); %instantiate parameters
-
-    tRaw.write( temp_raw ); 
+    tif_h.write( image_matrix( :, :, slice_index )); 
 end
 
-tRaw.close( ); %close tif file
+tif_h.close( ); %close tif file
 
 end % FUNCTION
 

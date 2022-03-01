@@ -175,6 +175,12 @@ strand_index_range = 1 : number_of_strands ;
                      
 for strand_index = strand_index_range
     
+%     if any( strand_index == [ 317; 1018; 1020; 4074 ])
+%         
+%         warning('strand has placeholder verteices at endpoints, but these should be in the interior of the strand')
+%     
+%     end
+    
     possible_vertex_pairs_for_strand_interior                                                   ...
                     =   interior_vertices_in_strands{ strand_index }'                           ...
                     + ( interior_vertices_in_strands{ strand_index } - 1 ) * number_of_vertices ;

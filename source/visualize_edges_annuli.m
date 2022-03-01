@@ -70,7 +70,7 @@ for painting_iteration = 1 : 2
 
         % find all pixel locations within the ellipsoid radii from the vertex position
         structuring_element_linear_indexing{ scale_index }                                                                                     ...
-            = construct_structuring_element_V190( ellipsoid_radii_in_voxels( scale_index, : ) + vessel_wall_thickness_in_voxels, size_of_image_padded );
+            = construct_structuring_element( ellipsoid_radii_in_voxels( scale_index, : ) + vessel_wall_thickness_in_voxels, size_of_image_padded );
 
     end % scale FOR
 

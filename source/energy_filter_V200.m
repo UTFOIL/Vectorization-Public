@@ -57,20 +57,23 @@ function [ energy_chunk ]                                                       
 %
 % V200 in which the output is not cropped. SAM 12/10/18
 
-laplacian_all_the_way = true ; % the rest of teh time SAM
-% laplacian_all_the_way = false ; % 191202 SAM
+is_only_computing_Laplacian = false ; % SAM 12/10/21
+% is_only_computing_Laplacian = true ; % the rest of teh time SAM
+% is_only_computing_Laplacian = false ; % 191202 SAM
 
-if ~ laplacian_all_the_way
+if ~ is_only_computing_Laplacian
     
-    is_doing_eigenvalue_decomp = false ;
+%     is_doing_eigenvalue_decomp = false ;
+    is_doing_eigenvalue_decomp = true ; % SAM 12/10/21
 
 %     symmetry_ratio_factor = 1 ; 
-%     symmetry_ratio_factor = 2 ; 
-    symmetry_ratio_factor = 4 ; 
+        symmetry_ratio_factor = 2 ^ 0.5 ; % SAM 12/20/21
+%     symmetry_ratio_factor = 2 ; % SAM before 12/20/21
+%     symmetry_ratio_factor = 4 ; 
 
 end
 
-scales_per_octave_radius = scales_per_octave * 3 ;
+% scales_per_octave_radius = scales_per_octave * 3 ;
 
 % mesh generation for building the energy filter in the Fourier domain
 [ size_of_chunk_dft( 1 ), size_of_chunk_dft( 2 ), size_of_chunk_dft( 3 )] = size( chunk_dft );
@@ -99,16 +102,16 @@ z_micron_freq_mesh = z_pixel_freq_mesh / microns_per_pixel( 3 );
 % x_radial_freq_mesh = x_micron_freq_mesh * radius_of_lumen_in_microns ;
 % z_radial_freq_mesh = z_micron_freq_mesh * radius_of_lumen_in_microns ;
          
-y_micron_freq_mesh_squared = y_micron_freq_mesh .^ 2 ;
-x_micron_freq_mesh_squared = x_micron_freq_mesh .^ 2 ;
-z_micron_freq_mesh_squared = z_micron_freq_mesh .^ 2 ;
-         
-micron_freq_mesh = (   y_micron_freq_mesh_squared          ...
-                     + x_micron_freq_mesh_squared          ...
-                     + z_micron_freq_mesh_squared ) .^ 0.5 ;
-                     
-radial_freq_mesh = micron_freq_mesh * radius_of_lumen_in_microns ;
-                 
+% y_micron_freq_mesh_squared = y_micron_freq_mesh .^ 2 ;
+% x_micron_freq_mesh_squared = x_micron_freq_mesh .^ 2 ;
+% z_micron_freq_mesh_squared = z_micron_freq_mesh .^ 2 ;
+%          
+% micron_freq_mesh = (   y_micron_freq_mesh_squared          ...
+%                      + x_micron_freq_mesh_squared          ...
+%                      + z_micron_freq_mesh_squared ) .^ 0.5 ;
+%                      
+% radial_freq_mesh = micron_freq_mesh * radius_of_lumen_in_microns ;
+%                  
 % sigma_PSF_freq_mesh_squared = ( y_pixel_freq_mesh * pixels_per_sigma_PSF( 1 )) .^ 2 ...
 %                             + ( x_pixel_freq_mesh * pixels_per_sigma_PSF( 2 )) .^ 2 ...
 %                             + ( z_pixel_freq_mesh * pixels_per_sigma_PSF( 3 )) .^ 2 ;
@@ -118,302 +121,302 @@ radial_freq_mesh = micron_freq_mesh * radius_of_lumen_in_microns ;
 
 microns_per_sigma_PSF = pixels_per_sigma_PSF .* microns_per_pixel ;
                                                                   
-radius_of_lumen_in_voxels = radius_of_lumen_in_microns ./ microns_per_pixel ;
+% radius_of_lumen_in_voxels = radius_of_lumen_in_microns ./ microns_per_pixel ;
 
-switch matching_kernel_string
-    
-    case '3D gaussian'
-                
-%         sigma_freq_mesh = radial_freq_mesh ;
-        
-%         % add PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+%% matching kernel
+%     
+%     case '3D gaussian'
+%                 
+% %         sigma_freq_mesh = radial_freq_mesh ;
 %         
-%         radius_of_lumen_in_voxels = ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-        
-        % stably deconvolve PSF
-        y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 1 ) ^ 2, microns_per_sigma_PSF( 1 ) ^ 2 );
-        x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 2 ) ^ 2, microns_per_sigma_PSF( 2 ) ^ 2 );
-        z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 3 ) ^ 2, microns_per_sigma_PSF( 3 ) ^ 2 );
-
+% %         % add PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% %         
+% %         radius_of_lumen_in_voxels = ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+%         
 %         % stably deconvolve PSF
-%         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 1 ) ^ 2, max( microns_per_pixel( 1 ) / 2, microns_per_sigma_PSF( 1 )) ^ 2 );
-%         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 2 ) ^ 2, max( microns_per_pixel( 2 ) / 2, microns_per_sigma_PSF( 2 )) ^ 2 );
-%         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 3 ) ^ 2, max( microns_per_pixel( 3 ) / 2, microns_per_sigma_PSF( 3 )) ^ 2 );
-
-%         % current best
-%         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-
-% %         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, 2 * microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-
-        radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2 - microns_per_sigma_PSF .^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-
-%         radius_of_lumen_in_voxels( 1 ) = real( radius_of_lumen_in_voxels_temp( 1 )) + imag( sum( radius_of_lumen_in_voxels_temp([ 2, 3 ]))) / 2 ;
-%         radius_of_lumen_in_voxels( 2 ) = real( radius_of_lumen_in_voxels_temp( 2 )) + imag( sum( radius_of_lumen_in_voxels_temp([ 3, 1 ]))) / 2 ;
-%         radius_of_lumen_in_voxels( 3 ) = real( radius_of_lumen_in_voxels_temp( 3 )) + imag( sum( radius_of_lumen_in_voxels_temp([ 1, 2 ]))) / 2 ;
-
-%         % deconvolve PSF
-%         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * ( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 1 ) ^ 2 );
-%         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * ( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 2 ) ^ 2 );
-%         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * ( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 3 ) ^ 2 );
-
-%         % ignore PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * radius_of_lumen_in_microns ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * radius_of_lumen_in_microns ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * radius_of_lumen_in_microns ;
-
-%         radius_of_lumen_in_voxels = ( radius_of_lumen_in_microns ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-
-%         % never search below PSF
-%         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF( 1 ) ^ 2 );
-%         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF( 2 ) ^ 2 );
-%         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF( 3 ) ^ 2 );
+%         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 1 ) ^ 2, microns_per_sigma_PSF( 1 ) ^ 2 );
+%         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 2 ) ^ 2, microns_per_sigma_PSF( 2 ) ^ 2 );
+%         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 3 ) ^ 2, microns_per_sigma_PSF( 3 ) ^ 2 );
 % 
-%         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-        
-%         gaussian_PSF_kernel_dft = ones( size( y_radial_freq_mesh ));
-        
-%         squared_radial_freq_mesh_gaussian     = (   y_radial_freq_mesh .^ 2  ...
-%                                                   + x_radial_freq_mesh .^ 2  ...
-%                                                   + z_radial_freq_mesh .^ 2 );
-
-        squared_radial_freq_mesh_gaussian     = (   y_radial_freq_mesh_squared  ...
-                                                  + x_radial_freq_mesh_squared  ...
-                                                  + z_radial_freq_mesh_squared );
-                                      
-        matching_kernel_dft = exp( - pi ^ 2 * 2 * squared_radial_freq_mesh_gaussian );
-        
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-
-%         % ignore PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * radius_of_lumen_in_microns ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * radius_of_lumen_in_microns ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * radius_of_lumen_in_microns ;
-
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-
-%         % add PSF
-%         radius_of_lumen_in_voxels = ( radius_of_lumen_in_microns ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-    
-    case 'spherical pulse'
-        
-        radial_angular_freq_mesh = 2 * pi * radial_freq_mesh  ;
-
-        % this one will have a total sum of 1
-        matching_kernel_dft = 3 ./ ( radial_angular_freq_mesh .^ 2 )                           ...
-                        .* (   sin( radial_angular_freq_mesh ) ./ ( radial_angular_freq_mesh ) ...
-                             - cos( radial_angular_freq_mesh )                                 );
-
-        matching_kernel_dft( 1 ) = 1 ;
-
-%         % uncomment to have value inside sphere of approximately 1 (instead of sum to 1)
-%         spherical_volume_in_cubic_pxls = 4 / 3 * pi * radius_of_lumen_in_microns ^ 3 / prod( microns_per_pixel );   
+% %         % stably deconvolve PSF
+% %         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 1 ) ^ 2, max( microns_per_pixel( 1 ) / 2, microns_per_sigma_PSF( 1 )) ^ 2 );
+% %         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 2 ) ^ 2, max( microns_per_pixel( 2 ) / 2, microns_per_sigma_PSF( 2 )) ^ 2 );
+% %         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 3 ) ^ 2, max( microns_per_pixel( 3 ) / 2, microns_per_sigma_PSF( 3 )) ^ 2 );
 % 
-%         matching_kernel_dft = matching_kernel_dft * spherical_volume_in_cubic_pxls ;
-        
-    case '3D gaussian conv spherical pulse'
-        
-%         radius_of_lumen_in_voxels = radius_of_lumen_in_microns ./ microns_per_pixel ;
-
-%         A = 0.95 ; % percent of radius made up of Gaussian to that made of spherical pulse        
+% %         % current best
+% %         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
 % 
-%         A = 0.8 ; % percent of radius made up of Gaussian to that made of spherical pulse        
-%         A = 0.5 ; % percent of radius made up of Gaussian to that made of spherical pulse
-%         A = 0.2 ; % percent of radius made up of Gaussian to that made of spherical pulse
-
-
-%         maximum_Gaussian_length_in_voxels = 2 * [ 1, 1, 1 ];
-%         maximum_Gaussian_length_in_voxels = Inf * [ 1, 1, 1 ];
-%         maximum_Gaussian_length_in_voxels = [ 0, 0, 0 ];
-%         maximum_Gaussian_length_in_voxels = 3 * [ 1, 1, 1 ];
-%         maximum_Gaussian_length_in_voxels = [ 1, 1, 1 ];
-%         maximum_Gaussian_length_in_voxels = 5 * [ 1, 1, 1 ];
-%         maximum_Gaussian_length_in_voxels = 4 * [ 1, 1, 1 ];
-
-%         maximum_Gaussian_length_in_voxels = [ 3, 3, 2 ];
-        
-%         maximum_Gaussian_length_in_voxels = 2 * max( microns_per_pixel ) ./ microns_per_pixel ;
-%         maximum_Gaussian_length_in_voxels = max( microns_per_pixel ) ./ microns_per_pixel ;
-        
-%         maximum_Gaussian_length = max( 1.5 * microns_per_pixel );
-
-%         maximum_Gaussian_length = 0 ;
-        
-%         maximum_Gaussian_length = microns_per_pixel ;
-
-%         % current best
-%         maximum_Gaussian_length = max( 1.5 * microns_per_pixel + microns_per_sigma_PSF );
-        
-%                 maximum_Gaussian_length_in_voxels = 2 ;
-        
-        % !!! add a minimum Gaussian_length_in_voxels calculated as (requires extra input to fxn) !!
-%         minimum_Gaussian_length       = (   radius_of_lumen_in_microns( current  )  ...
-%                                           - radius_of_lumen_in_microns( previous )) ;
+% % %         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, 2 * microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
 % 
-%         maximum_Gaussian_length_in_voxels = max( maximum_Gaussian_length_in_voxels,           ...
-%                                                  minimum_Gaussian_length ./ microns_per_pixel );
-
-%         Gaussian_lengths = max(( microns_per_pixel .^ 2 - microns_per_sigma_PSF .^ 2 ) .^ 0.5, [ 0, 0, 0 ]);
-        
-%         Gaussian_lengths =   max( radius_of_lumen_in_voxels,         ...
-%                                                  minimum_Gaussian_length_in_microns  );    
-
-%         Gaussian_lengths =   min( radius_of_lumen_in_microns,     ...
-%                                                  Gaussian_lengths );
-        
-%         Gaussian_lengths = min( radius_of_lumen_in_microns,                             ...
-%                                                maximum_Gaussian_length_in_voxels .* microns_per_pixel );
-
-%         Gaussian_length = min( radius_of_lumen_in_microns, maximum_Gaussian_length );
-
-        radius_of_lumen_at_next_scale = radius_of_lumen_in_microns * 2 ^ ( 1 / scales_per_octave_radius );
-        
-%         Gaussian_lengths = max( microns_per_sigma_PSF, ( min( gaussian_to_ideal_ratio ^ 2 * ( radius_of_lumen_at_next_scale ^ 2 - radius_of_lumen_in_microns ^ 2 ), radius_of_lumen_in_microns ^ 2 ) - microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
-        Gaussian_lengths = max( microns_per_sigma_PSF, (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
-
-%         sphere_pulse_lengths = radius_of_lumen_in_microns - Gaussian_lengths ;
-
-        % assuming that the squared length of the combined kernel is the sum of the squared lengths
-        % of the two kernels being convolved.
-%         sphere_pulse_lengths_squared = max(( radius_of_lumen_in_microns ^ 2 - Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2 ), 0 );        
-        sphere_pulse_lengths_squared = max(( radius_of_lumen_in_microns ^ 2 - Gaussian_lengths .^ 2 + microns_per_sigma_PSF .^ 2 ), 0 );        
-%         sphere_pulse_length = max(( radius_of_lumen_in_microns ^ 2 - Gaussian_length ^ 2 ) ^ 0.5, 0 );
-                               
-%         y_radial_freq_mesh = y_micron_freq_mesh * sphere_pulse_length ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * sphere_pulse_length ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * sphere_pulse_length ;
-
-        y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 1 );
-        x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 2 );
-        z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 3 );
-
-%         radial_freq_mesh_sphere_pulse = (   y_radial_freq_mesh .^ 2          ...
-%                                           + x_radial_freq_mesh .^ 2          ...
-%                                           + z_radial_freq_mesh .^ 2 ) .^ 0.5 ;
-
-        radial_freq_mesh_sphere_pulse = (   y_radial_freq_mesh_squared          ...
-                                          + x_radial_freq_mesh_squared          ...
-                                          + z_radial_freq_mesh_squared ) .^ 0.5 ;
-                                      
-%         % stably deconvolve PSF
-%         deconvolved_Gaussian_lengths = max( Gaussian_length ^ 2 - microns_per_sigma_PSF .^ 2, 0 ) .^ 0.5 ;
+%         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2 - microns_per_sigma_PSF .^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+% 
+% %         radius_of_lumen_in_voxels( 1 ) = real( radius_of_lumen_in_voxels_temp( 1 )) + imag( sum( radius_of_lumen_in_voxels_temp([ 2, 3 ]))) / 2 ;
+% %         radius_of_lumen_in_voxels( 2 ) = real( radius_of_lumen_in_voxels_temp( 2 )) + imag( sum( radius_of_lumen_in_voxels_temp([ 3, 1 ]))) / 2 ;
+% %         radius_of_lumen_in_voxels( 3 ) = real( radius_of_lumen_in_voxels_temp( 3 )) + imag( sum( radius_of_lumen_in_voxels_temp([ 1, 2 ]))) / 2 ;
+% 
+% %         % deconvolve PSF
+% %         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * ( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 1 ) ^ 2 );
+% %         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * ( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 2 ) ^ 2 );
+% %         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * ( radius_of_lumen_in_microns ^ 2 -     microns_per_sigma_PSF( 3 ) ^ 2 );
+% 
+% %         % ignore PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * radius_of_lumen_in_microns ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * radius_of_lumen_in_microns ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * radius_of_lumen_in_microns ;
+% 
+% %         radius_of_lumen_in_voxels = ( radius_of_lumen_in_microns ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+% 
+% %         % never search below PSF
+% %         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF( 1 ) ^ 2 );
+% %         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF( 2 ) ^ 2 );
+% %         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF( 3 ) ^ 2 );
+% % 
+% %         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
 %         
-%         y_radial_freq_mesh = y_micron_freq_mesh * deconvolved_Gaussian_lengths( 1 );
-%         x_radial_freq_mesh = x_micron_freq_mesh * deconvolved_Gaussian_lengths( 2 );
-%         z_radial_freq_mesh = z_micron_freq_mesh * deconvolved_Gaussian_lengths( 3 );
-
-%         % add PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-        
-%         % ignore PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * Gaussian_length ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * Gaussian_length ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * Gaussian_length ;
-
-        y_radial_freq_mesh = y_micron_freq_mesh * Gaussian_lengths( 1 );
-        x_radial_freq_mesh = x_micron_freq_mesh * Gaussian_lengths( 2 );
-        z_radial_freq_mesh = z_micron_freq_mesh * Gaussian_lengths( 3 );
-
-%         gaussian_PSF_kernel_dft = ones( size( y_radial_freq_mesh ));
-        
-        radial_freq_mesh_gaussian     = (   y_radial_freq_mesh .^ 2          ...
-                                          + x_radial_freq_mesh .^ 2          ...
-                                          + z_radial_freq_mesh .^ 2 ) .^ 0.5 ;
-                                                                            
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( Gaussian_lengths( 1 ) ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( Gaussian_lengths( 2 ) ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( Gaussian_lengths( 3 ) ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_lengths( 1 ) ^ 2 + Gaussian_lengths( 1 ) ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_lengths( 2 ) ^ 2 + Gaussian_lengths( 2 ) ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_lengths( 3 ) ^ 2 + Gaussian_lengths( 3 ) ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-
-%         % add PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-
-%         % add PSF, derivative kernels at half sigma from origin
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 / 2 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 / 2 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 / 2 ;
-
-%         % stably deconvolve PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + deconvolved_Gaussian_lengths ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + deconvolved_Gaussian_lengths ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + deconvolved_Gaussian_lengths ^ 2 ) ^ 0.5 ;
-
-%         % ignore PSF
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 ) ^ 0.5 ;
-
-%         % variance of a rectangular distribution = length^2/12 = radius^2/3 
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_lengths( 1 ) ^ 2 / 3 + Gaussian_lengths( 1 ) ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_lengths( 2 ) ^ 2 / 3 + Gaussian_lengths( 2 ) ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_lengths( 3 ) ^ 2 / 3 + Gaussian_lengths( 3 ) ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-
-%         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 / 3 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 / 3 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 / 3 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
-
-        % only count blurring toward derivative weights
-%         y_radial_freq_mesh = y_micron_freq_mesh * Gaussian_length ;
-%         x_radial_freq_mesh = x_micron_freq_mesh * Gaussian_length ;
-%         z_radial_freq_mesh = z_micron_freq_mesh * Gaussian_length ;
-        
-%         radial_freq_mesh = radius_of_lumen_in_microns * micron_freq_mesh ;
+% %         gaussian_PSF_kernel_dft = ones( size( y_radial_freq_mesh ));
 %         
-%         radial_freq_mesh_gaussian     =       A   * radial_freq_mesh ;
+% %         squared_radial_freq_mesh_gaussian     = (   y_radial_freq_mesh .^ 2  ...
+% %                                                   + x_radial_freq_mesh .^ 2  ...
+% %                                                   + z_radial_freq_mesh .^ 2 );
+% 
+%         squared_radial_freq_mesh_gaussian     = (   y_radial_freq_mesh_squared  ...
+%                                                   + x_radial_freq_mesh_squared  ...
+%                                                   + z_radial_freq_mesh_squared );
+%                                       
+%         matching_kernel_dft = exp( - pi ^ 2 * 2 * squared_radial_freq_mesh_gaussian );
 %         
-%         radial_freq_mesh_sphere_pulse = ( 1 - A ) * radial_freq_mesh ;
-
-%         radial_freq_mesh_gaussian     = Gaussian_length * micron_freq_mesh ;
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% 
+% %         % ignore PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * radius_of_lumen_in_microns ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * radius_of_lumen_in_microns ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * radius_of_lumen_in_microns ;
+% 
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( radius_of_lumen_in_microns ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% 
+% %         % add PSF
+% %         radius_of_lumen_in_voxels = ( radius_of_lumen_in_microns ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+%     
+%     case 'spherical pulse'
 %         
-%         radial_freq_mesh_sphere_pulse = sphere_pulse_length * micron_freq_mesh ;
-
-        sigma_freq_mesh          =          radial_freq_mesh_gaussian     ;
-        
-        radial_angular_freq_mesh = 2 * pi * radial_freq_mesh_sphere_pulse ;
-        
-        % these will have total sums of 1        
-        gaussian_kernel_dft = exp( - pi ^ 2 * 2 * sigma_freq_mesh .^ 2 );
-
-%         spherical_pulse_kernel_dft                                                             ...
-%                     = 3 ./ ( radial_angular_freq_mesh .^ 2 )                                   ...
+%         radial_angular_freq_mesh = 2 * pi * radial_freq_mesh  ;
+% 
+%         % this one will have a total sum of 1
+%         matching_kernel_dft = 3 ./ ( radial_angular_freq_mesh .^ 2 )                           ...
 %                         .* (   sin( radial_angular_freq_mesh ) ./ ( radial_angular_freq_mesh ) ...
 %                              - cos( radial_angular_freq_mesh )                                 );
-
-        spherical_pulse_kernel_dft =  ( pi / 2 ./ radial_angular_freq_mesh ) .^ 0.5 ...
-                                   .* (   besselj( 2.5, radial_angular_freq_mesh )  ...
-                                        + besselj( 0.5, radial_angular_freq_mesh )) ;
-                                   
-        spherical_pulse_kernel_dft( radial_angular_freq_mesh == 0 ) = 1 ;
-
-%         spherical_pulse_kernel_dft = ones( size( y_radial_freq_mesh ));
-        
-        matching_kernel_dft = gaussian_kernel_dft .* spherical_pulse_kernel_dft ;
-                
-        % only count blurring toward derivative weights
-%         radius_of_lumen_in_voxels = ( Gaussian_length ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-%         radius_of_lumen_in_voxels = Gaussian_length ./ microns_per_pixel ;
-%         radius_of_lumen_in_voxels = deconvolved_Gaussian_lengths ./ microns_per_pixel ;
-        
-%         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-%         radius_of_lumen_in_voxels = Gaussian_lengths ./ microns_per_pixel ;
-        radius_of_lumen_in_voxels = max( Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
-
-%% filters for endogenous signal images (vessel walls (endothelial cells) are lit instead of lumens)
-
-    case '3D gaussian conv annular pulse'
+% 
+%         matching_kernel_dft( 1 ) = 1 ;
+% 
+% %         % uncomment to have value inside sphere of approximately 1 (instead of sum to 1)
+% %         spherical_volume_in_cubic_pxls = 4 / 3 * pi * radius_of_lumen_in_microns ^ 3 / prod( microns_per_pixel );   
+% % 
+% %         matching_kernel_dft = matching_kernel_dft * spherical_volume_in_cubic_pxls ;
+%         
+%     case '3D gaussian conv spherical pulse'
+%         
+% %         radius_of_lumen_in_voxels = radius_of_lumen_in_microns ./ microns_per_pixel ;
+% 
+% %         A = 0.95 ; % percent of radius made up of Gaussian to that made of spherical pulse        
+% % 
+% %         A = 0.8 ; % percent of radius made up of Gaussian to that made of spherical pulse        
+% %         A = 0.5 ; % percent of radius made up of Gaussian to that made of spherical pulse
+% %         A = 0.2 ; % percent of radius made up of Gaussian to that made of spherical pulse
+% 
+% 
+% %         maximum_Gaussian_length_in_voxels = 2 * [ 1, 1, 1 ];
+% %         maximum_Gaussian_length_in_voxels = Inf * [ 1, 1, 1 ];
+% %         maximum_Gaussian_length_in_voxels = [ 0, 0, 0 ];
+% %         maximum_Gaussian_length_in_voxels = 3 * [ 1, 1, 1 ];
+% %         maximum_Gaussian_length_in_voxels = [ 1, 1, 1 ];
+% %         maximum_Gaussian_length_in_voxels = 5 * [ 1, 1, 1 ];
+% %         maximum_Gaussian_length_in_voxels = 4 * [ 1, 1, 1 ];
+% 
+% %         maximum_Gaussian_length_in_voxels = [ 3, 3, 2 ];
+%         
+% %         maximum_Gaussian_length_in_voxels = 2 * max( microns_per_pixel ) ./ microns_per_pixel ;
+% %         maximum_Gaussian_length_in_voxels = max( microns_per_pixel ) ./ microns_per_pixel ;
+%         
+% %         maximum_Gaussian_length = max( 1.5 * microns_per_pixel );
+% 
+% %         maximum_Gaussian_length = 0 ;
+%         
+% %         maximum_Gaussian_length = microns_per_pixel ;
+% 
+% %         % current best
+% %         maximum_Gaussian_length = max( 1.5 * microns_per_pixel + microns_per_sigma_PSF );
+%         
+% %                 maximum_Gaussian_length_in_voxels = 2 ;
+%         
+%         % !!! add a minimum Gaussian_length_in_voxels calculated as (requires extra input to fxn) !!
+% %         minimum_Gaussian_length       = (   radius_of_lumen_in_microns( current  )  ...
+% %                                           - radius_of_lumen_in_microns( previous )) ;
+% % 
+% %         maximum_Gaussian_length_in_voxels = max( maximum_Gaussian_length_in_voxels,           ...
+% %                                                  minimum_Gaussian_length ./ microns_per_pixel );
+% 
+% %         Gaussian_lengths = max(( microns_per_pixel .^ 2 - microns_per_sigma_PSF .^ 2 ) .^ 0.5, [ 0, 0, 0 ]);
+%         
+% %         Gaussian_lengths =   max( radius_of_lumen_in_voxels,         ...
+% %                                                  minimum_Gaussian_length_in_microns  );    
+% 
+% %         Gaussian_lengths =   min( radius_of_lumen_in_microns,     ...
+% %                                                  Gaussian_lengths );
+%         
+% %         Gaussian_lengths = min( radius_of_lumen_in_microns,                             ...
+% %                                                maximum_Gaussian_length_in_voxels .* microns_per_pixel );
+% 
+% %         Gaussian_length = min( radius_of_lumen_in_microns, maximum_Gaussian_length );
+% 
+%         radius_of_lumen_at_next_scale = radius_of_lumen_in_microns * 2 ^ ( 1 / scales_per_octave_radius );
+%         
+% %         Gaussian_lengths = max( microns_per_sigma_PSF, ( min( gaussian_to_ideal_ratio ^ 2 * ( radius_of_lumen_at_next_scale ^ 2 - radius_of_lumen_in_microns ^ 2 ), radius_of_lumen_in_microns ^ 2 ) - microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
+%         Gaussian_lengths = max( microns_per_sigma_PSF, (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
+% 
+% %         sphere_pulse_lengths = radius_of_lumen_in_microns - Gaussian_lengths ;
+% 
+%         % assuming that the squared length of the combined kernel is the sum of the squared lengths
+%         % of the two kernels being convolved.
+% %         sphere_pulse_lengths_squared = max(( radius_of_lumen_in_microns ^ 2 - Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2 ), 0 );        
+%         sphere_pulse_lengths_squared = max(( radius_of_lumen_in_microns ^ 2 - Gaussian_lengths .^ 2 + microns_per_sigma_PSF .^ 2 ), 0 );        
+% %         sphere_pulse_length = max(( radius_of_lumen_in_microns ^ 2 - Gaussian_length ^ 2 ) ^ 0.5, 0 );
+%                                
+% %         y_radial_freq_mesh = y_micron_freq_mesh * sphere_pulse_length ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * sphere_pulse_length ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * sphere_pulse_length ;
+% 
+%         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 1 );
+%         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 2 );
+%         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 3 );
+% 
+% %         radial_freq_mesh_sphere_pulse = (   y_radial_freq_mesh .^ 2          ...
+% %                                           + x_radial_freq_mesh .^ 2          ...
+% %                                           + z_radial_freq_mesh .^ 2 ) .^ 0.5 ;
+% 
+%         radial_freq_mesh_sphere_pulse = (   y_radial_freq_mesh_squared          ...
+%                                           + x_radial_freq_mesh_squared          ...
+%                                           + z_radial_freq_mesh_squared ) .^ 0.5 ;
+%                                       
+% %         % stably deconvolve PSF
+% %         deconvolved_Gaussian_lengths = max( Gaussian_length ^ 2 - microns_per_sigma_PSF .^ 2, 0 ) .^ 0.5 ;
+% %         
+% %         y_radial_freq_mesh = y_micron_freq_mesh * deconvolved_Gaussian_lengths( 1 );
+% %         x_radial_freq_mesh = x_micron_freq_mesh * deconvolved_Gaussian_lengths( 2 );
+% %         z_radial_freq_mesh = z_micron_freq_mesh * deconvolved_Gaussian_lengths( 3 );
+% 
+% %         % add PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+%         
+% %         % ignore PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * Gaussian_length ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * Gaussian_length ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * Gaussian_length ;
+% 
+%         y_radial_freq_mesh = y_micron_freq_mesh * Gaussian_lengths( 1 );
+%         x_radial_freq_mesh = x_micron_freq_mesh * Gaussian_lengths( 2 );
+%         z_radial_freq_mesh = z_micron_freq_mesh * Gaussian_lengths( 3 );
+% 
+% %         gaussian_PSF_kernel_dft = ones( size( y_radial_freq_mesh ));
+%         
+%         radial_freq_mesh_gaussian     = (   y_radial_freq_mesh .^ 2          ...
+%                                           + x_radial_freq_mesh .^ 2          ...
+%                                           + z_radial_freq_mesh .^ 2 ) .^ 0.5 ;
+%                                                                             
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( Gaussian_lengths( 1 ) ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( Gaussian_lengths( 2 ) ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( Gaussian_lengths( 3 ) ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% 
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_lengths( 1 ) ^ 2 + Gaussian_lengths( 1 ) ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_lengths( 2 ) ^ 2 + Gaussian_lengths( 2 ) ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_lengths( 3 ) ^ 2 + Gaussian_lengths( 3 ) ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% 
+% %         % add PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% 
+% %         % add PSF, derivative kernels at half sigma from origin
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 / 2 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 / 2 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 / 2 ;
+% 
+% %         % stably deconvolve PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + deconvolved_Gaussian_lengths ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + deconvolved_Gaussian_lengths ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + deconvolved_Gaussian_lengths ^ 2 ) ^ 0.5 ;
+% 
+% %         % ignore PSF
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 + Gaussian_length ^ 2 ) ^ 0.5 ;
+% 
+% %         % variance of a rectangular distribution = length^2/12 = radius^2/3 
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_lengths( 1 ) ^ 2 / 3 + Gaussian_lengths( 1 ) ^ 2 + 2 * microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_lengths( 2 ) ^ 2 / 3 + Gaussian_lengths( 2 ) ^ 2 + 2 * microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_lengths( 3 ) ^ 2 / 3 + Gaussian_lengths( 3 ) ^ 2 + 2 * microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% 
+% %         y_radial_freq_mesh = y_micron_freq_mesh * ( sphere_pulse_length ^ 2 / 3 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 1 ) ^ 2 ) ^ 0.5 ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * ( sphere_pulse_length ^ 2 / 3 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 2 ) ^ 2 ) ^ 0.5 ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * ( sphere_pulse_length ^ 2 / 3 + Gaussian_length ^ 2 +     microns_per_sigma_PSF( 3 ) ^ 2 ) ^ 0.5 ;
+% 
+%         % only count blurring toward derivative weights
+% %         y_radial_freq_mesh = y_micron_freq_mesh * Gaussian_length ;
+% %         x_radial_freq_mesh = x_micron_freq_mesh * Gaussian_length ;
+% %         z_radial_freq_mesh = z_micron_freq_mesh * Gaussian_length ;
+%         
+% %         radial_freq_mesh = radius_of_lumen_in_microns * micron_freq_mesh ;
+% %         
+% %         radial_freq_mesh_gaussian     =       A   * radial_freq_mesh ;
+% %         
+% %         radial_freq_mesh_sphere_pulse = ( 1 - A ) * radial_freq_mesh ;
+% 
+% %         radial_freq_mesh_gaussian     = Gaussian_length * micron_freq_mesh ;
+% %         
+% %         radial_freq_mesh_sphere_pulse = sphere_pulse_length * micron_freq_mesh ;
+% 
+%         sigma_freq_mesh          =          radial_freq_mesh_gaussian     ;
+%         
+%         radial_angular_freq_mesh = 2 * pi * radial_freq_mesh_sphere_pulse ;
+%         
+%         % these will have total sums of 1        
+%         gaussian_kernel_dft = exp( - pi ^ 2 * 2 * sigma_freq_mesh .^ 2 );
+% 
+% %         spherical_pulse_kernel_dft                                                             ...
+% %                     = 3 ./ ( radial_angular_freq_mesh .^ 2 )                                   ...
+% %                         .* (   sin( radial_angular_freq_mesh ) ./ ( radial_angular_freq_mesh ) ...
+% %                              - cos( radial_angular_freq_mesh )                                 );
+% 
+%         spherical_pulse_kernel_dft =  ( pi / 2 ./ radial_angular_freq_mesh ) .^ 0.5 ...
+%                                    .* (   besselj( 2.5, radial_angular_freq_mesh )  ...
+%                                         + besselj( 0.5, radial_angular_freq_mesh )) ;
+%                                    
+%         spherical_pulse_kernel_dft( radial_angular_freq_mesh == 0 ) = 1 ;
+% 
+% %         spherical_pulse_kernel_dft = ones( size( y_radial_freq_mesh ));
+%         
+%         matching_kernel_dft = gaussian_kernel_dft .* spherical_pulse_kernel_dft ;
+%                 
+%         % only count blurring toward derivative weights
+% %         radius_of_lumen_in_voxels = ( Gaussian_length ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+% %         radius_of_lumen_in_voxels = Gaussian_length ./ microns_per_pixel ;
+% %         radius_of_lumen_in_voxels = deconvolved_Gaussian_lengths ./ microns_per_pixel ;
+%         
+% %         radius_of_lumen_in_voxels = max( radius_of_lumen_in_microns ^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+% %         radius_of_lumen_in_voxels = Gaussian_lengths ./ microns_per_pixel ;
+%         radius_of_lumen_in_voxels = max( Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+% 
+% %% filters for endogenous signal images (vessel walls (endothelial cells) are lit instead of lumens)
+% 
+%     case '3D gaussian conv annular pulse'
         
 %         radius_of_lumen_at_next_scale = radius_of_lumen_in_microns * 2 ^ ( 1 / scales_per_octave_radius );
         
@@ -426,16 +429,34 @@ switch matching_kernel_string
 
         % !!!! remove variable: vessel_wall_thickness_in_microns
 
-%         Gaussian_lengths = max( microns_per_sigma_PSF, (( symmetry_ratio_factor * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 - microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
-%         Gaussian_lengths = max( microns_per_sigma_PSF, (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
-        Gaussian_lengths = (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ;
-                                                          
+% %         Gaussian_lengths = max( microns_per_sigma_PSF, (( symmetry_ratio_factor * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 - microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
+% %         Gaussian_lengths = max( microns_per_sigma_PSF, (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 );
+% %         Gaussian_lengths = ( gaussian_to_ideal_ratio ^ 2 * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ; % SAM 12/8/21, worse than 11/8/21 but unbiased radius estimation
+%         Gaussian_lengths = gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) + [ 0, 0, 0 ]; % SAM 11/8/21 best to date, needs radius adjustmnet
+        Gaussian_lengths = gaussian_to_ideal_ratio * (( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ; % SAM 12/22/21
+
+%         target_microns_per_sigma_PSF_squared = mean( microns_per_sigma_PSF .^ 2 ); % correct half by (stable) deconvolution, blur the other half to achieve spherical blurring (and de-noising)
+% %         target_microns_per_sigma_PSF_squared = max( microns_per_sigma_PSF .^ 2 );
+%         
+%         corrective_microns_per_sigma_PSF_squared = target_microns_per_sigma_PSF_squared ... 
+%                                                  -                microns_per_sigma_PSF .^ 2 ;
+        
+%         Gaussian_lengths = max(( gaussian_to_ideal_ratio ^ 2 * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 + corrective_microns_per_sigma_PSF_squared ), 0 ) .^ 0.5 ; % SAM 12/9/21
+
+% %         Gaussian_lengths = max( [ 0, 0, 0 ], (( gaussian_to_ideal_ratio * (
+% %         radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 - microns_per_sigma_PSF .^ 2 ) .^ 0.5 ); % miserable fail
+% %         Gaussian_lengths = max([ 1, 1, 1 ], (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 - microns_per_sigma_PSF .^ 2 )) .^ 0.5 ; % 11/ 9 /21
+% %         Gaussian_lengths = max( microns_per_sigma_PSF .^ 2, (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 - microns_per_sigma_PSF .^ 2 )) .^ 0.5 ;
+        
         % assuming that the squared length of the combined kernel is the sum of the squared lengths
         % of the two kernels being convolved.
 %         annular_pulse_lengths_squared = max((( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 - Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2 ), 0 );        
 %         annular_pulse_lengths_squared = max((( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 - Gaussian_lengths .^ 2 + microns_per_sigma_PSF .^ 2 ), 0 );        
-        annular_pulse_lengths_squared = ( 1 - gaussian_to_ideal_ratio ^ 2 ) * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 ...
-                                      * [ 1, 1, 1 ];        
+%         annular_pulse_lengths_squared = max(([ 1, 1, 1 ] * ( 1 - gaussian_to_ideal_ratio ^ 2 ) * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 ), 0 );     % PREVIOUS VERSION for all of time   
+%         annular_pulse_lengths_squared = max(([ 1, 1, 1 ] * ( 1 - gaussian_to_ideal_ratio ^ 2 ) * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 - corrective_microns_per_sigma_PSF_squared ), 0 );        
+%         Gaussian_lengths              = max(                     ( gaussian_to_ideal_ratio ^ 2   * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 - microns_per_sigma_PSF .^ 2 ), 0 ) .^ 0.5 ; % SAM 12/9/21
+%         annular_pulse_lengths_squared =       ([ 1, 1, 1 ] * ( 1 - gaussian_to_ideal_ratio ^ 2 ) * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 + microns_per_sigma_PSF .^ 2 )             ;        
+        annular_pulse_lengths_squared =                      ( 1 - gaussian_to_ideal_ratio ^ 2 ) * (( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 + microns_per_sigma_PSF .^ 2 )  ; % SAM 12/22/21
 
         % spherical pulse addition section:
         
@@ -466,8 +487,9 @@ switch matching_kernel_string
 
 %         sphere_pulse_lengths_squared = max((  radius_of_lumen_in_microns                                          ^ 2 - Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2 ), 0 );        
 %         sphere_pulse_lengths_squared = max((  radius_of_lumen_in_microns                                          ^ 2 - Gaussian_lengths .^ 2 + microns_per_sigma_PSF .^ 2 ), 0 );       
-        sphere_pulse_lengths_squared = ( 1 - gaussian_to_ideal_ratio ^ 2 ) * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 ...
-                                     * [ 1, 1, 1 ];
+%         sphere_pulse_lengths_squared = ( 1 - gaussian_to_ideal_ratio ^ 2 ) * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ^ 2 ...
+%                                      * [ 1, 1, 1 ];
+        sphere_pulse_lengths_squared = annular_pulse_lengths_squared ; % SAM 12/16/21
                                
         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 1 );
         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 2 );
@@ -554,217 +576,266 @@ switch matching_kernel_string
 %         matching_kernel_dft = gaussian_kernel_dft .* ( annular_pulse_kernel_dft + A * spherical_pulse_kernel_dft ) / ( 1 + A );
         matching_kernel_dft = gaussian_kernel_dft .* (( 1 - spherical_to_annular_ratio ) * annular_pulse_kernel_dft + spherical_to_annular_ratio * spherical_pulse_kernel_dft );
         
-        % only count blurring toward derivative weights
-        radius_of_lumen_in_voxels = Gaussian_lengths ./ microns_per_pixel ;
+%         % BEGIN PSF correction section
+%         % correct for PSF without blurring by adding a spherical pulse with size equal to one sigma
+%         % of PSF
+% %         sphere_pulse_lengths_squared = microns_per_sigma_PSF .^ 2 ;
+%         sphere_pulse_lengths_squared = [ 1, 1, 1 ] * max( microns_per_sigma_PSF ) ^ 2 ;
+%                                
+%         y_radial_freq_mesh_squared = y_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 1 );
+%         x_radial_freq_mesh_squared = x_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 2 );
+%         z_radial_freq_mesh_squared = z_micron_freq_mesh .^ 2 * sphere_pulse_lengths_squared( 3 );
+% 
+%         radial_freq_mesh_sphere_pulse = (   y_radial_freq_mesh_squared          ...
+%                                           + x_radial_freq_mesh_squared          ...
+%                                           + z_radial_freq_mesh_squared ) .^ 0.5 ;
+%                      
+%         radial_angular_freq_mesh = 2 * pi * radial_freq_mesh_sphere_pulse ;
+%         
+%         PSF_correction_dft = ( pi / 2 ./ radial_angular_freq_mesh ) .^ 0.5 ...
+%                           .* (   besselj( 2.5, radial_angular_freq_mesh )  ...
+%                                + besselj( 0.5, radial_angular_freq_mesh )) ;
+%                                    
+%         PSF_correction_dft( radial_angular_freq_mesh == 0 ) = 1 ;
+%        % END PSF correctino section
+        
+%         matching_kernel_dft = matching_kernel_dft .* PSF_correction_dft ;
+        
+%         % only count blurring toward derivative weights
+%         radius_of_lumen_in_voxels = Gaussian_lengths ./ microns_per_pixel ; % SAM 11/8/21 best to date, needs radius adjustmnet
+        derivative_weights_from_blurring = Gaussian_lengths ./ microns_per_pixel ; % SAM 12/14/21
+
+%             Gaussian_lengths_in_pixels =             Gaussian_lengths        ./ microns_per_pixel ;
+%         
+%         sphere_pulse_lengths_in_pixels = sphere_pulse_lengths_squared .^ 0.5 ./ microns_per_pixel ;
+% 
+%         derivative_weights_from_blurring = (                Gaussian_lengths_in_pixels                                              ...
+%                                              .* (    [     Gaussian_lengths_in_pixels( 2 ) *     Gaussian_lengths_in_pixels( 3 ), ...
+%                                                            Gaussian_lengths_in_pixels( 3 ) *     Gaussian_lengths_in_pixels( 1 ), ...
+%                                                            Gaussian_lengths_in_pixels( 1 ) *     Gaussian_lengths_in_pixels( 2 )  ]           ... 
+%                                                   +  [ sphere_pulse_lengths_in_pixels( 2 ) * sphere_pulse_lengths_in_pixels( 3 ), ...
+%                                                        sphere_pulse_lengths_in_pixels( 3 ) * sphere_pulse_lengths_in_pixels( 1 ), ...
+%                                                        sphere_pulse_lengths_in_pixels( 1 ) * sphere_pulse_lengths_in_pixels( 2 )  ]   ) .^ 0.5 ) .^ 0.5 ; % SAM 12/20/21
+
+%         %  only count non-corrective blurring toward the derivative weighting (make it think the
+%         %  vessel is bigger than it is.) will correct vessel sizes after edge extraction. 12/9/21
+%         derivative_weights_from_blurring = gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 );
+%         derivative_weights_from_blurring = ...
+%         derivative_weights_from_blurring ./ microns_per_pixel ;
 
 %         % only count (non-PSF matching) blurring toward derivative weights
+%         radius_of_lumen_in_voxels = (( Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2 ) .^ 0.5 ) ./ microns_per_pixel ; % SAM 12/8/21
 %         radius_of_lumen_in_voxels = max( Gaussian_lengths .^ 2 - microns_per_sigma_PSF .^ 2, microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ;
+%         radius_of_lumen_in_voxels = radius_of_lumen_in_microns ./ microns_per_pixel ; % never attempted SAM 11/6/21
+%         radius_of_lumen_in_voxels = (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 + 2 * microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ; % SAM 11/6/21
+%         radius_of_lumen_in_voxels = (( gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 )) ^ 2 + microns_per_sigma_PSF .^ 2 ) .^ 0.5 ./ microns_per_pixel ; % SAM 11/6/21
+%         radius_of_lumen_in_voxels = gaussian_to_ideal_ratio * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ./ microns_per_pixel ; % SAM 11/6/21, same as: % SAM 11/8/21 best to date, needs radius adjustmnet
         
-    case 'annular pulse'
-
-        
-        % do a difference of spherical pulses each with constant value approximately one inside
-        % their spheres. Normalize the difference to have this kernel sum to 1.
-        radius_small_in_microns = radius_of_lumen_in_microns ;
-        radius_large_in_microns = radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ;
-
-        radial_small_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_small_in_microns ;
-        radial_large_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_large_in_microns ;
-
-
-        spherical_volume_small_in_cubic_pxls = 4 / 3 * pi * radius_small_in_microns ^ 3 / prod( microns_per_pixel );                              
-        spherical_volume_large_in_cubic_pxls = 4 / 3 * pi * radius_large_in_microns ^ 3 / prod( microns_per_pixel );
-
-        sphere_pulse_small_dft = 3 ./ ( radial_small_angular_freq_mesh .^ 2 )                                     ...
-                               .* (   sin( radial_small_angular_freq_mesh ) ./ ( radial_small_angular_freq_mesh ) ...
-                               - cos( radial_small_angular_freq_mesh )                                            );
-
-        sphere_pulse_small_dft( 1 ) = 1 ;    
-
-        sphere_pulse_small_dft = sphere_pulse_small_dft * spherical_volume_small_in_cubic_pxls ;
-
-        sphere_pulse_large_dft = 3 ./ ( radial_large_angular_freq_mesh .^ 2 )                                     ...
-                               .* (   sin( radial_large_angular_freq_mesh ) ./ ( radial_large_angular_freq_mesh ) ...
-                               - cos( radial_large_angular_freq_mesh )                                            );
-
-        sphere_pulse_large_dft( 1 ) = 1 ;    
-
-        sphere_pulse_large_dft = sphere_pulse_large_dft * spherical_volume_large_in_cubic_pxls ;
-
-        % normalize to have sum of 1        
-        matching_kernel_dft = sphere_pulse_large_dft - sphere_pulse_small_dft ;
-
-        % comment out these two line to have instead a constant value of 1 (not a total sum of 1).        
-        annular_volume_in_cubic_pxls = 4 / 3 * pi                           ...
-                                        * (   radius_large_in_microns ^ 3   ...
-                                            - radius_small_in_microns ^ 3 ) ...
-                                        / prod( microns_per_pixel );        
-        
-        matching_kernel_dft = matching_kernel_dft / annular_volume_in_cubic_pxls ;
-        
-    case 'annular pulse V2'
-        
-        % do a difference of spherical pulses, one with a constant value approximately one inside,
-        % the other with a constant value A inside (where 0 < A < 1 ). Normalize their difference to
-        % have the resulting kernel sum to 1.
-        
-%         A = 0.5 ; % 8/16/18
-%         A = 0.25 ; % 8/16/18
-%         A = 0.1 ; % 8/16/18
-        spherical_to_annular_ratio = 0.25 ; % 8/16/18
-        
-        radius_small_in_microns = radius_of_lumen_in_microns ;
-        radius_large_in_microns = radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ;
-
-        radial_small_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_small_in_microns ;
-        radial_large_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_large_in_microns ;
-
-
-        spherical_volume_small_in_cubic_pxls = spherical_to_annular_ratio * 4 / 3 * pi * radius_small_in_microns ^ 3 / prod( microns_per_pixel );                              
-        spherical_volume_large_in_cubic_pxls =     4 / 3 * pi * radius_large_in_microns ^ 3 / prod( microns_per_pixel );
-
-        % this kernel has average value of 1
-        sphere_pulse_small_dft = 3 ./ ( radial_small_angular_freq_mesh .^ 2 )                                     ...
-                               .* (   sin( radial_small_angular_freq_mesh ) ./ ( radial_small_angular_freq_mesh ) ...
-                               - cos( radial_small_angular_freq_mesh )                                            );
-
-        sphere_pulse_small_dft( 1 ) = 1 ;    
-
-        % this kernel has approxiamtely constant value of A inside the sphere
-        sphere_pulse_small_dft = sphere_pulse_small_dft * spherical_volume_small_in_cubic_pxls ;
-
-        % this kernel has average value of 1
-        sphere_pulse_large_dft = 3 ./ ( radial_large_angular_freq_mesh .^ 2 )                                     ...
-                               .* (   sin( radial_large_angular_freq_mesh ) ./ ( radial_large_angular_freq_mesh ) ...
-                               - cos( radial_large_angular_freq_mesh )                                            );
-
-        sphere_pulse_large_dft( 1 ) = 1 ;    
-
-        % this kernel has approxiamtely constant value of 1 inside the sphere        
-        sphere_pulse_large_dft = sphere_pulse_large_dft * spherical_volume_large_in_cubic_pxls ;
-
-        % this kernel has max value of 1
-        matching_kernel_dft = sphere_pulse_large_dft - sphere_pulse_small_dft ;
-
-        % normalizing to have sum of 1  
-        %
-        % comment out these two line to have instead a max value of 1 (not a total sum of 1).        
-        annular_volume_in_cubic_pxls =    4 / 3 * pi                            ...
-                                        * (       radius_large_in_microns ^ 3   ...
-                                            - spherical_to_annular_ratio * radius_small_in_microns ^ 3 ) ...
-                                        /   prod( microns_per_pixel );        
-        
-        matching_kernel_dft = matching_kernel_dft / annular_volume_in_cubic_pxls ;
-        
-    case '3D annular gaussian'
-        
-%         A = 0.25 ; % 8/16/18        
-%         A = 1 ; % 8/17/18        
-%         A = 0.75 ; % 8/17/18
-%         A = 0.1 ; % 8/17/18 112200
-%         A = 0.5 ; % 8/17/18 113500       
-        
-%         radius_in_microns = 5 ; % approximate max radius of a capillary 8/17/18 
-%         radius_in_microns = 10 ; % 8/17/18 
-        radius_in_microns = 7.5 ; % 8/17/18 135000
-%         radius_in_microns = 5 ;
-
-        % assuming that the loss of illumination at the on axis points in the vessel is an
-        % exponentially decreasing function of the cross-sectional area of the vessel
-        spherical_to_annular_ratio = 1 - exp( - ( radius_of_lumen_in_microns / radius_in_microns ) ^ 2 );
-
-%         % assuming that the loss of illumination at the on axis points in the vessel is an
-%         % exponentially decreasing function of the radius of the vessel
-%         A = 1 - exp( - radius_of_lumen_in_microns / radius_in_microns ); % SAM 8/17/18 151200
-
-        
-        sigma_small_freq_mesh = radial_freq_mesh ;
-        
-        sigma_large_freq_mesh = micron_freq_mesh                                                  ...
-                              * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ) ;
-        
-%       % these kernels have average values of 1 
-        gaussian_kernel_small_dft = exp( - pi ^ 2 * 2 * sigma_small_freq_mesh .^ 2 );
-        gaussian_kernel_large_dft = exp( - pi ^ 2 * 2 * sigma_large_freq_mesh .^ 2 );
-        
-        max_of_small_gaussian_kernel = ( 2 * pi )  .^ - 0.5 /     radius_of_lumen_in_microns ;
-        max_of_large_gaussian_kernel = ( 2 * pi )  .^ - 0.5 / (   radius_of_lumen_in_microns       ...
-                                                                + vessel_wall_thickness_in_microns );
-                                                    
-        % these kernels have max values of ( A and 1 ) * B, for some constant B that depends on the
-        % pixel spacing
-        gaussian_kernel_small_dft = spherical_to_annular_ratio * gaussian_kernel_small_dft / max_of_small_gaussian_kernel ;
-        gaussian_kernel_large_dft = 	gaussian_kernel_large_dft / max_of_large_gaussian_kernel ;
-        
-        % this kernel has average value of 
-        %
-        % ( 1 / max_of_large_gaussian_kernel - A / max_of_small_gaussian_kernel )
-        matching_kernel_dft = gaussian_kernel_large_dft - gaussian_kernel_small_dft ;
-        
-        average_value_of_differenced_gaussians = ( 1 / max_of_large_gaussian_kernel - spherical_to_annular_ratio / max_of_small_gaussian_kernel );
-        
-        % this kernel has average value of 1
-        matching_kernel_dft = matching_kernel_dft / average_value_of_differenced_gaussians ;
-        
-    case '3D annular gaussian V2'
-        
-        % 0 < A < 1
-%         A = 0.1 ; % 8/24/18
-%         A = 0.2 ; % 8/25/18
-%         A = 0.5 ; % 8/25/18
-        spherical_to_annular_ratio = 0.3 ; % 8/25/18
-%         A = 0.15 ; % 8/25/18
-
-
-%         radius_in_microns = 7.5 ; % 8/24/18
+%     case 'annular pulse'
 % 
-%         % assuming that the portion of average intensity on the wall that contributes to the average
-%         % intensity in the lumen is an exponentially decreasing function of the radius of the vessel
-%         A = 1 - exp( - ( radius_of_lumen_in_microns / radius_in_microns ));
-
-
-        sigma_large_freq_mesh = micron_freq_mesh                                                  ...
-                              * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ) ;
-        
-        sigma_small_freq_mesh = radial_freq_mesh ;                          
-                          
-        % these kernels have average values of 1 and A
-        gaussian_kernel_large_dft = exp( - pi ^ 2 * 2 * sigma_large_freq_mesh .^ 2 );
-        gaussian_kernel_small_dft = exp( - pi ^ 2 * 2 * sigma_small_freq_mesh .^ 2 );        
-                                                                    
-        matching_kernel_dft = ( gaussian_kernel_large_dft - spherical_to_annular_ratio * gaussian_kernel_small_dft )         ...
-                                                                                          / ( 1 - spherical_to_annular_ratio );
-                
-                
-    case 'radial gaussian'
-        
-        spherical_to_annular_ratio = 2 ;
-        
-        
-        % vessel wall is approximated as a radial delta function convolved with a radial Gaussian
-        sigma_vessel_wall_freq_mesh = micron_freq_mesh * vessel_wall_thickness_in_microns / 2 ;
-                
-        radial_lumen_angular_freq_mesh = 2 * pi * micron_freq_mesh * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ;
-                
-        % these kernels have average values of 1 
-        gaussian_kernel_vessel_wall_dft = exp( - pi ^ 2 * 2 * sigma_vessel_wall_freq_mesh .^ 2 );
-        
-        radial_delta_fxn_lumen_dft      =  sin( radial_lumen_angular_freq_mesh ) ...
-                                        ./      radial_lumen_angular_freq_mesh ;
-                                    
-        spherical_pulse_dft =    3 ./ ( radial_lumen_angular_freq_mesh .^ 2 )                           ...
-                            .* (   sin( radial_lumen_angular_freq_mesh ) ./ ( radial_lumen_angular_freq_mesh ) ...
-                            -      cos( radial_lumen_angular_freq_mesh )                                 );            
-                                    
-               spherical_pulse_dft( 1 ) = 1 ;
-        radial_delta_fxn_lumen_dft( 1 ) = 1 ;
-        
-        % their spatial convolution is a radial gaussian function
-        matching_kernel_dft =   gaussian_kernel_vessel_wall_dft ...
-                            .* ( radial_delta_fxn_lumen_dft + spherical_to_annular_ratio * spherical_pulse_dft ) ...
-                            / ( 1 + spherical_to_annular_ratio );    
-                                                        
-end % matching kernel selection SWITCH
+%         
+%         % do a difference of spherical pulses each with constant value approximately one inside
+%         % their spheres. Normalize the difference to have this kernel sum to 1.
+%         radius_small_in_microns = radius_of_lumen_in_microns ;
+%         radius_large_in_microns = radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ;
+% 
+%         radial_small_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_small_in_microns ;
+%         radial_large_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_large_in_microns ;
+% 
+% 
+%         spherical_volume_small_in_cubic_pxls = 4 / 3 * pi * radius_small_in_microns ^ 3 / prod( microns_per_pixel );                              
+%         spherical_volume_large_in_cubic_pxls = 4 / 3 * pi * radius_large_in_microns ^ 3 / prod( microns_per_pixel );
+% 
+%         sphere_pulse_small_dft = 3 ./ ( radial_small_angular_freq_mesh .^ 2 )                                     ...
+%                                .* (   sin( radial_small_angular_freq_mesh ) ./ ( radial_small_angular_freq_mesh ) ...
+%                                - cos( radial_small_angular_freq_mesh )                                            );
+% 
+%         sphere_pulse_small_dft( 1 ) = 1 ;    
+% 
+%         sphere_pulse_small_dft = sphere_pulse_small_dft * spherical_volume_small_in_cubic_pxls ;
+% 
+%         sphere_pulse_large_dft = 3 ./ ( radial_large_angular_freq_mesh .^ 2 )                                     ...
+%                                .* (   sin( radial_large_angular_freq_mesh ) ./ ( radial_large_angular_freq_mesh ) ...
+%                                - cos( radial_large_angular_freq_mesh )                                            );
+% 
+%         sphere_pulse_large_dft( 1 ) = 1 ;    
+% 
+%         sphere_pulse_large_dft = sphere_pulse_large_dft * spherical_volume_large_in_cubic_pxls ;
+% 
+%         % normalize to have sum of 1        
+%         matching_kernel_dft = sphere_pulse_large_dft - sphere_pulse_small_dft ;
+% 
+%         % comment out these two line to have instead a constant value of 1 (not a total sum of 1).        
+%         annular_volume_in_cubic_pxls = 4 / 3 * pi                           ...
+%                                         * (   radius_large_in_microns ^ 3   ...
+%                                             - radius_small_in_microns ^ 3 ) ...
+%                                         / prod( microns_per_pixel );        
+%         
+%         matching_kernel_dft = matching_kernel_dft / annular_volume_in_cubic_pxls ;
+%         
+%     case 'annular pulse V2'
+%         
+%         % do a difference of spherical pulses, one with a constant value approximately one inside,
+%         % the other with a constant value A inside (where 0 < A < 1 ). Normalize their difference to
+%         % have the resulting kernel sum to 1.
+%         
+% %         A = 0.5 ; % 8/16/18
+% %         A = 0.25 ; % 8/16/18
+% %         A = 0.1 ; % 8/16/18
+%         spherical_to_annular_ratio = 0.25 ; % 8/16/18
+%         
+%         radius_small_in_microns = radius_of_lumen_in_microns ;
+%         radius_large_in_microns = radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ;
+% 
+%         radial_small_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_small_in_microns ;
+%         radial_large_angular_freq_mesh = 2 * pi * micron_freq_mesh * radius_large_in_microns ;
+% 
+% 
+%         spherical_volume_small_in_cubic_pxls = spherical_to_annular_ratio * 4 / 3 * pi * radius_small_in_microns ^ 3 / prod( microns_per_pixel );                              
+%         spherical_volume_large_in_cubic_pxls =     4 / 3 * pi * radius_large_in_microns ^ 3 / prod( microns_per_pixel );
+% 
+%         % this kernel has average value of 1
+%         sphere_pulse_small_dft = 3 ./ ( radial_small_angular_freq_mesh .^ 2 )                                     ...
+%                                .* (   sin( radial_small_angular_freq_mesh ) ./ ( radial_small_angular_freq_mesh ) ...
+%                                - cos( radial_small_angular_freq_mesh )                                            );
+% 
+%         sphere_pulse_small_dft( 1 ) = 1 ;    
+% 
+%         % this kernel has approxiamtely constant value of A inside the sphere
+%         sphere_pulse_small_dft = sphere_pulse_small_dft * spherical_volume_small_in_cubic_pxls ;
+% 
+%         % this kernel has average value of 1
+%         sphere_pulse_large_dft = 3 ./ ( radial_large_angular_freq_mesh .^ 2 )                                     ...
+%                                .* (   sin( radial_large_angular_freq_mesh ) ./ ( radial_large_angular_freq_mesh ) ...
+%                                - cos( radial_large_angular_freq_mesh )                                            );
+% 
+%         sphere_pulse_large_dft( 1 ) = 1 ;    
+% 
+%         % this kernel has approxiamtely constant value of 1 inside the sphere        
+%         sphere_pulse_large_dft = sphere_pulse_large_dft * spherical_volume_large_in_cubic_pxls ;
+% 
+%         % this kernel has max value of 1
+%         matching_kernel_dft = sphere_pulse_large_dft - sphere_pulse_small_dft ;
+% 
+%         % normalizing to have sum of 1  
+%         %
+%         % comment out these two line to have instead a max value of 1 (not a total sum of 1).        
+%         annular_volume_in_cubic_pxls =    4 / 3 * pi                            ...
+%                                         * (       radius_large_in_microns ^ 3   ...
+%                                             - spherical_to_annular_ratio * radius_small_in_microns ^ 3 ) ...
+%                                         /   prod( microns_per_pixel );        
+%         
+%         matching_kernel_dft = matching_kernel_dft / annular_volume_in_cubic_pxls ;
+%         
+%     case '3D annular gaussian'
+%         
+% %         A = 0.25 ; % 8/16/18        
+% %         A = 1 ; % 8/17/18        
+% %         A = 0.75 ; % 8/17/18
+% %         A = 0.1 ; % 8/17/18 112200
+% %         A = 0.5 ; % 8/17/18 113500       
+%         
+% %         radius_in_microns = 5 ; % approximate max radius of a capillary 8/17/18 
+% %         radius_in_microns = 10 ; % 8/17/18 
+%         radius_in_microns = 7.5 ; % 8/17/18 135000
+% %         radius_in_microns = 5 ;
+% 
+%         % assuming that the loss of illumination at the on axis points in the vessel is an
+%         % exponentially decreasing function of the cross-sectional area of the vessel
+%         spherical_to_annular_ratio = 1 - exp( - ( radius_of_lumen_in_microns / radius_in_microns ) ^ 2 );
+% 
+% %         % assuming that the loss of illumination at the on axis points in the vessel is an
+% %         % exponentially decreasing function of the radius of the vessel
+% %         A = 1 - exp( - radius_of_lumen_in_microns / radius_in_microns ); % SAM 8/17/18 151200
+% 
+%         
+%         sigma_small_freq_mesh = radial_freq_mesh ;
+%         
+%         sigma_large_freq_mesh = micron_freq_mesh                                                  ...
+%                               * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ) ;
+%         
+% %       % these kernels have average values of 1 
+%         gaussian_kernel_small_dft = exp( - pi ^ 2 * 2 * sigma_small_freq_mesh .^ 2 );
+%         gaussian_kernel_large_dft = exp( - pi ^ 2 * 2 * sigma_large_freq_mesh .^ 2 );
+%         
+%         max_of_small_gaussian_kernel = ( 2 * pi )  .^ - 0.5 /     radius_of_lumen_in_microns ;
+%         max_of_large_gaussian_kernel = ( 2 * pi )  .^ - 0.5 / (   radius_of_lumen_in_microns       ...
+%                                                                 + vessel_wall_thickness_in_microns );
+%                                                     
+%         % these kernels have max values of ( A and 1 ) * B, for some constant B that depends on the
+%         % pixel spacing
+%         gaussian_kernel_small_dft = spherical_to_annular_ratio * gaussian_kernel_small_dft / max_of_small_gaussian_kernel ;
+%         gaussian_kernel_large_dft = 	gaussian_kernel_large_dft / max_of_large_gaussian_kernel ;
+%         
+%         % this kernel has average value of 
+%         %
+%         % ( 1 / max_of_large_gaussian_kernel - A / max_of_small_gaussian_kernel )
+%         matching_kernel_dft = gaussian_kernel_large_dft - gaussian_kernel_small_dft ;
+%         
+%         average_value_of_differenced_gaussians = ( 1 / max_of_large_gaussian_kernel - spherical_to_annular_ratio / max_of_small_gaussian_kernel );
+%         
+%         % this kernel has average value of 1
+%         matching_kernel_dft = matching_kernel_dft / average_value_of_differenced_gaussians ;
+%         
+%     case '3D annular gaussian V2'
+%         
+%         % 0 < A < 1
+% %         A = 0.1 ; % 8/24/18
+% %         A = 0.2 ; % 8/25/18
+% %         A = 0.5 ; % 8/25/18
+%         spherical_to_annular_ratio = 0.3 ; % 8/25/18
+% %         A = 0.15 ; % 8/25/18
+% 
+% 
+% %         radius_in_microns = 7.5 ; % 8/24/18
+% % 
+% %         % assuming that the portion of average intensity on the wall that contributes to the average
+% %         % intensity in the lumen is an exponentially decreasing function of the radius of the vessel
+% %         A = 1 - exp( - ( radius_of_lumen_in_microns / radius_in_microns ));
+% 
+% 
+%         sigma_large_freq_mesh = micron_freq_mesh                                                  ...
+%                               * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns ) ;
+%         
+%         sigma_small_freq_mesh = radial_freq_mesh ;                          
+%                           
+%         % these kernels have average values of 1 and A
+%         gaussian_kernel_large_dft = exp( - pi ^ 2 * 2 * sigma_large_freq_mesh .^ 2 );
+%         gaussian_kernel_small_dft = exp( - pi ^ 2 * 2 * sigma_small_freq_mesh .^ 2 );        
+%                                                                     
+%         matching_kernel_dft = ( gaussian_kernel_large_dft - spherical_to_annular_ratio * gaussian_kernel_small_dft )         ...
+%                                                                                           / ( 1 - spherical_to_annular_ratio );
+%                 
+%                 
+%     case 'radial gaussian'
+%         
+%         spherical_to_annular_ratio = 2 ;
+%         
+%         
+%         % vessel wall is approximated as a radial delta function convolved with a radial Gaussian
+%         sigma_vessel_wall_freq_mesh = micron_freq_mesh * vessel_wall_thickness_in_microns / 2 ;
+%                 
+%         radial_lumen_angular_freq_mesh = 2 * pi * micron_freq_mesh * ( radius_of_lumen_in_microns + vessel_wall_thickness_in_microns / 2 ) ;
+%                 
+%         % these kernels have average values of 1 
+%         gaussian_kernel_vessel_wall_dft = exp( - pi ^ 2 * 2 * sigma_vessel_wall_freq_mesh .^ 2 );
+%         
+%         radial_delta_fxn_lumen_dft      =  sin( radial_lumen_angular_freq_mesh ) ...
+%                                         ./      radial_lumen_angular_freq_mesh ;
+%                                     
+%         spherical_pulse_dft =    3 ./ ( radial_lumen_angular_freq_mesh .^ 2 )                           ...
+%                             .* (   sin( radial_lumen_angular_freq_mesh ) ./ ( radial_lumen_angular_freq_mesh ) ...
+%                             -      cos( radial_lumen_angular_freq_mesh )                                 );            
+%                                     
+%                spherical_pulse_dft( 1 ) = 1 ;
+%         radial_delta_fxn_lumen_dft( 1 ) = 1 ;
+%         
+%         % their spatial convolution is a radial gaussian function
+%         matching_kernel_dft =   gaussian_kernel_vessel_wall_dft ...
+%                             .* ( radial_delta_fxn_lumen_dft + spherical_to_annular_ratio * spherical_pulse_dft ) ...
+%                             / ( 1 + spherical_to_annular_ratio );    
+%                                                         
+% end % matching kernel selection SWITCH
 
 %         % uncomment to inspect the kernel in the spatial domain
 % 
@@ -786,7 +857,9 @@ end % matching kernel selection SWITCH
 %         
 %         sum( blurred_matching_kernel_image( : ))
               
-if ~ laplacian_all_the_way
+%% energy calcs
+
+if ~ is_only_computing_Laplacian
 
     % derivative filter constructions:
 
@@ -838,15 +911,15 @@ if ~ laplacian_all_the_way
     % curvatures_kernels_dft( 6, :, :, : ) = 2 * ( cos( 2 * pi * abs( z_radial_freq_mesh .* y_radial_freq_mesh ) .^ 0.5 ) - 1 ) .* sign( z_radial_freq_mesh .* y_radial_freq_mesh );
 
     % % neighboring voxel derivatives:
-    curvatures_kernels_dft( 1, :, :, : ) = 2 * prod( radius_of_lumen_in_voxels([ 1, 1 ])) * ( cos( 2 * pi *      y_pixel_freq_mesh                               ) - 1 );
-    curvatures_kernels_dft( 2, :, :, : ) = 2 * prod( radius_of_lumen_in_voxels([ 2, 2 ])) * ( cos( 2 * pi *      x_pixel_freq_mesh                               ) - 1 );
-    curvatures_kernels_dft( 3, :, :, : ) = 2 * prod( radius_of_lumen_in_voxels([ 3, 3 ])) * ( cos( 2 * pi *      z_pixel_freq_mesh                               ) - 1 );
+    curvatures_kernels_dft( 1, :, :, : ) = 2 * prod( derivative_weights_from_blurring([ 1, 1 ])) * ( cos( 2 * pi *      y_pixel_freq_mesh                               ) - 1 );
+    curvatures_kernels_dft( 2, :, :, : ) = 2 * prod( derivative_weights_from_blurring([ 2, 2 ])) * ( cos( 2 * pi *      x_pixel_freq_mesh                               ) - 1 );
+    curvatures_kernels_dft( 3, :, :, : ) = 2 * prod( derivative_weights_from_blurring([ 3, 3 ])) * ( cos( 2 * pi *      z_pixel_freq_mesh                               ) - 1 );
     
     if is_doing_eigenvalue_decomp
     
-    curvatures_kernels_dft( 4, :, :, : ) = 2 * prod( radius_of_lumen_in_voxels([ 1, 2 ])) * ( cos( 2 * pi * abs( y_pixel_freq_mesh .* x_pixel_freq_mesh ) .^ 0.5 ) - 1 ) .* sign( y_pixel_freq_mesh .* x_pixel_freq_mesh );
-    curvatures_kernels_dft( 5, :, :, : ) = 2 * prod( radius_of_lumen_in_voxels([ 2, 3 ])) * ( cos( 2 * pi * abs( x_pixel_freq_mesh .* z_pixel_freq_mesh ) .^ 0.5 ) - 1 ) .* sign( x_pixel_freq_mesh .* z_pixel_freq_mesh );
-    curvatures_kernels_dft( 6, :, :, : ) = 2 * prod( radius_of_lumen_in_voxels([ 3, 1 ])) * ( cos( 2 * pi * abs( z_pixel_freq_mesh .* y_pixel_freq_mesh ) .^ 0.5 ) - 1 ) .* sign( z_pixel_freq_mesh .* y_pixel_freq_mesh );
+    curvatures_kernels_dft( 4, :, :, : ) = 2 * prod( derivative_weights_from_blurring([ 1, 2 ])) * ( cos( 2 * pi * abs( y_pixel_freq_mesh .* x_pixel_freq_mesh ) .^ 0.5 ) - 1 ) .* sign( y_pixel_freq_mesh .* x_pixel_freq_mesh );
+    curvatures_kernels_dft( 5, :, :, : ) = 2 * prod( derivative_weights_from_blurring([ 2, 3 ])) * ( cos( 2 * pi * abs( x_pixel_freq_mesh .* z_pixel_freq_mesh ) .^ 0.5 ) - 1 ) .* sign( x_pixel_freq_mesh .* z_pixel_freq_mesh );
+    curvatures_kernels_dft( 6, :, :, : ) = 2 * prod( derivative_weights_from_blurring([ 3, 1 ])) * ( cos( 2 * pi * abs( z_pixel_freq_mesh .* y_pixel_freq_mesh ) .^ 0.5 ) - 1 ) .* sign( z_pixel_freq_mesh .* y_pixel_freq_mesh );
 
     end
     
@@ -859,12 +932,12 @@ if ~ laplacian_all_the_way
 
 end
 
-if laplacian_all_the_way
+if is_only_computing_Laplacian
 
     % laplacian kernel:
-    Laplacian_kernel_dft = 2 * radius_of_lumen_in_voxels( 1 ) ^ 2 * ( cos( 2 * pi * y_pixel_freq_mesh ) - 1 ) ...
-                         + 2 * radius_of_lumen_in_voxels( 2 ) ^ 2 * ( cos( 2 * pi * x_pixel_freq_mesh ) - 1 ) ...
-                         + 2 * radius_of_lumen_in_voxels( 3 ) ^ 2 * ( cos( 2 * pi * z_pixel_freq_mesh ) - 1 ) ;
+    Laplacian_kernel_dft = 2 * derivative_weights_from_blurring( 1 ) ^ 2 * ( cos( 2 * pi * y_pixel_freq_mesh ) - 1 ) ...
+                         + 2 * derivative_weights_from_blurring( 2 ) ^ 2 * ( cos( 2 * pi * x_pixel_freq_mesh ) - 1 ) ...
+                         + 2 * derivative_weights_from_blurring( 3 ) ^ 2 * ( cos( 2 * pi * z_pixel_freq_mesh ) - 1 ) ;
                      
     % r_pixel_freq_mesh = (   y_pixel_freq_mesh .^ 2          ...
     %                       + x_pixel_freq_mesh .^ 2          ...
@@ -887,7 +960,7 @@ if laplacian_all_the_way
 
 end
 
-if ~ laplacian_all_the_way
+if ~ is_only_computing_Laplacian
 
     % gradient_kernels_dft( 1, :, :, : ) =  2 * pi * 1i * y_radial_freq_mesh ;
     % gradient_kernels_dft( 2, :, :, : ) =  2 * pi * 1i * x_radial_freq_mesh ;
@@ -918,9 +991,9 @@ if ~ laplacian_all_the_way
     % gradient_kernels_dft( 3, :, :, : ) =  1i * sin( 2 * pi * z_radial_freq_mesh );
 
     % % neighboring voxel derivatives:
-    gradient_kernels_dft( 1, :, :, : ) =  1i * radius_of_lumen_in_voxels( 1 ) * sin( 2 * pi * y_pixel_freq_mesh );
-    gradient_kernels_dft( 2, :, :, : ) =  1i * radius_of_lumen_in_voxels( 2 ) * sin( 2 * pi * x_pixel_freq_mesh );
-    gradient_kernels_dft( 3, :, :, : ) =  1i * radius_of_lumen_in_voxels( 3 ) * sin( 2 * pi * z_pixel_freq_mesh );
+    gradient_kernels_dft( 1, :, :, : ) =  1i * derivative_weights_from_blurring( 1 ) * sin( 2 * pi * y_pixel_freq_mesh );
+    gradient_kernels_dft( 2, :, :, : ) =  1i * derivative_weights_from_blurring( 2 ) * sin( 2 * pi * x_pixel_freq_mesh );
+    gradient_kernels_dft( 3, :, :, : ) =  1i * derivative_weights_from_blurring( 3 ) * sin( 2 * pi * z_pixel_freq_mesh );
 
     % gradient_kernels_dft( 1, :, :, : ) = 1i * sin( 2 * pi * y_pixel_freq_mesh );
     % gradient_kernels_dft( 2, :, :, : ) = 1i * sin( 2 * pi * x_pixel_freq_mesh );
@@ -944,13 +1017,13 @@ if ~ laplacian_all_the_way
 
 end
 
-if laplacian_all_the_way
+if is_only_computing_Laplacian
     
     Laplacian_matching_kernel_dft = Laplacian_kernel_dft .* matching_kernel_dft ;
 
 end
 
-% if ~ laplacian_all_the_way
+% if ~ is_only_computing_Laplacian
 % 
 %     % % normalize each derivative kernel by its variance about zero
 %     % curvatures_gaussian_kernel_dft = numel_chunk * radius_of_lumen_in_microns ^ 2 * curvatures_gaussian_kernel_dft ./ sum( curvatures_gaussian_kernel_dft( 1 : 6, : ) .^ 2, 2 ) .^ 0.5 ;
@@ -969,7 +1042,7 @@ end
 % 
 % end
 
-if laplacian_all_the_way
+if is_only_computing_Laplacian
 
     Laplacian_chunk_dft = Laplacian_matching_kernel_dft .* chunk_dft ;
 
@@ -977,7 +1050,7 @@ if laplacian_all_the_way
     
 end
 
-if ~ laplacian_all_the_way
+if ~ is_only_computing_Laplacian
 
     curvatures_chunk_dft = curvatures_gaussian_kernel_dft .* reshape( chunk_dft, [ 1, size_of_chunk_dft ]);
       gradient_chunk_dft =   gradient_gaussian_kernel_dft .* reshape( chunk_dft, [ 1, size_of_chunk_dft ]);
@@ -1037,7 +1110,7 @@ if ~ laplacian_all_the_way
     end
 end
 
-if laplacian_all_the_way
+if is_only_computing_Laplacian
     
     energy_chunk = Laplacian_chunk( local_ranges{ 1 }, ...
                                     local_ranges{ 2 }, ...
@@ -1045,7 +1118,7 @@ if laplacian_all_the_way
         
 end
 
-if ~ laplacian_all_the_way
+if ~ is_only_computing_Laplacian
 
     valid_voxels = Laplacian_chunk < 0 ;
     
@@ -1061,7 +1134,7 @@ if ~ laplacian_all_the_way
 
     if is_doing_eigenvalue_decomp
             
-        symmetry_ratio_factor_vector = symmetry_ratio_factor * [ 1; 1; 1 ];           
+%         symmetry_ratio_factor_vector = symmetry_ratio_factor * [ 1; 1; 1 ];           
         
         curvature_indices_in_hessian = [ 1, 4, 6; ...
                                          4, 2, 5; ...
@@ -1115,13 +1188,32 @@ if ~ laplacian_all_the_way
         %                                     .* symmetry_ratio_factor_vector                  , 1 )) ...
         %                       ./ principal_curvature_values([ 1, 5, 9 ], :, :, : )                  ));
 
-        % square instead of absolute value in the exponent argument
+%         % square instead of absolute value in the exponent argument
+%         principal_energy_values                                                                         ...
+%             =    principal_curvature_values([ 1, 5, 9 ], :, :, : )                                      ...
+%             .* exp( - (    squeeze( sum( reshape( gradient_chunk, [ 3, 1, size_of_chunk ])              ...
+%                                          .* principal_curvature_vectors                                 ...
+%                                          .* symmetry_ratio_factor_vector                  , 1 ))        ...
+%                            ./ principal_curvature_values([ 1, 5, 9 ], :, :, : )                  ) .^ 2 );
+
+        % caught math-concept mistake % SAM 12/20/21, results in smoother output to do L2 norm (but preserving signs) of
+        % components instead of L1 as above during this sum( ___, 1 ) call
         principal_energy_values                                                                         ...
-            =    principal_curvature_values([ 1, 5, 9 ], :, :, : )                                      ...
-            .* exp( - (    squeeze( sum( reshape( gradient_chunk, [ 3, 1, size_of_chunk ])              ...
-                                         .* principal_curvature_vectors                                 ...
-                                         .* symmetry_ratio_factor_vector                  , 1 ))        ...
-                           ./ principal_curvature_values([ 1, 5, 9 ], :, :, : )                  ) .^ 2 );
+   ...         =       principal_curvature_values([ 1, 5, 9 ], :, :, : ) .^ 2                             ...
+      ...     .* sign( principal_curvature_values([ 1, 5, 9 ], :, :, : ))                                 ...
+...            =        abs( principal_curvature_values([ 1, 5, 9 ], :, :, : ))                                   ...
+...           .*             principal_curvature_values([ 1, 5, 9 ], :, :, : )                                    ...
+            =                principal_curvature_values([ 1, 5, 9 ], :, :, : )                               ...
+           .* exp( - abs(    squeeze( sum(  reshape( abs( gradient_chunk )                               ...
+                                                      .*  gradient_chunk   , [ 3, 1, size_of_chunk ])   ...
+                                         .* abs( principal_curvature_vectors )                          ...
+                                         .*      principal_curvature_vectors  ,                         ...
+                           ...               .* symmetry_ratio_factor_vector                            , ...
+                                         1                                                           )) ...
+                          ./ principal_curvature_values([ 1, 5, 9 ], :, :, : ) .^ 2 / 2 ... % factor of 1/2 added 1/14/22 ... % and removed 1/14/22 % * 2                      ... % factor of 2 added 1/13/22
+                     )); ...    
+
+
 
         % % only the least two principal curvatures are considered
         % principal_energy_values                                                                     ...
@@ -1166,11 +1258,25 @@ if ~ laplacian_all_the_way
         % % blob).
         % principal_energy_values( 3, : ) = - abs( principal_energy_values( 3, : ));
 
-        energy_chunk = squeeze( sum( principal_energy_values, 1 ));
+        % do not hurt the objective function with unfavorable sign in the third principal component,
+        % because this will be unfavorable wherever dimmer vessel approaches brighter.
+        principal_energy_values( 3, principal_energy_values( 3, : ) > 0 ) = 0 ; % SAM 12/15/21   % SAM 12/23/21
+      
+        energy_chunk = squeeze( sum( principal_energy_values, 1 )); % previous best, noisy around bifurcations, oversizing consistently SAM 12/15/21 % SAM 12/23/21
 
-    %     % only keep least two principal curvatures
-    %     energy_chunk = squeeze( sum( principal_energy_values( 1 : 2, :, :, : ), 1 ));
+%         % only keep least two principal curvatures
+%         energy_chunk = squeeze( sum( principal_energy_values( 1 : 2, :, :, : ), 1 )); % SAM 12/14/21 % SAM 12/18/21 % SAM 12/20/21
+        
+%         % only keep least principal curvature
+%         energy_chunk = squeeze( principal_energy_values( 1, :, :, : )); % SAM 12/18/21  % SAM 12/19/21 Joe's bday !
 
+%         % only keep middle principal curvature
+%         energy_chunk = squeeze( principal_energy_values( 2, :, :, : )); % SAM 12/19/21
+
+%         % weighting first principal curvature most, then second, then third % SAM 12/15/21 % SAM 12/23/21
+%         energy_chunk = squeeze( sum([ 1.5; 1; 1/2 ] .* principal_energy_values, 1 )); 
+
+        
     %     % least two principal curvatures are subject to 1st derivative symmetry adjustment
     %     energy_chunk = squeeze( sum( principal_energy_values( 1 : 2, :, :, : ), 1 ) + principal_curvature_values( 9, :, :, : ));
 

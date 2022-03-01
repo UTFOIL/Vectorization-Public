@@ -78,7 +78,8 @@ function [ flow_field, tissue_type_image ] = flow_field_subroutine( path_to_flow
 load( path_to_flow_field_export )
 
 % root_path = 'change this to your desired root' ;
-root_path = [ pwd, filesep ];
+% root_path = [ pwd, filesep ];
+root_path = visual_data_directory ;
 
 % time_stamp = char( datetime('now', 'TimeZone', 'local', 'Format', 'yyMMdd-HHmmss' )); 
 % 
@@ -89,17 +90,31 @@ root_path = [ pwd, filesep ];
 
 path_to_tissue_type_visual = [ root_path, file_name, '_tissue_types.tif' ];
 path_to_centerlines_visual = [ root_path, file_name,  '_centerlines.tif' ];   
+      path_to_index_visual = [ root_path, file_name,      '_indices.tif' ];   
 
-flow_visual_files = cell( 3, 1 );
+     flow_visual_files = cell( 3, 1 );
+ flow_abs_visual_files = cell( 3, 1 );
+flow_sign_visual_files = cell( 3, 1 );
 
 flow_visual_files{ 1 }      = [ root_path, file_name,      '_flow_y.tif' ];
 flow_visual_files{ 2 }      = [ root_path, file_name,      '_flow_x.tif' ];
 flow_visual_files{ 3 }      = [ root_path, file_name,      '_flow_z.tif' ];
 
+flow_abs_visual_files{ 1 }  = [ root_path, file_name,      '_flow_mag_y.tif' ];
+flow_abs_visual_files{ 2 }  = [ root_path, file_name,      '_flow_mag_x.tif' ];
+flow_abs_visual_files{ 3 }  = [ root_path, file_name,      '_flow_mag_z.tif' ];
+
+flow_sign_visual_files{ 1 } = [ root_path, file_name,      '_flow_sign_y.tif' ];
+flow_sign_visual_files{ 2 } = [ root_path, file_name,      '_flow_sign_x.tif' ];
+flow_sign_visual_files{ 3 } = [ root_path, file_name,      '_flow_sign_z.tif' ];
+
+    
+
 desired_cubic_voxel_length_in_microns = 2 ;
 
-% digital resolution enhancement: fixing voxel size at 1 um ^ 3
-resolution_factor = microns_per_pixel_xy / desired_cubic_voxel_length_in_microns ; % double this factor to double the rendering resolution in each spatial dimension
+% digital resolution enhancement: fixing voxel size at XX um ^ 3
+% resolution_factor = microns_per_pixel_xy / desired_cubic_voxel_length_in_microns ; % double this factor to double the rendering resolution in each spatial dimension
+resolution_factors = microns_per_voxel / desired_cubic_voxel_length_in_microns ; 
 
 % note to programmer (consider allowing for rendering resolution enhancement of radius as well as of
 % space and possibly cut down on the number of scales required in processing) SAM 7/13/18
@@ -165,15 +180,16 @@ end % tissue type FOR
 % concatenate infinity onto the tissue type cutoffs for largest tissue assignment work later.
 tissue_type_cutoffs( end + 1 ) = Inf ;
 
-tissue_types = cellfun( @( x ) find( tissue_type_cutoffs >= median( x ), 1 ) + 1, strand_scale_subscripts );
+tissue_types = cellfun( @( x ) find( tissue_type_cutoffs >= median( x( :, 4 )), 1 ) + 1, strand_subscripts );
 % add 1 to the FIND call so that capillary will be tissue type 2 and vessel tissue type 3
 
 %% interpolation of vectors
 
-% guarantee isotropic interpolation
-resolution_factors = resolution_factor * [ 1, 1, z_per_xy_length_of_pxl_ratio ];
+% Guarantee isotropic interpolation:
 
-strand_subscripts = cellfun( @( x, y ) [ x, y ], strand_space_subscripts, strand_scale_subscripts, 'UniformOutput', false );
+% % resolution_factors = resolution_factor * [ 1, 1, z_per_xy_length_of_pxl_ratio ];
+
+% % strand_subscripts = cellfun( @( x, y ) [ x, y ], strand_space_subscripts, strand_scale_subscripts, 'UniformOutput', false );
 
 [ size_of_image, lumen_radius_in_pixels_range, strand_subscripts, vessel_directions ] ...
                                     = resample_vectors( lumen_radius_in_pixels_range, [ resolution_factors, 2 ], strand_subscripts, size_of_image, vessel_directions );
@@ -185,11 +201,8 @@ strand_subscripts = cellfun( @round, strand_subscripts, 'UniformOutput', false )
 [ mean_strand_energies ] = get_edge_metric( strand_energies );
                          
 [ flow_field, tissue_type_image ]                                                                   ...
-           = render_flow_field_V3( strand_subscripts, vessel_directions, mean_strand_energies, ...
+           = render_flow_field_V4( strand_subscripts, vessel_directions, mean_strand_energies, ...
                                    tissue_types, lumen_radius_in_pixels_range,                      ...
                                    size_of_image, path_to_tissue_type_visual,                       ...
-                                   path_to_centerlines_visual, flow_visual_files                    );
+                                   path_to_centerlines_visual, flow_visual_files, flow_abs_visual_files, flow_sign_visual_files, path_to_index_visual );
                             
-% %% locations and sizes of bifurcation vertices
-% 
-% bifurcation_subscripts = vertex_subscripts( bifurcation_vertices, : );

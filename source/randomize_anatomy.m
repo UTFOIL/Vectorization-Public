@@ -29,7 +29,7 @@ for scale_subscript = scale_subscript_range
     
     [ strand_element_linear_indexing{ scale_subscript },                                 ...
       strand_element_subscripts{      scale_subscript }, ]                               ...
-        = construct_structuring_element_V190( pixels_per_sigma_range( scale_subscript, : ), size_of_image  );
+        = construct_structuring_element( pixels_per_sigma_range( scale_subscript, : ), size_of_image  );
  
 end % constructing relative elements FOR scale
 

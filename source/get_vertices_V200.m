@@ -59,12 +59,7 @@ strel_size_in_pixels = lumen_radius_in_microns_range( 1 ) ./ microns_per_pixel ;
               = get_chunking_lattice_V190( strel_size_in_pixels, max_voxels_per_node, size_of_image );   
      
 chunk_index_range = 1 : number_of_chunks ;     
-     
-% minus one here because we lose one scale when we difference in the scale dimension
-% size_of_laplace_image = [ size_of_image, number_of_scales ];
-
-% h5create( output_file, '/d', size_of_laplace_image )
-    
+         
 % output variable declarations / initializations:
  space_subscripts( 1 : number_of_chunks, 1 ) = { uint16([ ])};
  scale_subscripts( 1 : number_of_chunks, 1 ) = {        [ ] };
@@ -74,7 +69,7 @@ chunk_index_range = 1 : number_of_chunks ;
 % load energy data chunk-wise in physical space and for all scales
 [ y_reading_starts, x_reading_starts, z_reading_starts,                                             ...
   y_reading_counts, x_reading_counts, z_reading_counts  ]                                           ...
-      = get_starts_and_counts_V200( chunk_lattice_dimensions, space_strel_apothem * [ 1, 1, 1 ], size_of_image, [ 1, 1, 1 ]);
+      = get_starts_and_counts_V200( chunk_lattice_dimensions, space_strel_apothem * ones( 1, 3, 'int16' ), size_of_image, [ 1, 1, 1 ]);
   
 % numel_strel = ( 2 * space_strel_apothem + 1 ) ^ 3 ;
 % 
@@ -191,7 +186,7 @@ parfor chunk_index = chunk_index_range
     
 end % PARFOR chunks
 
-%% combing outputs from the parallel threads into single vectors/matrices
+%% combining outputs from the parallel threads into single vectors/matrices
 
 space_subscripts  = cell2mat( space_subscripts  ); 
 scale_subscripts  = cell2mat( scale_subscripts  ); 

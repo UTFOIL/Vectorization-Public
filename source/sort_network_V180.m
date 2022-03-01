@@ -1,5 +1,5 @@
 function [ vertex_indices_in_strands, edge_indices_in_strands_out, edge_backwards_in_strands ]      ...
-                                        = sort_network_V180( chosen_edges, end_vertices_of_strands, ...
+                                        = sort_network_V180( edges2vertices, end_vertices_of_strands, ...
                                                              edge_indices_in_strands                )
 %% sort_network_V180 SAM 7/11/18
 % the purpose of this function is to sort the output of the get_network_V182 function so that the
@@ -28,7 +28,7 @@ for strand_index = strand_index_range
     
     % find the starting vertex for the strand from the set of starting vertices from the edges that
     % are in the current strand
-    vertices_of_edges_at_strand = chosen_edges( edge_indices_in_strands{ strand_index }, : );
+    vertices_of_edges_at_strand = edges2vertices( edge_indices_in_strands{ strand_index }, : );
     
     try
         
