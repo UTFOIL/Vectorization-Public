@@ -56,18 +56,56 @@ For the main vectorization function in MATLAB:
 
 Copied here for reference:
 ```
+function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
 %% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
+% VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
+%     whether to vectorize a new batch of images or continue with a previous batch.  A batch is a
+%     group of images that the VECTORIZE function organizes together with two properties:
+%
+%         1) The same set of input parameters applies to every image in a batch. 
+% 
+%         2) The images in a batch are processed in parallel at each step of the vectorization. 
+%            (see Methods below for descriptions of the four steps in the vectorization algorithm).
+%
+%       If the user continues with a previous batch, VECTORIZE prompts the user to select a previous
+%       batch folder with data to recycle.
+%
+%       Alternatively, if the user starts a new batch, VECTORIZE prompts the user to select a folder
+%       with some image file(s) to be vectorized.  It makes a new batch folder in a location
+%       specified by the user.
+% 
+%     In either case, VECTORIZE prompts the user for a few logistical inputs: which vectorization
+%     step(s) to execute, what previous data or settings (if any) to recycle, which visual(s) to
+%     output (if any), and whether or not to open a graphical curator interface. It also prompts the
+%     user for workflow-specific parameters: It displays imported parameters for review, and prompts
+%     the user for any missing required parameters.  VECTORIZE writes any outputs to the batch
+%     folder with a time stamp of the form YYMMDD_HHmmss.
+% 
+%   Conventions:  Greater values in the IMAGE_MATRIX correspond to greater vascular signal
+%                 The IMAGE_MATRIX dimensions correspond to the physical dimensions y, x, and z
+%                 (1,x,z) is the top  border of the x-y image at height z
+%                 (y,1,z) is the left border of the x-y image at height z
+%                 (y,x,1) is the x-y image nearest to the objective
+%
+%   Supported input image file types: .tif
+%
+% For in-line function calls that do not require manual interfacing (e.g. for writing wrapper
+% functions or for keeping a concise record of VECTORIZE function calls in a script file), see the
+% Optional Input, Logistical Parameters, and Workflow Specific Parameters Sections.
+% 
+% Note:  For more organizational/navigational control over this document in MATLAB:
+%           1) open the Preferences Window                                       (HOME>>PREFERENCES)
+%           2) enable Code Folding for Sections              (MATLAB>>Editor/Debugger>>Code Folding)
+%           3) fold all of the sections in this document                                    (ctrl,+)
 %
 %% ------------------------------------------- Overview ------------------------------------------- 
 %
-% The purpose of the vectorization algorithm is to convert a grayscale, 3D image of vasculature (see
-% Inputs section) to a vectorized model of the vascular components.  The output model consists of a
-% list of many spherical objects with 3D-position (x,y,z), radius (r), and a contrast metric (c, see
-% Methods section). These objects are vectors because each object is a 5-tuples of real numbers:
-% [x,y,z,r,c].  The output vectors can then be rendered as a 2- or 3-dimensional image at any
-% requested resolution, or it could be analyzed for statistical properties such as volume fraction
-% or bifurcation density. With these objects in hand, many analyses are greatly simplified. Many
-% such demonstrations and visualizations are automatically output (see Outputs section).
+% The purpose of the vectorization algorithm is to convert a grayscale, 3D image of vasculature to a
+% vectorized model of the vascular components. With the vectorized objects in hand, many analyses
+% are greatly simplified: The output vectors can be rendered as a 2- or 3-dimensional image at any
+% requested resolution, or analyzed for statistical properties such as volume fraction or
+% bifurcation density. These calculations as well as others can be specified using the SpecialOutput
+% input parameter described in the Logistical Parameters section below.
 %
 %% ---------------------------------------- Optional Input ---------------------------------------- 
 %
@@ -170,16 +208,23 @@ Copied here for reference:
 %                           'all'                  - Writes visuals for all vectorization steps.
 % 
 % 'SpecialOutput'           'none'           - Does not create any special network outputs.
-%                           'histograms'     - (defualt) shows strand, length statistic histograms
-%                           'depth-stats'    - Shows depth-resolved statistics.
+%                           'histograms'     - Shows strand, length statistic histograms          (defualt) 
+%                           'depth-stats'    - Shows depth-resolved statistics.                   (defualt) 
 %                           'flow-field'     - Writes x, y, and z component .tif's of flow field.
-%                           'depth'          - Shows vectors over raw with color-coded depth.               
-%                           'strands'        - Shows vectors over raw with color-coded strands.
-%                           'directions'     - Shows vectors over raw with color-coded direcions.
+%                           'depth'          - Shows vectors over raw with color-coded depth.     (defualt)           
+%                           'strands'        - Shows vectors over raw with color-coded strands.   (defualt) 
+%                           'directions'     - Shows vectors over raw with color-coded direcions. (defualt) 
 %                           '3D-strands'     - Shows 3D volume rendering with color-coded strands.
+%                           '3D-directions'  - Shows 3D volume rendering with color-coded strand 
+%                                              directions.
+%                           'original-stats' - Calculates signal, noise, background, etc, from
+%                                              network binary. Saves in the network_*.mat vector file.
 %                           'casX'           - Creates .casX equivalent representation of strands.
-%                                              Format .casX is due to LPPD in Chicago.
-%                           { ... }          - Creates ... special network outputs.
+%                                              Format .casX is due to LPPD in Chicago, IL.
+%                           'vmv'            - Creates .vmv equivalent representation of strands. (defualt)
+%                                              Format .vmv is due to Blue Brain Project in
+%                                              Switzerland.
+%                           { ... }          - Creates ... (a list of) special network outputs.
 %                           'all'            - Creates all special network outputs.
 % 
 % 'VertexCuration'          'auto'             - All non-overlapping vertices are passed to edges. 
@@ -199,17 +244,18 @@ Copied here for reference:
 %                           'machine-auto'     - Applies neural network categorization.  All edges 
 %                                                are passed to network.
 % 
-% 'NetworkPath'             'prompt
-%                           'built-in' (default) - Built-in network ...
-%                           'train'              - Trains new network from all curation files found
-%                                                  in the training folder in the vectorization base 
-%                                                  directory.
-%                           'yyMMdd-HHmmss'      - Imports network trained at yyMMdd-HHmmss from the 
-%                                                  network folder in the vectorization base
-%                                                  directory.
-%                           'recent'             - Imports network trained most recently from the 
-%                                                  network folder in the vectorization base
-%                                                  directory.
+% % % !!!!!!!!!!!!!!! not yet implemented
+% % % 'NetworkPath'             'prompt
+% % %                           'built-in' (default) - Built-in network ...
+% % %                           'train'              - Trains new network from all curation files found
+% % %                                                  in the training folder in the vectorization base 
+% % %                                                  directory.
+% % %                           'yyMMdd-HHmmss'      - Imports network trained at yyMMdd-HHmmss from the 
+% % %                                                  network folder in the vectorization base
+% % %                                                  directory.
+% % %                           'recent'             - Imports network trained most recently from the 
+% % %                                                  network folder in the vectorization base
+% % %                                                  directory.
 %
 % 'Forgetful'               'none' (default)   - No intermediate data files will be deleted
 %                           'original'         - Deletes intermediate copies of the input images
@@ -224,25 +270,25 @@ Copied here for reference:
 %     uses the NAME/VALUE pair assignments listed below to input workflow-specific parameters.  Each
 %     parameter is listed below under the first workflow step that it modifies.
 %   
-%   Resolving conflicts between NAME/VALUE pairs and imported parameters from the PreviousWorkflow:
-% 
-%       If a NAME/VALUE pais is provided for a parameter that modifies a workflow step that is
-%       upstream of the StartWorkflow, then that value is ignored and the value from the
-%       PreviousWorkflow value will remain. A warning is produced.  This must occur because the
-%       relevant workflow has already been executed and is not scheduled to run again, therefore the
-%       parameters that modify it will not change.
-%
-%       If a NAME/VALUE pair is provided for a parameter that only modifies workflows that are equal
-%       to or downstream of the StartWorkflow, then that value will overwrite any value that may
-%       have been retrieved from the PreviousWorkflow.  The overwriting is displayed in the commaind
-%       window.
-%
+% %   Resolving conflicts between NAME/VALUE pairs and imported parameters from the PreviousWorkflow:
+% % 
+% %       If a NAME/VALUE pais is provided for a parameter that modifies a workflow step that is
+% %       upstream of the StartWorkflow, then that value is ignored and the value from the
+% %       PreviousWorkflow value will remain. A warning is produced.  This must occur because the
+% %       relevant workflow has already been executed and is not scheduled to run again, therefore the
+% %       parameters that modify it will not change.
+% %
+% %       If a NAME/VALUE pair is provided for a parameter that only modifies workflows that are equal
+% %       to or downstream of the StartWorkflow, then that value will overwrite any value that may
+% %       have been retrieved from the PreviousWorkflow.  The overwriting is displayed in the commaind
+% %       window.
+% %
 %%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - Energy -  -  -  -  -  -  -  -  -  -  -  -  -  
 % ---------------- NAME ----------------  ------------------------- VALUE -------------------------
 % 
 % 'microns_per_voxel'                     Real, positive, three-element vector specifying the voxel
-%                                         size in microns in y, x, and z dimensions, respectively.
-%                                         Default: [ 1, 1, 1 ]
+%                                         size in microns in y (up/down), x (left/right), and z {out
+%                                         of/into) dimensions, respectively. Default: [ 1, 1, 1 ]
 % 
 % 'radius_of_smallest_vessel_in_microns'  Real, positive scalar specifying the radius of the
 %                                         smallest vessel to be detected in microns.  Default: 1.5
@@ -282,79 +328,74 @@ Copied here for reference:
 %                                         unity.  Default: 1
 %
 %
-%%   -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Edges   -  -  -  -  -  -  -  -  -  -  -  -  - 
-% ---------------- NAME ----------------  ------------------------- VALUE -------------------------
-% 
-% 'max_edge_length_per_origin_radius'     Real, positive scalar specifying the maximum length of an
-%                                         edge trace per the radius of the seed vertex. Default: 30
-%
-% 'number_of_edges_per_vertex'            Real, positive integer specifying the maximum number of
-%                                         edge traces per seed vertex. Default: 4
-%
-%%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Network -  -  -  -  -  -  -  -  -  -  -  -  -  
-% ---------------- NAME ----------------  ------------------------- VALUE -------------------------
-% 
-% 'sigma_strand_smoothing'                Real, non-negative integer specifying the standard
-%                                         deviation of the Gaussian smoothing kernel per the radius
-%                                         of the strand at every position along the strand vector.
-%                                         Default: 1
-%
+% %%   -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Edges   -  -  -  -  -  -  -  -  -  -  -  -  - 
+% % ---------------- NAME ----------------  ------------------------- VALUE -------------------------
+% % 
+% % 'max_edge_length_per_origin_radius'     Real, positive scalar specifying the maximum length of an
+% %                                         edge trace per the radius of the seed vertex. Default: 30
+% %
+% % 'number_of_edges_per_vertex'            Real, positive integer specifying the maximum number of
+% %                                         edge traces per seed vertex. Default: 4
+% %
+% %%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Network -  -  -  -  -  -  -  -  -  -  -  -  -  
+% % ---------------- NAME ----------------  ------------------------- VALUE -------------------------
+% % 
+% % 'sigma_strand_smoothing'                Real, non-negative integer specifying the standard
+% %                                         deviation of the Gaussian smoothing kernel per the radius
+% %                                         of the strand at every position along the strand vector.
+% %                                         Default: 1
+% %
 %% ------------------------------------------- Methods -------------------------------------------- 
 %
 % Vectorization is accomplished in four steps:  (1) energy image formation, (2) vertex extraction,
-% (3) edge extraction, and (4) network extraction.  The raw output is a superposition
-% of possible models until it is segmented in some way.  The objects are assigned a contrast metric
-% based on the values from the energy image, and thresholding them on this value provides direct
-% control over the sensitivity and specificity of the vectorization.  Alternatively, the graphical
-% curation interface provides a platform for manual segmentation such as local threshold selection
-% or point-and-click object selection.
+% (3) edge extraction, and (4) network extraction.  The raw output is a superposition of possible
+% models until it is segmented in some way. The vertex and edge objects are assigned a contrast
+% metric based on the values from the energy-filtered image, and thresholding them on this value
+% provides direct control over the sensitivity and specificity of the vectorization.  Alternatively,
+% the graphical curation interfaces (one for the edges, and one for the vertices) provides a
+% platform for manual segmentation such as local threshold selection or point-and-click object
+% selection.
 % 
 % 1: Energy Image Formation
-%     Multi-scale (at many pre-defined sizes) gradient and curvature information from the original
-%     3D image is combined to form a 4-dimensional, multi-scale, centerline-enhanced, image, known
-%     as the energy image.  Ideally, the voxels with the lowest energy value the energy image will
-%     be the most likely to be centerline voxels for vessels in the pre-defined size range.  This
-%     can be visually verified by inspecting the energy*.tif visual output in the visual output
-%     directory.  The energy image should be very negative right at the vessel centerlines and close
-%     to zero or positive elsewhere.  The value of the size image at a given voxel shows the index
-%     of the pre-defined sizes that is most likely assuming a vessel is centered at that voxel.
+%     The input image is linearly (matched-)filtered at many scales to extract curvature (and
+%     gradient) information. The Hessian matrix is diagonalized to extract principle curvatures at
+%     all voxels (and scales) where the Laplacian is negative (local bright spot in original image).
+%     The energy function is an objective function to select for large negative principle curvatures
+%     while each curvature is seperately weighted by a symmetry factor using the gradient. The 4D
+%     multi-scale energy image is projected across the scale coordinate using a minimum projection
+%     to select the most probable scale. The result is an enhancement of the vessel centerlines
+%     while simultaneously selecting the scale coordinate (index into the size range LUT input).
 % 
 % 2: Vertex Extraction
 %     Vertices are extracted as local minima in the 4D energy image (with associated x, y, z,
-%     radius, and energy value).  This method was inspired by the first part of the SIFT algorithm
-%     (David Lowe, International Journal of Computer Vision, 2004)).  Ideally, local minima of the
-%     energy image correspond to voxels that are locally the most likely to be along a vessel
-%     centerline. The size coordinate is also required to be at a local energy minimum.  In theory,
-%     the vertices are ordered from most to least likely to exist by the energy values at their
-%     locations.
+%     radius, and energy value). (This part of the method was inspired by the first part of the SIFT
+%     algorithm (David Lowe, International Journal of Computer Vision, 2004)).  The vertex objects
+%     are points of high contrast and symmetry (bright spots or bifurcations) along the vessel
+%     segments. The labeling is sufficiently dense if there is at least one vertex per strand (see
+%     network section for strand definition). The vertices are ordered by the energy values to rank
+%     them from most likely to least likely (based on the energy filter model; without knowledge of
+%     a ground truth).
 % 
 % 3: Edge Extraction
-%     Edges are extracted as voxel to voxel random walks through the (min. projected to 3D) energy
-%     image.  Therefore edges are lists of spherical objects like vertices.  Edge trajectories seek
-%     lower energy values and are forced to connect exactly two vertices.  The trajectories between
-%     vertices are in theory ordered from most to least likely to exist by their mean energy values.
+%     Edges are extracted as voxel walks through the (3D) energy image.  Therefore edges are
+%     1-Dimensional objects such as a list or a trace, where each location along the trace is a
+%     spherical object with an energy value (like a vertex).  Each edge walk starts at a vertex and
+%     seeks the lowest energy values under the constraint that it must move away from its origin.
+%     The trajectories between vertices are ordered by their maximum energy value attained, in order
+%     to give an first estimate of which edges are likely to be true (based on the energy filter
+%     model; without knowledge of a ground truth) and which edges are likely to be false.
 % 
 % 4: Network Extraction
-%     Strands are defined as the sequences of non-branching edges (single random color in the
-%     colored strands image).  Strands are found by counting the number of edges in the adjacency
-%     matrix of the vertices.  Strands are the connected components of the adjacency matrix that
-%     only includes vertices with two edges.  With the strands of the network in hand, we
+%     The final network output is the minimal set of 1-Dimensional objects (strands) that connect
+%     all of the bifurcations/endpoints according to the adjacency matrix exracted from the edges
+%     and vertices. The strands are like the edges, but in general are longer, and composed of
+%     multiple edges (at least 1). (Theerefore, each strand has at each location along its trace a
+%     3-space position, radius, and an energy value). With the strands of the network in hand, we
 %     equivalently know where the bifurcations in the network are.  Network information unlocks many
 %     doors.  For instance, we can smooth the positions and sizes of the extracted vectors along
 %     their strands and approximate local blood flow fields.
-% 
+%
 %% ------------------------------------------- Outputs -------------------------------------------- 
-%
-% Standard network ouptut format(s): .casx .vmv
-%
-% The vectorization output is the set of 3-space locations and radii of all vessels as well as 
-% their connectivity. This information is stored in several matlab variables in the network output 
-% file in the vector directory of the batch_* directory output of the Vectorize function. This 
-% vector information is also available in the casx file format if the user selects the 
-% 'SpecialOutputs'/'casx' name/value pair input. Casx file format for storing vascular network 
-% data designed by G. Hartung and A. Linninger, UIC, 2016-2019. Vmv file format is the VessMorphoVis 
-% plugin to Blender due to the Blue Brain Project, described by Abdellah et al. in Bioinformatics in 
-% 2020.
 %
 % TIME_STAMP = VECTORIZE( ... )
 %     returns the TIME_STAMP that was assigned to any new data or settings output
@@ -363,46 +404,40 @@ Copied here for reference:
 %     also returns the FILE_NAMES that were used as input or the names assigned to the IMAGE_MATRICES in
 %     the order that they were passed to VECTORIZE.
 %
-%% -------------------------------------------  Notes  -------------------------------------------- 
-% VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
-%     whether to vectorize a new batch of images or continue with a previous batch.  A batch is a
-%     group of images that the VECTORIZE function organizes together with two properties:
-%
-%         1) The same set of input parameters applies to every image in a batch. 
+% The final vectorized model of the network is the minimal set of 1-Dimensional objects (strands)
+% that connect all of the bifurcations/endpoints to each other. Each strand has at each location
+% along its trace a 3-space position, radius, and an energy value. This output (without the energy
+% values) can be exported in .vmv or .casx formats (see the SpecialOutput input parameter).
 % 
-%         2) The images in a batch are processed in parallel at each step of the vectorization. 
-%            (see Methods below for descriptions of the four steps in the vectorization algorithm).
-%
-%       If the user continues with a previous batch, VECTORIZE prompts the user to select a previous
-%       batch folder with data to recycle.
-%
-%       Alternatively, if the user starts a new batch, VECTORIZE prompts the user to select a folder
-%       with some image file(s) to be vectorized.  It makes a new batch folder in a location
-%       specified by the user.
+% Other intermediate outputs are output to the OutputDirectory in the batch folder like so:
 % 
-%     In either case, VECTORIZE prompts the user for a few logistical inputs: which vectorization
-%     step(s) to execute, what previous data or settings (if any) to recycle, which visual(s) to
-%     output (if any), and whether or not to open a graphical curator interface. It also prompts the
-%     user for workflow-specific parameters: It displays imported parameters for review, and prompts
-%     the user for any missing required parameters.  VECTORIZE writes any outputs to the batch
-%     folder with a time stamp of the form YYMMDD_HHmmss.
+%  batch_YYMMDD_hhmmss
+%       curations
+%       data
+%       settings
+%       vectors
+%       visual_data
+%       visual_vectors
+%       
+% The curations folder contains the automatic and user-requested curation backups. 
 % 
-%   Conventions:  Greater values in the IMAGE_MATRIX correspond to greater vascular signal
-%                 The IMAGE_MATRIX dimensions correspond to the physical dimensions y, x, and z
-%                 (1,x,z) is the top  border of the x-y image at height z
-%                 (y,1,z) is the left border of the x-y image at height z
-%                 (y,x,1) is the x-y image nearest to the objective
-%
-%   Supported input image file types: .tif
-%
-% For in-line function calls that do not require manual interfacing (e.g. for writing wrapper
-% functions or for keeping a concise record of VECTORIZE function calls in a script file), see the
-% Optional Input, Logistical Parameters, and Workflow Specific Parameters Sections.
+% The data folder has the hdf5 files of the original, energy, and intermediate edges. 
 % 
-% Note:  For more organizational/navigational control over this document in MATLAB:
-%           1) open the Preferences Window                                       (HOME>>PREFERENCES)
-%           2) enable Code Folding for Sections              (MATLAB>>Editor/Debugger>>Code Folding)
-%           3) fold all of the sections in this document                                    (ctrl,+)
+% The settings folder holds the record of vectorization executions (time-stamp: YYMMDD_hhmmss), the
+% workflows that were requested, and the values of the parameters used.
+% 
+% The vectors folder holds the vertex, edge, and strand objects. The final network vectors (strands)
+% are saved in the internal SLAVV format, or one of the exported formats (.vmv, .casx; see
+% SpecialOutput). A statistical summary of the network can be found in the network*.mat file under
+% the struct variable network_statistics.
+% 
+% The visual_vectors folder holds .tif 3D images of vector renderings (with weightings corresponding
+% to their energy values or thereof sorting index) in the same resolution as the original for
+% overlaying and comparison purposes.
+% 
+% The visual_data folder holds the .tif 3D images of the original, the energy filtered image (along
+% with the scale (index) image), and the intermediate edges. This is also where any figures
+% specified for generation by the SpecialOutput input will be saved.
 %
 ```
 
