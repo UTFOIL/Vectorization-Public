@@ -1,8 +1,8 @@
 %% Michael's annular signal images
 % SAM 8/14/2019
 
-% signal_shape = 'annular' ;
-signal_shape = 'spherical' ;
+signal_shape = 'annular' ;
+% signal_shape = 'spherical' ;
 
 OutputDirectory = 'E:\Michael\' ;
 
@@ -77,7 +77,8 @@ switch start_workflow
 ...                                    'SpecialOutput', { 'depth', 'strands', 'directions', 'upsampled', '3D-strands' }};
 ...                                    'SpecialOutput', { '3D-strands' }};
 ...                                    'SpecialOutput', { 'depth-stats' }};
-                                     'SpecialOutput', { 'depth', 'directions' }};
+...                                     'SpecialOutput', { 'depth', 'directions' }};
+                                    'SpecialOutput', 'casX' };
                                 
         time_stamp = vectorize_V200( name_value_pair_inputs{ 1, : }); 
         

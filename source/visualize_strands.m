@@ -1,6 +1,5 @@
-function visualize_edges_V180( edge_subscripts, max_edge_energies, ellipsoid_radii_in_voxels, ...
-                               size_of_image, spheres_visual_file,                            ...
-                               centerline_visual_file )
+function visualize_strands( strand_subscripts, strand_fill_values, ellipsoid_radii_in_voxels, ...
+                               size_of_image, spheres_visual_file, visual_contrast )
 %% SAM 12/12/17 
 % adapted from the function with the same name in the folder AA
 %
@@ -35,30 +34,25 @@ function visualize_edges_V180( edge_subscripts, max_edge_energies, ellipsoid_rad
 % edge centerline location (whose size and shape is determined by the radius of the edge at that
 % location and the resolution of the image).  SAM 7/21/19
 
-spheres_image     = zeros( size_of_image );
-centerlines_image = zeros( size_of_image );
+strands_image   = zeros( size_of_image );
+weighting_image = zeros( size_of_image ) + eps ;
 
-number_of_image_voxels = prod( size_of_image );
+% number_of_image_voxels = prod( size_of_image );
 
-number_of_edges = length( max_edge_energies );
+number_of_edges = length( strand_fill_values );
 
 % round the edge subscripts to integers 
-edge_subscripts = cellfun( @( v ) round( v ), edge_subscripts, 'UniformOutput', false );
-
-% sorting trajectories by max energy in descending order (most negative at end)
-[ max_edge_energies, indices_sorted_by_max ] = sort( max_edge_energies, 'descend' );
-
-edge_subscripts = edge_subscripts( indices_sorted_by_max );
+strand_subscripts = cellfun( @( v ) round( v ), strand_subscripts, 'UniformOutput', false );
 
 % pre-calculating all of the ellipsoidal structuring elements to be used to paint in the image
 number_of_scales = size( ellipsoid_radii_in_voxels, 1 );
 
-structuring_element_linear_indexing = cell( number_of_scales, 1 );
+strel_indices = cell( number_of_scales, 1 );
 
 for scale_index = 1 : number_of_scales
 
     % find all pixel locations within the ellipsoid radii from the vertex position
-    structuring_element_linear_indexing{ scale_index }                                         ...
+    strel_indices{ scale_index }                                         ...
         = construct_structuring_element( ellipsoid_radii_in_voxels( scale_index, : ), size_of_image );
         
 end % scale FOR
@@ -66,7 +60,7 @@ end % scale FOR
 % loop through the edges
 for edge_index = 1 : number_of_edges
     
-    subscripts_at_edge = edge_subscripts{ edge_index };
+    subscripts_at_edge = strand_subscripts{ edge_index };
     
     number_of_edge_positions = length( subscripts_at_edge( :, 1 ));
     
@@ -80,25 +74,25 @@ for edge_index = 1 : number_of_edges
                                               subscripts_at_edge( edge_position_index, 2 ), ...
                                               subscripts_at_edge( edge_position_index, 3 )  );        
         
-        % label the spheres and centerlines in an overwriting fashion so that only the lowest energy
-        % edges will shine through in a multiply labeled region.  (Remember that we sorted by max
-        % energy attained before this FOR loop so the later edges to be written are lower in
-        % energy).
-        centerlines_image( edge_position_linear_index ) ...
-            = - max_edge_energies( edge_index );
-                          
-        spheres_image( max( min( edge_position_linear_index                                                               ...
-                                    + structuring_element_linear_indexing{ subscripts_at_edge( edge_position_index, 4 )}, ...
-                                 number_of_image_voxels                                            ),                     ...
-                            1                                                                         ))                  ...
-            = - max_edge_energies( edge_index );
+        % adding up and averaging later
+          weighting_image(   edge_position_linear_index                                ...
+                           + strel_indices{ subscripts_at_edge( edge_position_index, 4 )}) ...
+        = weighting_image(   edge_position_linear_index                                ...
+                           + strel_indices{ subscripts_at_edge( edge_position_index, 4 )}) ...
+        + 1 ;
+
+            strands_image(   edge_position_linear_index                                ...
+                           + strel_indices{ subscripts_at_edge( edge_position_index, 4 )}) ...
+        =   strands_image(   edge_position_linear_index                                ...
+                           + strel_indices{ subscripts_at_edge( edge_position_index, 4 )}) ...
+        + strand_fill_values{ edge_index }( edge_position_index );
 
         
     end % for position
 end % for trajectory
 
-mat2tif( uint16(     spheres_image ),    spheres_visual_file )
+strands_image = strands_image ./ weighting_image ;
 
-mat2tif( uint16( centerlines_image ), centerline_visual_file )
+mat2tif( uint16( visual_contrast * strands_image ),    spheres_visual_file )
 
 end % function
