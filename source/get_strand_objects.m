@@ -15,6 +15,7 @@ numbers_of_edges_in_strands                                                     
 strand_subscripts = cell( size( edge_indices_in_strands ));
 strand_energies   = cell( size( edge_indices_in_strands ));
 
+% (parfor)
 for strand_index = strand_index_range
 
     % Assembly into Strands from Edges:

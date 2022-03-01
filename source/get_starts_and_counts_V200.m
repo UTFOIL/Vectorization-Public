@@ -2,7 +2,7 @@ function  [ y_reading_starts, x_reading_starts, z_reading_starts,      ...
             y_reading_counts, x_reading_counts, z_reading_counts,      ...
             y_writing_starts, x_writing_starts, z_writing_starts,      ...
             y_writing_counts, x_writing_counts, z_writing_counts,      ...
-            y_offset,         x_offset,         z_offset          ]    ...
+            y_offsets,        x_offsets,        z_offsets         ]    ...
                     = get_starts_and_counts_V200( chunk_lattice_dimensions, chunk_overlap_in_pixels, size_of_image, resolution_factors )
 %% SAM, December of 2017
 %
@@ -56,9 +56,9 @@ y_writing_counts  =  y_writing_ends - y_writing_starts + 1 ;
 x_writing_counts  =  x_writing_ends - x_writing_starts + 1 ;
 z_writing_counts  =  z_writing_ends - z_writing_starts + 1 ;
 
-y_offset =  y_writing_starts - y_reading_starts ;
-x_offset =  x_writing_starts - x_reading_starts ;
-z_offset =  z_writing_starts - z_reading_starts ;
+y_offsets =  y_writing_starts - y_reading_starts ;
+x_offsets =  x_writing_starts - x_reading_starts ;
+z_offsets =  z_writing_starts - z_reading_starts ;
 
 % convert to double because the h5 file indexing requires the indeces to be double
 y_reading_starts = double( y_reading_starts );
@@ -77,8 +77,8 @@ y_writing_counts = double( y_writing_counts );
 x_writing_counts = double( x_writing_counts );
 z_writing_counts = double( z_writing_counts );
 
-y_offset = double( y_offset );
-x_offset = double( x_offset );
-z_offset = double( z_offset );
+y_offsets = double( y_offsets );
+x_offsets = double( x_offsets );
+z_offsets = double( z_offsets );
 
 end
