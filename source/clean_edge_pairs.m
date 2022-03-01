@@ -1,7 +1,7 @@
 function [ edges2vertices, original_edge_indices ] = clean_edge_pairs( edges2vertices, edge_energies, is_keeping_only_mutual_edge_pairs )
-%% Choosing best unique trajectories between vertices A and B mutually.
+%% Choosing best unique trajectories between vertices A and B.
 
-    number_of_original_edges = length( edges2vertices );
+    number_of_original_edges = size( edges2vertices, 1 );
 
     original_edge_indices = 1 : number_of_original_edges ;
 

@@ -45,7 +45,7 @@ for scale_subscript = unique_scale_subscripts
       
     % find all pixel locations within the ellipsoid radii from the vertex position    
     structuring_element_linear_indexing_templates{ scale_subscript }                                            ...
-        = int32( construct_structuring_element_V190( radii_in_pixels_range( scale_subscript, : ), size_of_image ));
+        = int32( construct_structuring_element( radii_in_pixels_range( scale_subscript, : ), size_of_image ));
      
 end % constructing relative elements FOR scale
 
