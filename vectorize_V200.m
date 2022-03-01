@@ -1,16 +1,53 @@
 function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
-%% Vectorize_V200 
-% Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
+%% Vectorize_V200 - Samuel Alexander Mihelic - Novemeber 8th, 2018                                  
+% VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
+%     whether to vectorize a new batch of images or continue with a previous batch.  A batch is a
+%     group of images that the VECTORIZE function organizes together with two properties:
+%
+%         1) The same set of input parameters applies to every image in a batch. 
+% 
+%         2) The images in a batch are processed in parallel at each step of the vectorization. 
+%            (see Methods below for descriptions of the four steps in the vectorization algorithm).
+%
+%       If the user continues with a previous batch, VECTORIZE prompts the user to select a previous
+%       batch folder with data to recycle.
+%
+%       Alternatively, if the user starts a new batch, VECTORIZE prompts the user to select a folder
+%       with some image file(s) to be vectorized.  It makes a new batch folder in a location
+%       specified by the user.
+% 
+%     In either case, VECTORIZE prompts the user for a few logistical inputs: which vectorization
+%     step(s) to execute, what previous data or settings (if any) to recycle, which visual(s) to
+%     output (if any), and whether or not to open a graphical curator interface. It also prompts the
+%     user for workflow-specific parameters: It displays imported parameters for review, and prompts
+%     the user for any missing required parameters.  VECTORIZE writes any outputs to the batch
+%     folder with a time stamp of the form YYMMDD_HHmmss.
+% 
+%   Conventions:  Greater values in the IMAGE_MATRIX correspond to greater vascular signal
+%                 The IMAGE_MATRIX dimensions correspond to the physical dimensions y, x, and z
+%                 (1,x,z) is the top  border of the x-y image at height z
+%                 (y,1,z) is the left border of the x-y image at height z
+%                 (y,x,1) is the x-y image nearest to the objective
+%
+%   Supported input image file types: .tif
+%
+% For in-line function calls that do not require manual interfacing (e.g. for writing wrapper
+% functions or for keeping a concise record of VECTORIZE function calls in a script file), see the
+% Optional Input, Logistical Parameters, and Workflow Specific Parameters Sections.
+% 
+% Note:  For more organizational/navigational control over this document in MATLAB:
+%           1) open the Preferences Window                                       (HOME>>PREFERENCES)
+%           2) enable Code Folding for Sections              (MATLAB>>Editor/Debugger>>Code Folding)
+%           3) fold all of the sections in this document                                    (ctrl,+)
+%
 %% ------------------------------------------- Overview ------------------------------------------- 
 %
-% The purpose of the vectorization algorithm is to convert a grayscale, 3D image of vasculature (see
-% Inputs section) to a vectorized model of the vascular components.  The output model consists of a
-% list of many spherical objects with 3D-position (x,y,z), radius (r), and a contrast metric (c, see
-% Methods section). These objects are vectors because each object is a 5-tuples of real numbers:
-% [x,y,z,r,c].  The output vectors can then be rendered as a 2- or 3-dimensional image at any
-% requested resolution, or it could be analyzed for statistical properties such as volume fraction
-% or bifurcation density. With these objects in hand, many analyses are greatly simplified. Many
-% such demonstrations and visualizations are automatically output (see Outputs section).
+% The purpose of the vectorization algorithm is to convert a grayscale, 3D image of vasculature to a
+% vectorized model of the vascular components. With the vectorized objects in hand, many analyses
+% are greatly simplified: The output vectors can be rendered as a 2- or 3-dimensional image at any
+% requested resolution, or analyzed for statistical properties such as volume fraction or
+% bifurcation density. These calculations as well as others can be specified using the SpecialOutput
+% input parameter described in the Logistical Parameters section below.
 %
 %% ---------------------------------------- Optional Input ---------------------------------------- 
 %
@@ -113,16 +150,23 @@ function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
 %                           'all'                  - Writes visuals for all vectorization steps.
 % 
 % 'SpecialOutput'           'none'           - Does not create any special network outputs.
-%                           'histograms'     - (defualt) shows strand, length statistic histograms
-%                           'depth-stats'    - Shows depth-resolved statistics.
+%                           'histograms'     - Shows strand, length statistic histograms          (defualt) 
+%                           'depth-stats'    - Shows depth-resolved statistics.                   (defualt) 
 %                           'flow-field'     - Writes x, y, and z component .tif's of flow field.
-%                           'depth'          - Shows vectors over raw with color-coded depth.               
-%                           'strands'        - Shows vectors over raw with color-coded strands.
-%                           'directions'     - Shows vectors over raw with color-coded direcions.
+%                           'depth'          - Shows vectors over raw with color-coded depth.     (defualt)           
+%                           'strands'        - Shows vectors over raw with color-coded strands.   (defualt) 
+%                           'directions'     - Shows vectors over raw with color-coded direcions. (defualt) 
 %                           '3D-strands'     - Shows 3D volume rendering with color-coded strands.
+%                           '3D-directions'  - Shows 3D volume rendering with color-coded strand 
+%                                              directions.
+%                           'original-stats' - Calculates signal, noise, background, etc, from
+%                                              network binary. Saves in the network_*.mat vector file.
 %                           'casX'           - Creates .casX equivalent representation of strands.
-%                                              Format .casX is due to LPPD in Chicago.
-%                           { ... }          - Creates ... special network outputs.
+%                                              Format .casX is due to LPPD in Chicago, IL.
+%                           'vmv'            - Creates .vmv equivalent representation of strands. (defualt)
+%                                              Format .vmv is due to Blue Brain Project in
+%                                              Switzerland.
+%                           { ... }          - Creates ... (a list of) special network outputs.
 %                           'all'            - Creates all special network outputs.
 % 
 % 'VertexCuration'          'auto'             - All non-overlapping vertices are passed to edges. 
@@ -142,17 +186,18 @@ function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
 %                           'machine-auto'     - Applies neural network categorization.  All edges 
 %                                                are passed to network.
 % 
-% 'NetworkPath'             'prompt
-%                           'built-in' (default) - Built-in network ...
-%                           'train'              - Trains new network from all curation files found
-%                                                  in the training folder in the vectorization base 
-%                                                  directory.
-%                           'yyMMdd-HHmmss'      - Imports network trained at yyMMdd-HHmmss from the 
-%                                                  network folder in the vectorization base
-%                                                  directory.
-%                           'recent'             - Imports network trained most recently from the 
-%                                                  network folder in the vectorization base
-%                                                  directory.
+% % % !!!!!!!!!!!!!!! not yet implemented
+% % % 'NetworkPath'             'prompt
+% % %                           'built-in' (default) - Built-in network ...
+% % %                           'train'              - Trains new network from all curation files found
+% % %                                                  in the training folder in the vectorization base 
+% % %                                                  directory.
+% % %                           'yyMMdd-HHmmss'      - Imports network trained at yyMMdd-HHmmss from the 
+% % %                                                  network folder in the vectorization base
+% % %                                                  directory.
+% % %                           'recent'             - Imports network trained most recently from the 
+% % %                                                  network folder in the vectorization base
+% % %                                                  directory.
 %
 % 'Forgetful'               'none' (default)   - No intermediate data files will be deleted
 %                           'original'         - Deletes intermediate copies of the input images
@@ -167,25 +212,25 @@ function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
 %     uses the NAME/VALUE pair assignments listed below to input workflow-specific parameters.  Each
 %     parameter is listed below under the first workflow step that it modifies.
 %   
-%   Resolving conflicts between NAME/VALUE pairs and imported parameters from the PreviousWorkflow:
-% 
-%       If a NAME/VALUE pais is provided for a parameter that modifies a workflow step that is
-%       upstream of the StartWorkflow, then that value is ignored and the value from the
-%       PreviousWorkflow value will remain. A warning is produced.  This must occur because the
-%       relevant workflow has already been executed and is not scheduled to run again, therefore the
-%       parameters that modify it will not change.
-%
-%       If a NAME/VALUE pair is provided for a parameter that only modifies workflows that are equal
-%       to or downstream of the StartWorkflow, then that value will overwrite any value that may
-%       have been retrieved from the PreviousWorkflow.  The overwriting is displayed in the commaind
-%       window.
-%
+% %   Resolving conflicts between NAME/VALUE pairs and imported parameters from the PreviousWorkflow:
+% % 
+% %       If a NAME/VALUE pais is provided for a parameter that modifies a workflow step that is
+% %       upstream of the StartWorkflow, then that value is ignored and the value from the
+% %       PreviousWorkflow value will remain. A warning is produced.  This must occur because the
+% %       relevant workflow has already been executed and is not scheduled to run again, therefore the
+% %       parameters that modify it will not change.
+% %
+% %       If a NAME/VALUE pair is provided for a parameter that only modifies workflows that are equal
+% %       to or downstream of the StartWorkflow, then that value will overwrite any value that may
+% %       have been retrieved from the PreviousWorkflow.  The overwriting is displayed in the commaind
+% %       window.
+% %
 %%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  - Energy -  -  -  -  -  -  -  -  -  -  -  -  -  
 % ---------------- NAME ----------------  ------------------------- VALUE -------------------------
 % 
 % 'microns_per_voxel'                     Real, positive, three-element vector specifying the voxel
-%                                         size in microns in y, x, and z dimensions, respectively.
-%                                         Default: [ 1, 1, 1 ]
+%                                         size in microns in y (up/down), x (left/right), and z {out
+%                                         of/into) dimensions, respectively. Default: [ 1, 1, 1 ]
 % 
 % 'radius_of_smallest_vessel_in_microns'  Real, positive scalar specifying the radius of the
 %                                         smallest vessel to be detected in microns.  Default: 1.5
@@ -225,79 +270,74 @@ function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
 %                                         unity.  Default: 1
 %
 %
-%%   -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Edges   -  -  -  -  -  -  -  -  -  -  -  -  - 
-% ---------------- NAME ----------------  ------------------------- VALUE -------------------------
-% 
-% 'max_edge_length_per_origin_radius'     Real, positive scalar specifying the maximum length of an
-%                                         edge trace per the radius of the seed vertex. Default: 30
-%
-% 'number_of_edges_per_vertex'            Real, positive integer specifying the maximum number of
-%                                         edge traces per seed vertex. Default: 4
-%
-%%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Network -  -  -  -  -  -  -  -  -  -  -  -  -  
-% ---------------- NAME ----------------  ------------------------- VALUE -------------------------
-% 
-% 'sigma_strand_smoothing'                Real, non-negative integer specifying the standard
-%                                         deviation of the Gaussian smoothing kernel per the radius
-%                                         of the strand at every position along the strand vector.
-%                                         Default: 1
-%
+% %%   -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Edges   -  -  -  -  -  -  -  -  -  -  -  -  - 
+% % ---------------- NAME ----------------  ------------------------- VALUE -------------------------
+% % 
+% % 'max_edge_length_per_origin_radius'     Real, positive scalar specifying the maximum length of an
+% %                                         edge trace per the radius of the seed vertex. Default: 30
+% %
+% % 'number_of_edges_per_vertex'            Real, positive integer specifying the maximum number of
+% %                                         edge traces per seed vertex. Default: 4
+% %
+% %%  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -   Network -  -  -  -  -  -  -  -  -  -  -  -  -  
+% % ---------------- NAME ----------------  ------------------------- VALUE -------------------------
+% % 
+% % 'sigma_strand_smoothing'                Real, non-negative integer specifying the standard
+% %                                         deviation of the Gaussian smoothing kernel per the radius
+% %                                         of the strand at every position along the strand vector.
+% %                                         Default: 1
+% %
 %% ------------------------------------------- Methods -------------------------------------------- 
 %
 % Vectorization is accomplished in four steps:  (1) energy image formation, (2) vertex extraction,
-% (3) edge extraction, and (4) network extraction.  The raw output is a superposition
-% of possible models until it is segmented in some way.  The objects are assigned a contrast metric
-% based on the values from the energy image, and thresholding them on this value provides direct
-% control over the sensitivity and specificity of the vectorization.  Alternatively, the graphical
-% curation interface provides a platform for manual segmentation such as local threshold selection
-% or point-and-click object selection.
+% (3) edge extraction, and (4) network extraction.  The raw output is a superposition of possible
+% models until it is segmented in some way. The vertex and edge objects are assigned a contrast
+% metric based on the values from the energy-filtered image, and thresholding them on this value
+% provides direct control over the sensitivity and specificity of the vectorization.  Alternatively,
+% the graphical curation interfaces (one for the edges, and one for the vertices) provides a
+% platform for manual segmentation such as local threshold selection or point-and-click object
+% selection.
 % 
 % 1: Energy Image Formation
-%     Multi-scale (at many pre-defined sizes) gradient and curvature information from the original
-%     3D image is combined to form a 4-dimensional, multi-scale, centerline-enhanced, image, known
-%     as the energy image.  Ideally, the voxels with the lowest energy value the energy image will
-%     be the most likely to be centerline voxels for vessels in the pre-defined size range.  This
-%     can be visually verified by inspecting the energy*.tif visual output in the visual output
-%     directory.  The energy image should be very negative right at the vessel centerlines and close
-%     to zero or positive elsewhere.  The value of the size image at a given voxel shows the index
-%     of the pre-defined sizes that is most likely assuming a vessel is centered at that voxel.
+%     The input image is linearly (matched-)filtered at many scales to extract curvature (and
+%     gradient) information. The Hessian matrix is diagonalized to extract principle curvatures at
+%     all voxels (and scales) where the Laplacian is negative (local bright spot in original image).
+%     The energy function is an objective function to select for large negative principle curvatures
+%     while each curvature is seperately weighted by a symmetry factor using the gradient. The 4D
+%     multi-scale energy image is projected across the scale coordinate using a minimum projection
+%     to select the most probable scale. The result is an enhancement of the vessel centerlines
+%     while simultaneously selecting the scale coordinate (index into the size range LUT input).
 % 
 % 2: Vertex Extraction
 %     Vertices are extracted as local minima in the 4D energy image (with associated x, y, z,
-%     radius, and energy value).  This method was inspired by the first part of the SIFT algorithm
-%     (David Lowe, International Journal of Computer Vision, 2004)).  Ideally, local minima of the
-%     energy image correspond to voxels that are locally the most likely to be along a vessel
-%     centerline. The size coordinate is also required to be at a local energy minimum.  In theory,
-%     the vertices are ordered from most to least likely to exist by the energy values at their
-%     locations.
+%     radius, and energy value). (This part of the method was inspired by the first part of the SIFT
+%     algorithm (David Lowe, International Journal of Computer Vision, 2004)).  The vertex objects
+%     are points of high contrast and symmetry (bright spots or bifurcations) along the vessel
+%     segments. The labeling is sufficiently dense if there is at least one vertex per strand (see
+%     network section for strand definition). The vertices are ordered by the energy values to rank
+%     them from most likely to least likely (based on the energy filter model; without knowledge of
+%     a ground truth).
 % 
 % 3: Edge Extraction
-%     Edges are extracted as voxel to voxel random walks through the (min. projected to 3D) energy
-%     image.  Therefore edges are lists of spherical objects like vertices.  Edge trajectories seek
-%     lower energy values and are forced to connect exactly two vertices.  The trajectories between
-%     vertices are in theory ordered from most to least likely to exist by their mean energy values.
+%     Edges are extracted as voxel walks through the (3D) energy image.  Therefore edges are
+%     1-Dimensional objects such as a list or a trace, where each location along the trace is a
+%     spherical object with an energy value (like a vertex).  Each edge walk starts at a vertex and
+%     seeks the lowest energy values under the constraint that it must move away from its origin.
+%     The trajectories between vertices are ordered by their maximum energy value attained, in order
+%     to give an first estimate of which edges are likely to be true (based on the energy filter
+%     model; without knowledge of a ground truth) and which edges are likely to be false.
 % 
 % 4: Network Extraction
-%     Strands are defined as the sequences of non-branching edges (single random color in the
-%     colored strands image).  Strands are found by counting the number of edges in the adjacency
-%     matrix of the vertices.  Strands are the connected components of the adjacency matrix that
-%     only includes vertices with two edges.  With the strands of the network in hand, we
+%     The final network output is the minimal set of 1-Dimensional objects (strands) that connect
+%     all of the bifurcations/endpoints according to the adjacency matrix exracted from the edges
+%     and vertices. The strands are like the edges, but in general are longer, and composed of
+%     multiple edges (at least 1). (Theerefore, each strand has at each location along its trace a
+%     3-space position, radius, and an energy value). With the strands of the network in hand, we
 %     equivalently know where the bifurcations in the network are.  Network information unlocks many
 %     doors.  For instance, we can smooth the positions and sizes of the extracted vectors along
 %     their strands and approximate local blood flow fields.
 %
 %% ------------------------------------------- Outputs -------------------------------------------- 
-%
-% Standard network ouptut format(s): .casx .vmv
-%
-% The vectorization output is the set of 3-space locations and radii of all vessels as well as 
-% their connectivity. This information is stored in several matlab variables in the network output 
-% file in the vector directory of the batch_* directory output of the Vectorize function. This 
-% vector information is also available in the casx file format if the user selects the 
-% 'SpecialOutputs'/'casx' name/value pair input. Casx file format for storing vascular network 
-% data designed by G. Hartung and A. Linninger, UIC, 2016-2019. Vmv file format is the VessMorphoVis 
-% plugin to Blender due to the Blue Brain Project, described by Abdellah et al. in Bioinformatics in 
-% 2020.
 %
 % TIME_STAMP = VECTORIZE( ... )
 %     returns the TIME_STAMP that was assigned to any new data or settings output
@@ -306,47 +346,41 @@ function [ time_stamp, ROI_names ] = vectorize_V200( varargin )
 %     also returns the FILE_NAMES that were used as input or the names assigned to the IMAGE_MATRICES in
 %     the order that they were passed to VECTORIZE.
 %
-%% -------------------------------------------  Notes  -------------------------------------------- 
-% VECTORIZE( ) prompts the user at the command window for all required inputs.  It first asks 
-%     whether to vectorize a new batch of images or continue with a previous batch.  A batch is a
-%     group of images that the VECTORIZE function organizes together with two properties:
-%
-%         1) The same set of input parameters applies to every image in a batch. 
+% The final vectorized model of the network is the minimal set of 1-Dimensional objects (strands)
+% that connect all of the bifurcations/endpoints to each other. Each strand has at each location
+% along its trace a 3-space position, radius, and an energy value. This output (without the energy
+% values) can be exported in .vmv or .casx formats (see the SpecialOutput input parameter).
 % 
-%         2) The images in a batch are processed in parallel at each step of the vectorization. 
-%            (see Methods below for descriptions of the four steps in the vectorization algorithm).
-%
-%       If the user continues with a previous batch, VECTORIZE prompts the user to select a previous
-%       batch folder with data to recycle.
-%
-%       Alternatively, if the user starts a new batch, VECTORIZE prompts the user to select a folder
-%       with some image file(s) to be vectorized.  It makes a new batch folder in a location
-%       specified by the user.
+% Other intermediate outputs are output to the OutputDirectory in the batch folder like so:
 % 
-%     In either case, VECTORIZE prompts the user for a few logistical inputs: which vectorization
-%     step(s) to execute, what previous data or settings (if any) to recycle, which visual(s) to
-%     output (if any), and whether or not to open a graphical curator interface. It also prompts the
-%     user for workflow-specific parameters: It displays imported parameters for review, and prompts
-%     the user for any missing required parameters.  VECTORIZE writes any outputs to the batch
-%     folder with a time stamp of the form YYMMDD_HHmmss.
+%  batch_YYMMDD_hhmmss
+%       curations
+%       data
+%       settings
+%       vectors
+%       visual_data
+%       visual_vectors
+%       
+% The curations folder contains the automatic and user-requested curation backups. 
 % 
-%   Conventions:  Greater values in the IMAGE_MATRIX correspond to greater vascular signal
-%                 The IMAGE_MATRIX dimensions correspond to the physical dimensions y, x, and z
-%                 (1,x,z) is the top  border of the x-y image at height z
-%                 (y,1,z) is the left border of the x-y image at height z
-%                 (y,x,1) is the x-y image nearest to the objective
-%
-%   Supported input image file types: .tif
-%
-% For in-line function calls that do not require manual interfacing (e.g. for writing wrapper
-% functions or for keeping a concise record of VECTORIZE function calls in a script file), see the
-% Optional Input, Logistical Parameters, and Workflow Specific Parameters Sections.
+% The data folder has the hdf5 files of the original, energy, and intermediate edges. 
 % 
-% Note:  For more organizational/navigational control over this document in MATLAB:
-%           1) open the Preferences Window                                       (HOME>>PREFERENCES)
-%           2) enable Code Folding for Sections              (MATLAB>>Editor/Debugger>>Code Folding)
-%           3) fold all of the sections in this document                                    (ctrl,+)
-%
+% The settings folder holds the record of vectorization executions (time-stamp: YYMMDD_hhmmss), the
+% workflows that were requested, and the values of the parameters used.
+% 
+% The vectors folder holds the vertex, edge, and strand objects. The final network vectors (strands)
+% are saved in the internal SLAVV format, or one of the exported formats (.vmv, .casx; see
+% SpecialOutput). A statistical summary of the network can be found in the network*.mat file under
+% the struct variable network_statistics.
+% 
+% The visual_vectors folder holds .tif 3D images of vector renderings (with weightings corresponding
+% to their energy values or thereof sorting index) in the same resolution as the original for
+% overlaying and comparison purposes.
+% 
+% The visual_data folder holds the .tif 3D images of the original, the energy filtered image (along
+% with the scale (index) image), and the intermediate edges. This is also where any figures
+% specified for generation by the SpecialOutput input will be saved.
+
 %% version notes:                                                                                   
 %
 % V02: in which the directory structure is overhauled and the calling of functions, and the saving
@@ -576,7 +610,8 @@ end % IF no optional input provided
                     
                     input_file_cell  = struct2cell( input_file_listing );
 
-                    input_file_names = input_file_cell( 1, : );    
+                    input_file_names   = input_file_cell( 1, : );    
+                    input_file_folders = input_file_cell( 2, : );    
                     
                     input_file_names_temp = input_file_names ;
                                                                                                     
@@ -584,7 +619,7 @@ end % IF no optional input provided
                         
                         number_of_inputs_total = number_of_inputs_total + 1 ;
                                                 
-                        input_image_path = [ input_file_cell{ 2, file_index }, filesep, input_file_names{ file_index }]; % TIF file path
+                        input_image_path = [ input_file_folders{ file_index }, filesep, input_file_names{ file_index }]; % TIF file path
                         
                         ROI_names{ number_of_inputs_total } = [ '_', input_file_names{ file_index }( 1 : end - 4 )];
                         
@@ -602,18 +637,12 @@ end % IF no optional input provided
                             
                         end
                                                                         
-                        original_data = tif2mat( input_image_path );
+                        original_image = tif2mat( input_image_path );
 
-                        size_of_image = size( original_data );
+                        size_of_image = size( original_image );
                         
-                        path_to_original_data = fullfile( root_directory, [ 'batch_', time_stamp ], 'data', [ 'original',  ROI_names{ number_of_inputs_total }]); % h5  file path
+                        write_original_h5( original_image, ROI_names{ number_of_inputs_total }, input_file_folders{ file_index })
                         
-                        original_data_type = class( original_data );
-
-                        h5create( path_to_original_data, '/d', size_of_image, 'Datatype', original_data_type );
-
-                        mat2h5( path_to_original_data, original_data );
-
                     end
                     
                 case 'matrix'
@@ -624,15 +653,69 @@ end % IF no optional input provided
                     
                     ROI_names{ number_of_inputs_total } = [ '_ans_', num2str( number_of_matrices )];                    
                     
-                    path_to_original_data = fullfile( root_directory, [ 'batch_', time_stamp ], 'data', [ 'original',  ROI_names{ number_of_inputs_total }]); % h5  file path
-                                        
-                    h5create( path_to_original_data, '/d', size( x{ input_index }), 'Datatype', class( x{ input_index }));
-
-                    mat2h5( path_to_original_data, x{ input_index });
-                                        
+                    write_original_h5( x{ input_index }, ROI_names{ number_of_inputs_total }, pwd ) % look for registration file in the working directory if input is matrix
+                    
             end
         end % FOR ROI index
 
+        function write_original_h5( original_image, ROI_name, input_folder )
+
+            path_to_original_data = fullfile( root_directory, [ 'batch_', time_stamp ], 'data', [ 'original',  ROI_name ]); % h5  file path
+
+            % !!!!!!!!!!!!!!!! registration files for different ROI's need to be in separate folders
+            path_to_registration_txt_file = [ input_folder, filesep, 'TileConfiguration.registered.txt' ];
+
+            if isfile( path_to_registration_txt_file ) % if there is a registration file with the coordinates inside
+
+                mask_image = make_mask_from_registration( path_to_registration_txt_file, size_of_image );
+
+            end
+
+            if exist('mask_image','var')
+
+                disp([ 'Applying to the tiled image the mask found at ', [ optional_input( 1 : end - 4 ), '_mask.tif' ]])
+                
+                mat2tif( mask_image, [ optional_input( 1 : end - 4 ), '_mask.tif' ]);
+
+                mask_image = logical( mask_image );
+                
+                original_image = double( original_image );
+                
+%                 % baseline correction
+%                 original_image( mask_image ) = original_image( mask_image ) - min( original_image( mask_image ));
+
+                disp('Notice: performing log transform and normalization')
+
+                % data normalization
+                original_image( ~ mask_image ) = 1e3 * (      original_image( ~ mask_image )  - min( original_image( ~ mask_image ))) ...
+                                                     / ( max( original_image( ~ mask_image )) - min( original_image( ~ mask_image )));                
+                
+                % data conditioning to stabilize the log
+                original_image( ~ mask_image ) = original_image( ~ mask_image ) + median( original_image( ~ mask_image ));
+                
+                % log transform
+                original_image(   mask_image ) = 1 ;
+                
+                original_image = log( original_image );
+                                                
+                % setting the fill value to the average intensity of the images (in the region
+                % where they are defined/supported)
+                original_image( mask_image ) = mean( original_image( ~ mask_image ));
+
+                % full scale contrast stretch
+                original_image( : ) = 2^15 * (      original_image( : )  - min( original_image( : ))) ...
+                                          ./ ( max( original_image( : )) - min( original_image( : )));
+                                  
+                original_image = uint16( original_image );
+                
+            end
+            
+            h5create( path_to_original_data, '/d', size( original_image ), 'Datatype', class( original_image ));
+
+            mat2h5( path_to_original_data, original_image );
+
+        end        
+        
         function [ validation_type ] = validate_one_OptionalInput( x, phrase )
 
             if ischar( x ) || isstring( x )
@@ -1244,8 +1327,8 @@ switch p.Results.Forgetful
 end
     %%  -  -  -  -  -  -  -  -  -  -  -  -  -   curation workflows  -  -  -  -  -  -  -  -  -  -  - 
     
-VertexCuration_values = { 'none', 'auto', 'manual', 'machine-manual', 'machine-auto' };
-  EdgeCuration_values = { 'none', 'auto', 'manual', 'machine-manual', 'machine-auto' };
+VertexCuration_values = { 'none', 'auto', 'manual', 'machine-manual', 'machine-auto', 'mutual edges' };
+  EdgeCuration_values = { 'none', 'auto', 'manual', 'machine-manual', 'machine-auto', 'mutual edges' };
 
 % 'none' is not an option if running the workflow to be curated.  'auto' is minimum workflow
 if productive( 3 ), VertexCuration_default = 'manual'; VertexCuration_values( 1 ) = [ ]; else, VertexCuration_default = 'none'; end
@@ -1274,7 +1357,7 @@ parse( p, varargin{ : });
 presumptive = p.Results.Presumptive ;
     %% -  -  -  -  -  -  -  -  -  -  -  -  -  -  special outputs  -  -  -  -  -  -  -  -  -  -  -   
 
-if visual( 5 ), special_output_default = 'histograms' ; else special_output_default = 'none' ; end
+if visual( 5 ), special_output_default = { 'histograms', 'vmv', 'depth', 'strands', 'directions', 'depth-stats' }; else special_output_default = 'none' ; end
     
 addParameter( p, 'SpecialOutput', special_output_default, @validate_special_output )
 
@@ -1301,7 +1384,7 @@ save( path_to_workflow_settings, ...
   
 %% ------------------------------- Workflow-Specific Parameters ----------------------------------- 
 
-inputs_required     =     find( productive            )'         ;
+inputs_required     =  reshape( union( find( productive            )', nonzeros( 4 * strcmp( vertex_curation, 'mutual edges' )' )), 1, []);
 
 if any( productive )
 
@@ -1311,7 +1394,7 @@ if any( productive )
 else
     
     inputs_inherited    = 1 : max([ find( visual, 1, 'last' );               ...
-                                    3 * max(strcmp( vertex_curation, {'manual','machine-manual','machine-auto', 'auto' })); ...
+                                    3 * max(strcmp( vertex_curation, {'manual','machine-manual','machine-auto', 'auto', 'mutual edges' })); ...
                                     4 * max(strcmp(   edge_curation, {'manual','machine-manual','machine-auto', 'auto' })); ...
                                     5 * any( special_output )]);
     
@@ -1441,8 +1524,8 @@ for workflow_index = inputs_required
                 max_voxels_per_node_energy           = 1e5           ;
                 gaussian_to_ideal_ratio              = 1             ;
                 spherical_to_annular_ratio           = 1             ;
-                vessel_wall_thickness_in_microns     = 0             ;
-                matching_kernel_string               = '3D gaussian conv annular pulse' ;
+%                 vessel_wall_thickness_in_microns     = 0             ; %deprecated input
+%                 matching_kernel_string               = '3D gaussian conv annular pulse' ; %deprecated input, all kernels are a linear combo, no discrete options
                 approximating_PSF                    = true          ;                        
             
             end
@@ -1478,9 +1561,9 @@ for workflow_index = inputs_required
 
             end
 
-            % always presumptive list:
-            addParameter( p, 'matching_kernel_string'          ,           matching_kernel_string ) % !!!! depricated input
-            addParameter( p, 'vessel_wall_thickness_in_microns', vessel_wall_thickness_in_microns )                            
+%             % always presumptive list:
+%             addParameter( p, 'matching_kernel_string'          ,           matching_kernel_string ) % !!!! deprecated input
+%             addParameter( p, 'vessel_wall_thickness_in_microns', vessel_wall_thickness_in_microns )                            
             
             parse( p, varargin{ : });
             
@@ -1494,8 +1577,8 @@ for workflow_index = inputs_required
             temp_max_voxels_per_node_energy              = p.Results.max_voxels_per_node_energy           ;
             temp_gaussian_to_ideal_ratio                 = p.Results.gaussian_to_ideal_ratio              ;
             temp_spherical_to_annular_ratio              = p.Results.spherical_to_annular_ratio           ;
-            temp_vessel_wall_thickness_in_microns        = p.Results.vessel_wall_thickness_in_microns     ;
-            temp_matching_kernel_string                  = p.Results.matching_kernel_string               ;
+%             temp_vessel_wall_thickness_in_microns        = p.Results.vessel_wall_thickness_in_microns     ;
+%             temp_matching_kernel_string                  = p.Results.matching_kernel_string               ;
             temp_approximating_PSF                       = p.Results.approximating_PSF                    ; 
             %% --------------------------- microns_per_voxel                                        
 
@@ -1617,10 +1700,11 @@ for workflow_index = inputs_required
                 error( 'Parameter approximating_PSF must be a scalar logical' )
 
             end % IF valid parameter input
-            
-            disp([ 'approximating_PSF                    =   ', num2str( approximating_PSF )])
-            
+                        
             if approximating_PSF
+
+                disp( 'approximating_PSF                    =   true' )
+                
                 %% --------------------------- sample_index_of_refraction                           
 
                 if strcmp( temp_sample_index_of_refraction, 'prompt' )
@@ -1710,9 +1794,11 @@ for workflow_index = inputs_required
 
                 end % IF valid parameter input
 
-                disp([ 'excitation_wavelength_in_microns                =   ', num2str( excitation_wavelength_in_microns )])
+                disp([ 'excitation_wavelength_in_microns     =   ', num2str( excitation_wavelength_in_microns )])
 
             else % not approximating the PSF
+                
+                disp( 'approximating_PSF                    =   false % instead, PSF assumed to be ideal point source' )
                 
                 sample_index_of_refraction       = [ ];
                 numerical_aperture               = [ ];
@@ -1724,7 +1810,7 @@ for workflow_index = inputs_required
             if strcmp( temp_scales_per_octave, 'prompt' )
 
                 temp_scales_per_octave                                                                                                                               ...
-                    = input([ 'Please input the desired number of vessel sizes to detected per doubling of the radius cubed [ ', num2str( scales_per_octave ), ' ]: ']);    
+                    = input([ 'Please input the desired number of vessel sizes to detected per doubling of the radius cubed [ ', num2str( scales_per_octave ), ' % number of scales per volume doubling (octave)']);    
 
                 if isempty( temp_scales_per_octave ), temp_scales_per_octave = scales_per_octave ; end                                                                                                                            
                                 
@@ -1808,7 +1894,7 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
 
-            disp([ 'gaussian_to_ideal_ratio                =   ', num2str( gaussian_to_ideal_ratio )]) 
+            disp([ 'gaussian_to_ideal_ratio              =   ', num2str( gaussian_to_ideal_ratio )]) 
             %% --------------------------- spherical_to_annular_ratio                               
             
             if strcmp( temp_spherical_to_annular_ratio, 'prompt' )
@@ -1838,92 +1924,92 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
 
-            disp([ 'spherical_to_annular_ratio                =   ', num2str( spherical_to_annular_ratio )])
-            %% --------------------------- matching_kernel_string                                   
-            
-            matching_kernel_string_values = {    '3D gaussian',                      ...
-                                                 '3D gaussian conv spherical pulse', ...
-                                                 '3D gaussian conv annular pulse', ...
-                                                  'spherical pulse',                 ...
-                                                    'annular pulse',                 ...
-                                                    'annular pulse V2',              ...
-                                                 '3D annular gaussian',              ...
-                                                 '3D annular gaussian V2',           ...
-                                                     'radial gaussian'               };
-
-            matching_kernels_of_vessel_wall = matching_kernel_string_values([ 3, 5 : end ]);
-                        
-            if strcmp( temp_matching_kernel_string, 'prompt' )
-
-                disp( 'Matching kernel values:' )
-                
-                number_of_matching_kernel_string_values = length( matching_kernel_string_values );                
-
-                for matching_kernel_index = 1 : number_of_matching_kernel_string_values
-
-                    disp([ '          ', matching_kernel_string_values{ matching_kernel_index }])
-
-                end
-
-                temp_matching_kernel_string                                                                          ...
-                    = input([ 'Please input the matching kernel to be used [ ', matching_kernel_string, ' ]: '], 's' );    
-
-                if isempty( temp_matching_kernel_string ), temp_matching_kernel_string = matching_kernel_string ; end                                                                                                                            
-                                
-            end
-            
-            if      ischar( temp_matching_kernel_string ) ...
-               || isstring( temp_matching_kernel_string )
-
-                matching_kernel_string = validatestring( temp_matching_kernel_string, matching_kernel_string_values );
-
-            else
-
-                error( 'Parameter matching_kernel_string must be type char or string' )
-
-            end % IF valid parameter input
-
-            disp([ 'matching_kernel_string               =   ', matching_kernel_string ])
-            
-            switch matching_kernel_string
-                
-                case matching_kernels_of_vessel_wall
-                    %% --------------------------- vessel_wall_thickness_in_microns                         
-
-                    if strcmp( temp_vessel_wall_thickness_in_microns, 'prompt' )
-
-                        temp_vessel_wall_thickness_in_microns ...
-                            = input([ 'Please input the thickness of the vessel wall to be detected in microns [ ', num2str( vessel_wall_thickness_in_microns ), ' ]: ']);    
-
-                        if isempty( temp_vessel_wall_thickness_in_microns ), temp_vessel_wall_thickness_in_microns = vessel_wall_thickness_in_microns ; end                                                                                                                            
-
-                    end
-                    
-                    if    isnumeric( temp_vessel_wall_thickness_in_microns ) ...
-                       &&  isscalar( temp_vessel_wall_thickness_in_microns )
-
-                        if vessel_wall_thickness_in_microns >= 0 
-
-                            vessel_wall_thickness_in_microns = temp_vessel_wall_thickness_in_microns ;
-
-                        else
-
-                            error( 'Parameter vessel_wall_thickness_in_microns must be nonnegative' )
-
-                        end                
-                    else
-
-                        error( 'Parameter vessel_wall_thickness_in_microns must be a numeric scalar' )
-
-                    end % IF valid parameter input
-
-                    disp([ 'vessel_wall_thickness_in_microns  =   ', num2str( vessel_wall_thickness_in_microns )])
-                
-               otherwise % no vessel wall thickness required
-                   
-%                    vessel_wall_thickness_in_microns = 1 ;
-            
-            end
+            disp([ 'spherical_to_annular_ratio           =   ', num2str( spherical_to_annular_ratio )])
+            %% --------------------------- matching_kernel_string                    (deprecated)   
+%             
+%             matching_kernel_string_values = {    '3D gaussian',                      ...
+%                                                  '3D gaussian conv spherical pulse', ...
+%                                                  '3D gaussian conv annular pulse', ...
+%                                                   'spherical pulse',                 ...
+%                                                     'annular pulse',                 ...
+%                                                     'annular pulse V2',              ...
+%                                                  '3D annular gaussian',              ...
+%                                                  '3D annular gaussian V2',           ...
+%                                                      'radial gaussian'               };
+% 
+%             matching_kernels_of_vessel_wall = matching_kernel_string_values([ 3, 5 : end ]);
+%                         
+%             if strcmp( temp_matching_kernel_string, 'prompt' )
+% 
+%                 disp( 'Matching kernel values:' )
+%                 
+%                 number_of_matching_kernel_string_values = length( matching_kernel_string_values );                
+% 
+%                 for matching_kernel_index = 1 : number_of_matching_kernel_string_values
+% 
+%                     disp([ '          ', matching_kernel_string_values{ matching_kernel_index }])
+% 
+%                 end
+% 
+%                 temp_matching_kernel_string                                                                          ...
+%                     = input([ 'Please input the matching kernel to be used [ ', matching_kernel_string, ' ]: '], 's' );    
+% 
+%                 if isempty( temp_matching_kernel_string ), temp_matching_kernel_string = matching_kernel_string ; end                                                                                                                            
+%                                 
+%             end
+%             
+%             if      ischar( temp_matching_kernel_string ) ...
+%                || isstring( temp_matching_kernel_string )
+% 
+%                 matching_kernel_string = validatestring( temp_matching_kernel_string, matching_kernel_string_values );
+% 
+%             else
+% 
+%                 error( 'Parameter matching_kernel_string must be type char or string' )
+% 
+%             end % IF valid parameter input
+% 
+%             disp([ 'matching_kernel_string               =   ', matching_kernel_string ])
+%             
+%             switch matching_kernel_string
+%                 
+%                 case matching_kernels_of_vessel_wall
+                    %% --------------------------- vessel_wall_thickness_in_microns  (deprecated)   
+% 
+%                     if strcmp( temp_vessel_wall_thickness_in_microns, 'prompt' )
+% 
+%                         temp_vessel_wall_thickness_in_microns ...
+%                             = input([ 'Please input the thickness of the vessel wall to be detected in microns [ ', num2str( vessel_wall_thickness_in_microns ), ' ]: ']);    
+% 
+%                         if isempty( temp_vessel_wall_thickness_in_microns ), temp_vessel_wall_thickness_in_microns = vessel_wall_thickness_in_microns ; end                                                                                                                            
+% 
+%                     end
+%                     
+%                     if    isnumeric( temp_vessel_wall_thickness_in_microns ) ...
+%                        &&  isscalar( temp_vessel_wall_thickness_in_microns )
+% 
+%                         if vessel_wall_thickness_in_microns >= 0 
+% 
+%                             vessel_wall_thickness_in_microns = temp_vessel_wall_thickness_in_microns ;
+% 
+%                         else
+% 
+%                             error( 'Parameter vessel_wall_thickness_in_microns must be nonnegative' )
+% 
+%                         end                
+%                     else
+% 
+%                         error( 'Parameter vessel_wall_thickness_in_microns must be a numeric scalar' )
+% 
+%                     end % IF valid parameter input
+% 
+%                     disp([ 'vessel_wall_thickness_in_microns  =   ', num2str( vessel_wall_thickness_in_microns )])
+%                 
+%                otherwise % no vessel wall thickness required
+%                    
+% %                    vessel_wall_thickness_in_microns = 1 ;
+%             
+%             end
             %% ---------------------- dependent variables                                           
             
             if approximating_PSF
@@ -2001,9 +2087,9 @@ for workflow_index = inputs_required
                   'scales_per_octave'                   , ...
                   'max_voxels_per_node_energy'          , ...                  
                   'gaussian_to_ideal_ratio'             , ...
-                  'spherical_to_annular_ratio'          , ...
-                  'matching_kernel_string'              , ...
-                  'vessel_wall_thickness_in_microns'      )
+                  'spherical_to_annular_ratio'          ), ...
+             ...     'matching_kernel_string'              , ...
+             ...     'vessel_wall_thickness_in_microns'      )
         case 3
         %%  -  -  -  -  -  -  -  -  -  -  -  - Vertices  -  -  -  -  -  -  -  -  -  -  -  -  -  -   
 
@@ -2027,7 +2113,7 @@ for workflow_index = inputs_required
                 end
                 
                 % load defaults                
-                space_strel_apothem       =     1 ;
+                space_strel_apothem       = int16( 1 );
                 energy_upper_bound        =     0 ;
                 max_voxels_per_node       =  6000 ;
                 length_dilation_ratio     =     1 ;
@@ -2059,7 +2145,7 @@ for workflow_index = inputs_required
             temp_max_voxels_per_node        = p.Results.max_voxels_per_node       ;
             temp_length_dilation_ratio      = p.Results.length_dilation_ratio     ;
             temp_exporting_vertex_curation  = p.Results.exporting_vertex_curation ;
-            %% --------------------------- space_strel_apothem                                      
+            %% --------------------------- space_strel_apothem        ( hidden )                    
 
             if strcmp( temp_space_strel_apothem, 'prompt' )
 
@@ -2095,8 +2181,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'space_strel_apothem       =   ', num2str( space_strel_apothem )])
-            %% --------------------------- energy_upper_bound                                       
+%             disp([ 'space_strel_apothem       =   ', num2str( space_strel_apothem )])
+            %% --------------------------- energy_upper_bound         ( always presumptive )        
 
             if strcmp( temp_energy_upper_bound, 'prompt' )
 
@@ -2126,7 +2212,7 @@ for workflow_index = inputs_required
             end % IF valid parameter input
             
             disp([ 'energy_upper_bound        =   ', num2str( energy_upper_bound )])
-            %% --------------------------- max_voxels_per_node                                      
+            %% --------------------------- max_voxels_per_node        ( always presumptive )        
 
             if strcmp( temp_max_voxels_per_node, 'prompt' )
 
@@ -2155,8 +2241,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'max_voxels_per_node    =   ', num2str( max_voxels_per_node )])
-            %% --------------------------- length_dilation_ratio                                    
+            disp([ 'max_voxels_per_node       =   ', num2str( max_voxels_per_node )])
+            %% --------------------------- length_dilation_ratio      ( hidden )                    
 
             if strcmp( temp_length_dilation_ratio, 'prompt' )
 
@@ -2185,8 +2271,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'length_dilation_ratio       =   ', num2str( length_dilation_ratio )])
-            %% --------------------------- exporting_vertex_curation                                
+%             disp([ 'length_dilation_ratio     =   ', num2str( length_dilation_ratio )])
+            %% --------------------------- exporting_vertex_curation  ( hidden )                    
 
             if strcmp( temp_exporting_vertex_curation, 'prompt' )
 
@@ -2208,7 +2294,15 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'exporting_vertex_curation =   ', num2str( exporting_vertex_curation )])
+%             if exporting_vertex_curation
+%                 
+%                 disp( 'exporting_vertex_curation =   true' )
+%                 
+%             else
+%                 
+%                 disp( 'exporting_vertex_curation =   false' )
+%                 
+%             end
             %% ---------------------- saving                                                        
 
             disp([ 'Saving vertices workflow settings file: ', path_to_vertices_settings ])        
@@ -2242,34 +2336,36 @@ for workflow_index = inputs_required
                 end
                 
                 % load defaults
-                max_edge_length_per_origin_radius = 60  ;
-                space_strel_apothem_edges         = 1   ;
-                number_of_edges_per_vertex        = 4   ;
-                sigma_edge_smoothing              = 0   ;
-                length_dilation_ratio_vertices    = 2   ;
-                length_dilation_ratio_edges       = 2/3 ;            
+                max_edge_length_per_origin_radius = 60  ; % deprecated
+                space_strel_apothem_edges         = int64( 1 ); % deprecated
+                number_of_edges_per_vertex        = 4   ; % deprecated
+                sigma_edge_smoothing              = 0   ; % deprecated
+                length_dilation_ratio_vertices    = 2   ; % deprecated
+                length_dilation_ratio_edges       = 2/3 ; % hidden (for displaying edges in curator)
 
             end
             
-            if presumptive
-                
-                addParameter( p, 'max_edge_length_per_origin_radius', max_edge_length_per_origin_radius )
-                addParameter( p, 'number_of_edges_per_vertex'       ,        number_of_edges_per_vertex )
-%                 addParameter( p, 'sigma_edge_smoothing'             ,              sigma_edge_smoothing )
-                
-            else
-            
-                addParameter( p, 'max_edge_length_per_origin_radius', 'prompt' )
-                addParameter( p, 'number_of_edges_per_vertex'       , 'prompt' )
-%                 addParameter( p, 'sigma_edge_smoothing'             , 'prompt' )                
-                
-            end
+%             if presumptive
+%                 
+%                 addParameter( p, 'max_edge_length_per_origin_radius', max_edge_length_per_origin_radius )
+%                 addParameter( p, 'number_of_edges_per_vertex'       ,        number_of_edges_per_vertex )
+% %                 addParameter( p, 'sigma_edge_smoothing'             ,              sigma_edge_smoothing )
+%                 
+%             else
+%             
+%                 addParameter( p, 'max_edge_length_per_origin_radius', 'prompt' )
+%                 addParameter( p, 'number_of_edges_per_vertex'       , 'prompt' )
+% %                 addParameter( p, 'sigma_edge_smoothing'             , 'prompt' )                
+%                 
+%             end
             
             % always presumptive list:
-            addParameter( p, 'space_strel_apothem_edges'     ,      space_strel_apothem_edges )
-            addParameter( p, 'sigma_edge_smoothing'          ,           sigma_edge_smoothing )                
-            addParameter( p, 'length_dilation_ratio_vertices', length_dilation_ratio_vertices )
-            addParameter( p, 'length_dilation_ratio_edges'   ,    length_dilation_ratio_edges )
+            addParameter( p, 'space_strel_apothem_edges'     ,      space_strel_apothem_edges ) % deprecated
+            addParameter( p, 'sigma_edge_smoothing'          ,           sigma_edge_smoothing ) % hidden (deprepacted)          
+            addParameter( p, 'length_dilation_ratio_vertices', length_dilation_ratio_vertices ) % deprecated 
+            addParameter( p, 'length_dilation_ratio_edges'   ,    length_dilation_ratio_edges ) % hidden (for displaying edges in curator)
+            addParameter( p, 'max_edge_length_per_origin_radius', max_edge_length_per_origin_radius )% deprecated
+            addParameter( p, 'number_of_edges_per_vertex'       , number_of_edges_per_vertex )  % hidden (deprepacted)
 
             parse( p, varargin{ : });
 
@@ -2279,7 +2375,7 @@ for workflow_index = inputs_required
             temp_sigma_edge_smoothing              = p.Results.sigma_edge_smoothing              ;
             temp_length_dilation_ratio_vertices    = p.Results.length_dilation_ratio_vertices    ;
             temp_length_dilation_ratio_edges       = p.Results.length_dilation_ratio_edges       ;
-            %% --------------------------- max_edge_length_per_origin_radius                        
+            %% --------------------------- max_edge_length_per_origin_radius  ( deprecated )        
 
             if strcmp( temp_max_edge_length_per_origin_radius, 'prompt' )
 
@@ -2308,8 +2404,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'max_edge_length_per_origin_radius    =   ', num2str( max_edge_length_per_origin_radius )])
-            %% --------------------------- space_strel_apothem_edges                                
+%             disp([ 'max_edge_length_per_origin_radius    =   ', num2str( max_edge_length_per_origin_radius )])
+            %% --------------------------- space_strel_apothem_edges          ( deprecated )        
 
             if strcmp( temp_space_strel_apothem_edges, 'prompt' )
 
@@ -2345,8 +2441,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'space_strel_apothem_edges            =   ', num2str( space_strel_apothem_edges )])
-            %% --------------------------- number_of_edges_per_vertex                               
+%             disp([ 'space_strel_apothem_edges            =   ', num2str( space_strel_apothem_edges )])
+            %% --------------------------- number_of_edges_per_vertex         ( hidden/deprepacted )
 
             if strcmp( temp_number_of_edges_per_vertex, 'prompt' )
 
@@ -2382,8 +2478,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'number_of_edges_per_vertex           =   ', num2str( number_of_edges_per_vertex )])                        
-            %% --------------------------- sigma_edge_smoothing                                    
+%             disp([ 'number_of_edges_per_vertex           =   ', num2str( number_of_edges_per_vertex )])                        
+            %% --------------------------- sigma_edge_smoothing               ( hidden/deprepacted )
 
             if strcmp( temp_sigma_edge_smoothing, 'prompt' )
 
@@ -2412,8 +2508,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'sigma_edge_smoothing                 =   ', num2str( sigma_edge_smoothing )])
-            %% --------------------------- length_dilation_ratio_edges                              
+%             disp([ 'sigma_edge_smoothing                 =   ', num2str( sigma_edge_smoothing )])
+            %% --------------------------- length_dilation_ratio_edges        ( hidden )            
 
             if strcmp( temp_length_dilation_ratio_edges, 'prompt' )
 
@@ -2442,8 +2538,8 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'length_dilation_ratio_edges          =   ', num2str( length_dilation_ratio_edges )])
-            %% --------------------------- length_dilation_ratio_vertices                           
+%             disp([ 'length_dilation_ratio_edges          =   ', num2str( length_dilation_ratio_edges )])
+            %% --------------------------- length_dilation_ratio_vertices     ( deprecated )        
 
             if strcmp( temp_length_dilation_ratio_vertices, 'prompt' )
 
@@ -2479,7 +2575,7 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'length_dilation_ratio_vertices       =   ', num2str( length_dilation_ratio_vertices )])            
+%             disp([ 'length_dilation_ratio_vertices       =   ', num2str( length_dilation_ratio_vertices )])            
             %% ---------------------- saving                                                        
 
             disp([ 'Saving edges workflow settings file: ', path_to_edges_settings ])        
@@ -2514,24 +2610,24 @@ for workflow_index = inputs_required
                 end
                 
                 % load defaults
-                sigma_strand_smoothing = 1 ;                
+                sigma_strand_smoothing = 1 ;      % deprecated              
                 
             end
                         
-            if presumptive
-                
-                addParameter( p, 'sigma_strand_smoothing', sigma_strand_smoothing )
+%             if presumptive
+                % always presumptive:
+                addParameter( p, 'sigma_strand_smoothing', sigma_strand_smoothing )  % deprecated  
             
-            else
-                
-                addParameter( p, 'sigma_strand_smoothing', 'prompt' )
-                
-            end
+%             else
+%                 
+%                 addParameter( p, 'sigma_strand_smoothing', 'prompt' )
+%                 
+%             end
             
             parse( p, varargin{ : });
             
             temp_sigma_strand_smoothing = p.Results.sigma_strand_smoothing ;
-            %% --------------------------- sigma_strand_smoothing                                   
+            %% --------------------------- sigma_strand_smoothing             ( hidden/deprepacted )
 
             if strcmp( temp_sigma_strand_smoothing, 'prompt' )
 
@@ -2545,7 +2641,7 @@ for workflow_index = inputs_required
             if    isnumeric( temp_sigma_strand_smoothing ) ...
                &&  isscalar( temp_sigma_strand_smoothing )
 
-                if temp_sigma_strand_smoothing > 0
+                if temp_sigma_strand_smoothing >= 0
 
                     sigma_strand_smoothing = temp_sigma_strand_smoothing ;
 
@@ -2560,7 +2656,7 @@ for workflow_index = inputs_required
 
             end % IF valid parameter input
             
-            disp([ 'sigma_strand_smoothing    =   ', num2str( sigma_strand_smoothing )])
+%             disp([ 'sigma_strand_smoothing    =   ', num2str( sigma_strand_smoothing )])
             %% ---------------------- saving                                                        
 
             disp([ 'Saving network workflow settings file: ', path_to_network_settings ])        
@@ -2590,6 +2686,7 @@ end % FOR INPUTS_NOT_REQUIRED
 
 if visual( 1 )
     
+    
     for ROI_index = ROI_index_range
                 
         path_to_original_visual = [ visual_data_directory, original_data_handle, ROI_names{ ROI_index }, '.tif' ]; % TIF file path       
@@ -2616,6 +2713,9 @@ if productive( 2 )
     for ROI_index = ROI_index_range
         tic
                 
+        matching_kernel_string               = '3D gaussian conv annular pulse' ; % deprecated input
+        vessel_wall_thickness_in_microns     = 0 ; % deprecated input
+        
         get_energy_V202(     matching_kernel_string, lumen_radius_in_microns_range, ...
                                vessel_wall_thickness_in_microns, microns_per_voxel, ...
                   pixels_per_sigma_PSF, max_voxels_per_node_energy, data_directory, ...
@@ -2715,6 +2815,26 @@ if productive( 3 )
             = get_vertices_V200(                  lumen_radius_in_microns_range, microns_per_voxel, ...
                                       space_strel_apothem, max_voxels_per_node, energy_upper_bound, ...
                                     [ data_directory, energy_handle, ROI_names{ ROI_index  }]);
+                                
+%         is_adjusting_size_evenly = true ;
+% %         is_adjusting_size_evenly = false ;
+%         
+%         if is_adjusting_size_evenly
+%             
+%             microns_per_sigma_PSF = pixels_per_sigma_PSF .* microns_per_voxel ;
+%             
+% %             target_microns_per_sigma_PSF_squared = mean( microns_per_sigma_PSF .^ 2 );
+%             target_microns_per_sigma_PSF_squared = max( microns_per_sigma_PSF .^ 2 );
+%             
+%             lumen_radius_in_microns_range_adjusted = max(   (      lumen_radius_in_microns_range .^ 2    ...
+%                                                                - target_microns_per_sigma_PSF_squared ), ...
+%                                                           0                                              ) .^ 0.5 ;
+%                                                       
+%             vertex_scale_subscripts = interp1(       log( lumen_radius_in_microns_range                                    ),...
+%                                                1 : numel( lumen_radius_in_microns_range                                    ),...      
+%                                                      log( lumen_radius_in_microns_range_adjusted( vertex_scale_subscripts )),...
+%                                               'linear', 1                                                                    );
+%         end
                             
         path_to_vertices      = [ vector_directory, vertices_handle, ROI_names{ ROI_index }];
         
@@ -2723,11 +2843,36 @@ if productive( 3 )
                                                                                    vertex_energies, ... 
                                              length_dilation_ratio * lumen_radius_in_microns_range, ...
                                                                   microns_per_voxel, size_of_image  );
+                                                              
+        if exist('mask_image','var')
+
+            % pause debugger here and add mask_image to the workspace (ones where you don't want
+            % vertices to be) SAM 4/18/21
+% %             mask_image = tif2mat(optional_input);
+% %             mode( mask_image( : ) )
+% %             mask_image = ~ mask_image ; % for mode == 0
+%             mask_image = make_mask_from_registration( [], size_of_image );
+            mat2tif(mask_image,[optional_input( 1 : end - 4),'_mask.tif']);            
+            
+            chosen_vertex_indices = crop_vertices_by_mask( vertex_space_subscripts, vertex_scale_subscripts, vertex_energies, ...
+                                                           lumen_radius_in_microns_range ./ microns_per_voxel, size_of_image, mask_image);
+            
+            vertex_space_subscripts = vertex_space_subscripts( chosen_vertex_indices, : );
+            vertex_scale_subscripts = vertex_scale_subscripts( chosen_vertex_indices    );
+            vertex_energies         = vertex_energies(         chosen_vertex_indices    );
+            
+            mask_image = mask_image ; % exclude static workspace error
+                        
+        end
                                            
         [ vertex_energies, sorted_indices ] = sort( vertex_energies );
                 
         vertex_space_subscripts = vertex_space_subscripts( sorted_indices, : );
         vertex_scale_subscripts = vertex_scale_subscripts( sorted_indices    );
+        
+%         vertex_energies =      vertex_energies ...
+%                        ./ lumen_radius_in_microns_range( vertex_scale_subscripts ) ...
+%                         * lumen_radius_in_microns_range(          1              ); % adjusting energy values based on size
         
 %         runtime_measurement_string = evalc( 'toc' );
 %          
@@ -2772,7 +2917,7 @@ for ROI_index = ROI_index_range
     
     switch vertex_curation
         
-        case { 'manual', 'auto', 'machine-manual', 'machine-auto' }
+        case { 'manual', 'auto', 'machine-manual', 'machine-auto', 'mutual edges' }
             
             tic
             
@@ -2818,6 +2963,10 @@ for ROI_index = ROI_index_range
         case 'auto'
             isAuto = true;
             
+        case 'mutual edges'
+            isAuto = true ;
+            isManual = false ;
+            
     end
         
     if isMachine
@@ -2838,6 +2987,24 @@ for ROI_index = ROI_index_range
         
     end %IF isMachine
     
+    if isManual || isAuto
+        
+        disp([ 'Running automated size exclusion vertex_curation for image ', ROI_names{ ROI_index }( 2 : end )])            
+        
+        % !!!!!! save this result once, so we don't have to do it whenever opening curator
+        % instead do a volume conflict test and select the best contrast object at conflicts
+        [ chosen_vertex_indices ]                                                               ...
+                 = choose_vertices_V200( vertex_space_subscripts, vertex_scale_subscripts,       ...
+                                         vertex_energies, lumen_radius_in_microns_range,         ...
+                                         microns_per_voxel, size_of_image, length_dilation_ratio );
+
+        % performing the selections proposed by choose_vertices
+        vertex_space_subscripts = vertex_space_subscripts( chosen_vertex_indices, : );
+        vertex_scale_subscripts = vertex_scale_subscripts( chosen_vertex_indices    );
+        vertex_energies         =         vertex_energies( chosen_vertex_indices    );
+
+    end % manual or auto
+    
     if isManual
         
         disp([ 'Loading vertex_curation interface for image ', ROI_names{ ROI_index }( 2 : end )])            
@@ -2854,24 +3021,96 @@ for ROI_index = ROI_index_range
     
     if isAuto
             
-        disp([ 'Running automated size exclusion vertex_curation for image ', ROI_names{ ROI_index }( 2 : end )])            
-
-        % instead do a volume conflict test and select the best contrast object at conflicts
-        [ chosen_vertex_indices ]                                                               ...
-                = choose_vertices_V200( vertex_space_subscripts, vertex_scale_subscripts,       ...
-                                        vertex_energies, lumen_radius_in_microns_range,         ...
-                                        microns_per_voxel, size_of_image, length_dilation_ratio );
-
-        % performing the selections proposed by either choose_vertices or vertex_curator
-        vertex_space_subscripts = vertex_space_subscripts( chosen_vertex_indices, : );
-        vertex_scale_subscripts = vertex_scale_subscripts( chosen_vertex_indices    );
-        vertex_energies         =         vertex_energies( chosen_vertex_indices    );    
-        
+%         disp([ 'Running automated size exclusion vertex_curation for image ', ROI_names{ ROI_index }( 2 : end )])            
+%         
+%         if strcmp( vertex_curation, 'mutual edges' ) % !!!! failed method attempt SAM 5/21/21
+%             
+%             number_of_edges_per_vertex_for_curation = 2 ;
+% 
+%             % run the edge extraction step with only 2 edges per vertex
+%             max_edge_energy = 0 ;
+% 
+%             [ edges2vertices, ~,       ...
+%               edge_space_subscripts,   ...
+%               edge_scale_subscripts,   ...
+%               edge_energies          ] ...
+%                     = get_edges_V300( lumen_radius_in_microns_range, vertex_scale_subscripts, vertex_space_subscripts, ...
+%                                       3 / 4, number_of_edges_per_vertex_for_curation, max_edge_energy, ...
+%                                       data_directory, [ energy_handle, ROI_names{ ROI_index }]);
+%                                                      
+%             is_not_really_mutual_but_iterative_terminal = true ;
+%             
+%             if is_not_really_mutual_but_iterative_terminal
+% 
+%     %             load('curate vertices workspace.mat')
+% 
+%                 minimum_number_of_edges_finding_a_vertex = 1 ;
+% 
+%                 vertex_uniques = unique( edges2vertices( :, 1 ))';            
+% 
+%                 is_vertex_chosen          = zeros( 1, numel( vertex_scale_subscripts ), 'logical' );
+% 
+%                 is_vertex_chosen_previous = ones(  1, numel( vertex_scale_subscripts ), 'logical' );
+% 
+%                 is_vertex_unique_chosen = ones( size( vertex_uniques ), 'logical' );
+% 
+%                 while true
+% 
+%                     is_vertex_chosen( vertex_uniques ) = is_vertex_unique_chosen ;     
+% 
+%                     % identify deleted vertices, remove edges that use them as origin vertices from the
+%                     % edges2vertices look up table
+%                     vertex_unique_eliminated = find( ~ is_vertex_chosen & is_vertex_chosen_previous );
+% 
+%                     is_vertex_chosen_previous = is_vertex_chosen ;
+% 
+%                     for vertex_unique = vertex_unique_eliminated
+% 
+%                         edges2vertices( edges2vertices( :, 2 ) == vertex_unique, 2 ) = 0 ;
+% 
+%                     end
+% 
+%                     edge_energies(  edges2vertices( :, 2 ) == 0, : ) = [ ];
+% 
+%                     edges2vertices( edges2vertices( :, 2 ) == 0, : ) = [ ];
+% 
+%                     vertex_uniques = vertex_uniques( is_vertex_unique_chosen );
+% 
+%                     is_looping = ~ isempty( vertex_unique_eliminated );
+% 
+%                     if ~ is_looping, break, end
+% 
+%                     is_vertex_unique_chosen = sum( vertex_uniques == edges2vertices( :, 1 )) ...
+%                                             >= minimum_number_of_edges_finding_a_vertex ;
+% 
+%                 end            
+%             end % IF mutual edges is misnomer            
+%             
+%             vertex_space_subscripts = vertex_space_subscripts( vertex_uniques, : );
+%             vertex_scale_subscripts = vertex_scale_subscripts( vertex_uniques    );
+%             vertex_energies         =         vertex_energies( vertex_uniques    );            
+%             
+%         end % IF 'mutual edges'
     end % IF isAuto
     
     switch vertex_curation
+
+        case { 'auto', 'machine-auto' }
+
+            % convert energies to simply the sort indices instead (guarantees integer values with known
+            % range). This is for compatability with the noise study, where the energy images are
+            % used to decide global threshold values and those images are int16. SAM 5/21/21
+            [ ~, vertex_energies ] = sort( vertex_energies );
+
+%             vertex_energies = vertex_energies - numel( vertex_energies ) - 1  ;
+%             vertex_energies = min( -1, vertex_energies - 2^16 ); % all the vertices didn't fit in the uint16 bitdepth (pick the best ones)
+            vertex_energies = 2 ^ 16 * ( vertex_energies - numel( vertex_energies )) / numel( vertex_energies ) - 1  ;
+            
+    end
+    
+    switch vertex_curation
         
-        case { 'manual', 'auto', 'machine-manual', 'machine-auto' }
+        case { 'manual', 'auto', 'machine-manual', 'machine-auto', 'mutual edges' }
             
 %             runtime_measurement_string = evalc( 'toc' );
 % 
@@ -2880,16 +3119,23 @@ for ROI_index = ROI_index_range
 %             vertex_curation_runtime_in_seconds = sscanf( runtime_measurement_string( digit_indices( 1 ) : end ), '%f' );
 
             vertex_curation_runtime_in_seconds = toc ;
-
-            disp([ 'Runtime for vertex_curation workflow for image ', ROI_names{ ROI_index }( 2 : end ), ' was ', num2str( round( vertex_curation_runtime_in_seconds )), ' seconds' ])            
     
-            save(   path_to_curated_vertices            , ...
-                    'vertex_space_subscripts'           , ...
-                    'vertex_scale_subscripts'           , ...
-                    'vertex_energies'                   , ...
-                    'vertex_curation'                   , ...
-                    'vertex_curation_runtime_in_seconds'  );
+            if ~ isempty( vertex_energies ) % sam 1/27/22
+
+                disp([ 'Runtime for vertex_curation workflow for image ', ROI_names{ ROI_index }( 2 : end ), ' was ', num2str( round( vertex_curation_runtime_in_seconds )), ' seconds' ])                            
                 
+                save(   path_to_curated_vertices            , ...
+                        'vertex_space_subscripts'           , ...
+                        'vertex_scale_subscripts'           , ...
+                        'vertex_energies'                   , ...
+                        'vertex_curation'                   , ...
+                        'vertex_curation_runtime_in_seconds'  );
+                    
+            else
+                
+                disp([ '!vertex_curation workflow for image ', ROI_names{ ROI_index }( 2 : end ), ' was canceled by user! (', num2str( round( vertex_curation_runtime_in_seconds )), ' seconds). (no variables were overwritten)' ])
+
+            end
         otherwise % do nothing
 
     end
@@ -2955,6 +3201,7 @@ if productive( 4 )
         path_to_energy_data           = [   data_directory,               energy_handle, ROI_names{ ROI_index }];       
         
         load([ path_to_energy_data, '.mat' ])
+        load(  path_to_energy_settings      )
         
         try load( path_to_curated_vertices )
         
@@ -2975,90 +3222,212 @@ if productive( 4 )
 %                               edge_walk_temperature,                                                   ...
 %                               data_directory, [ energy_handle, ROI_names{ ROI_index }]                 );
                           
-        [ edges2vertices, ~, edge_space_subscripts, edge_scale_subscripts, edge_energies ]             ...
-                   = get_edges_V204(                 lumen_radius_in_microns_range, microns_per_voxel, ...
-                              length_dilation_ratio_vertices, vertex_scale_subscripts, vertex_space_subscripts, ...
-                                         space_strel_apothem_edges, max_edge_length_per_origin_radius, ...
-                                                           number_of_edges_per_vertex, data_directory, ...
-                                                             [ energy_handle, ROI_names{ ROI_index }]  );
-                                                                                      
+%         [ edges2vertices, ~, edge_space_subscripts, edge_scale_subscripts, edge_energies ]     ...
+%                    = get_edges_V204(         lumen_radius_in_microns_range, microns_per_voxel, ...
+%                                              vertex_scale_subscripts, vertex_space_subscripts, ...
+%                                  space_strel_apothem_edges, max_edge_length_per_origin_radius, ...
+%                                                    number_of_edges_per_vertex, data_directory, ...
+%                                                      [ energy_handle, ROI_names{ ROI_index }]  );
+                    
+%         try load([ path_to_edges( 1 : end - 22 ), '200826-181646', path_to_edges( end - 8 : end )])
+%         try load([ path_to_edges( 1 : end - 22 ), '200904-173434', path_to_edges( end - 8 : end )])
+%         try load([ path_to_edges( 1 : end - 22 ), '200915-202810', path_to_edges( end - 8 : end )])
+%         try load([ path_to_edges( 1 : end - 22 ), '200922-120248', path_to_edges( end - 8 : end )])
+%         try load([ path_to_edges( 1 : end - 22 ), '201027-213713', path_to_edges( end - 8 : end )])
+% 
+%         catch
+
+        max_edge_energy = 0 ;% deprecated
+        step_size_per_origin_radius = 1 ;
+%             step_size_per_origin_radius = 2/3 ;
+%             step_size_per_origin_radius = 3/2 ;
+%         step_size_per_origin_radius = 4/3 ;
+
+        [ edges2vertices, ~,       ...
+          edge_space_subscripts,   ...
+          edge_scale_subscripts,   ...
+          edge_energies          ] ...
+                = get_edges_V300( microns_per_voxel, lumen_radius_in_microns_range, vertex_space_subscripts, ...
+                                  vertex_scale_subscripts, step_size_per_origin_radius, number_of_edges_per_vertex, max_edge_energy, ...
+                                  data_directory, visual_data_directory, [ energy_handle, ROI_names{ ROI_index }], [ edges_handle, ROI_names{ ROI_index }]);
+
+%         % saving edge outputs
+%         save(  path_to_edges                , ...
+%               'edge_energies_backup'        , ...
+%               'edge_space_subscripts_backup', ... 
+%               'edge_scale_subscripts_backup', ...
+%               'edges2vertices_backup'         );
+% 
+%         edge_energies         = edge_energies_backup         ;
+%         edge_space_subscripts = edge_space_subscripts_backup ;
+%         edge_scale_subscripts = edge_scale_subscripts_backup ;
+%         edges2vertices        = edges2vertices_backup        ;
+          
+        % linearly interpolate the extracted edges in L-inf space to have 1-voxel-length spacing %
+        % SAM 11/2/21
+        edge_subscripts = cellfun( @( x, y    ) [ double( x ), y    ], edge_space_subscripts,   ...
+                                                                       edge_scale_subscripts  , 'UniformOutput', false );
+        
+        edge_quantities = cellfun( @( x, y, z ) [ double( x ), y, z ], edge_space_subscripts,   ...
+                                                                       edge_scale_subscripts  , ...
+                                                                       edge_energies          , 'UniformOutput', false );
+                
+        [ ~, ~, ~, edge_quantities ] = resample_vectors( lumen_radius_in_pixels_range, [ 1, 1, 1, 1 ], edge_subscripts, size_of_image, edge_quantities );
+
+        edge_space_subscripts_uint64 = cellfun( @( x ) uint64( x( :, 1 : 3 )), edge_quantities, 'UniformOutput', false );
+        edge_space_subscripts        = cellfun( @( x ) uint16( x( :, 1 : 3 )), edge_quantities, 'UniformOutput', false );
+%         edge_scale_subscripts        = cellfun( @( x )         x( :,   4    ), edge_quantities, 'UniformOutput', false );
+%         edge_energies                = cellfun( @( x )         x( :,   5    ), edge_quantities, 'UniformOutput', false );
+        
+        energy_data                          ...
+             = h52mat(  path_to_energy_data, ...
+                       [       1, 1, 1, 2 ], ...
+                       [ size_of_image, 1 ]  );
+                   
+          size_data                          ...
+             = h52mat(  path_to_energy_data, ...
+                       [       1, 1, 1, 1 ], ...
+                       [ size_of_image, 1 ]  );
+        
+                   % !!!!!!!!!! combine smoothing and resampling into one function. weight the result by referencing the actual data image weighted by the energy values around the location in a Gaussian weighted windowed operation% SAM 1/27/22
+                   
+        % resample the energy values from the original energy image
+        edge_energies = cellfun( @( x ) energy_data(                                     x( :, 1 )        ...
+                                                     +       size_of_image( 1     )  * ( x( :, 2 ) - 1 )  ...
+                                                     + prod( size_of_image( 1 : 2 )) * ( x( :, 3 ) - 1 )),...
+                                 edge_space_subscripts_uint64, 'UniformOutput', false                      );
+
+        
+        % resample the size values from the original energy image
+        edge_scale_subscripts                                                                             ...
+                      = cellfun( @( x )   size_data(                                     x( :, 1 )        ...
+                                                     +       size_of_image( 1     )  * ( x( :, 2 ) - 1 )  ...
+                                                     + prod( size_of_image( 1 : 2 )) * ( x( :, 3 ) - 1 )),...
+                                 edge_space_subscripts_uint64, 'UniformOutput', false                      );
+                                     
+%         metric_of_edge_energies = get_edge_metric( edge_energies );
+% 
+%         [ ~, sorting_indices ] = sort( metric_of_edge_energies ); % 'ascend' by SORT default
+% 
+%         edge_space_subscripts_backup = edge_space_subscripts_backup( sorting_indices );
+%         edge_scale_subscripts_backup = edge_scale_subscripts_backup( sorting_indices );
+%         edge_energies_backup         = edge_energies_backup(         sorting_indices );
+% 
+%         edges2vertices_backup = edges2vertices_backup( sorting_indices, : );
+        
+%         setdiff( vertex_space_subscripts, cell2mat( edge_space_subscripts ), 'rows' )
+                       
+        % preserve the unsmoothed edges.  Only use the smoothed edges for the crop_edges function.
+        % Need unsmoothed edges for many clean_edges functions such as for identifying children
+        % parent relationships
+                     
+%         sigma_edge_smoothing = 0.5 ;
+%         sigma_edge_smoothing = 0 ; % SAM 211020-18:36
+%         sigma_edge_smoothing = 1 ; % SAM 12/10/21 % SAM 1/4/22
+        sigma_edge_smoothing = 2 ^ 0.5 / 2 ; % SAM 1/4/22
+                          
+        if sigma_edge_smoothing % !!!!!!!!!!!!!!!!! consider not smoothing the energies % SAM 1/5/22
+            
+            [ presmoothed_edge_space_subscripts, presmoothed_edge_scale_subscripts, presmoothed_edge_energies ]                               ...
+                                         = smooth_edges_V2( edge_space_subscripts, edge_scale_subscripts, ...
+                                                            edge_energies,                                ...
+                                                            sigma_edge_smoothing, ...
+                                                            lumen_radius_in_microns_range, microns_per_voxel );  
+%             [ presmoothed_edge_space_subscripts, presmoothed_edge_scale_subscripts, presmoothed_edge_energies ]                               ...
+%                                          = smooth_edges_V2( edge_space_subscripts, edge_scale_subscripts, ...
+%                                                             path_to_energy_data,                                ...
+%                                                             sigma_edge_smoothing, ...
+%                                                             lumen_radius_in_microns_range, microns_per_voxel );  
+                                                        
+        else
+            
+            presmoothed_edge_space_subscripts = edge_space_subscripts ;
+            presmoothed_edge_scale_subscripts = edge_scale_subscripts ;
+            presmoothed_edge_energies         = edge_energies         ;    
+            
+
+        end
+        
+        [ excluded_edges_logical ]     ...
+                          = crop_edges_V200( presmoothed_edge_space_subscripts, ...
+                                             presmoothed_edge_scale_subscripts, ...
+                                             presmoothed_edge_energies,         ...
+                                             lumen_radius_in_microns_range,     ...
+                                             microns_per_voxel, size_of_image   );
+                                         
+        clear presmoothed_edge_space_subscripts presmoothed_edge_scale_subscripts presmoothed_edge_energies
+                                                 
+        edge_space_subscripts( excluded_edges_logical )    = [ ];
+        edge_scale_subscripts( excluded_edges_logical )    = [ ];
+                edge_energies( excluded_edges_logical )    = [ ];    
+
+               edges2vertices( excluded_edges_logical, : ) = [ ];
+               
+%         is_vertex_A_present = or( edges2vertices( :, 1 ) == vertex_A, edges2vertices( :, 2 ) == vertex_A );
+%         is_vertex_B_present = or( edges2vertices( :, 1 ) == vertex_B, edges2vertices( :, 2 ) == vertex_B );
+%         
+%         edge_index = find( is_vertex_A_present & is_vertex_B_present )'; if edge_index, warning([ 'edge_index', num2str( edge_index )]), end               
+               
         % clean up the output to just keep the trajectories that found a neighbor and to only keep
         % the "best" trajectory from each pair of vertices. Choosing the better trajectory from A
         % to B and B to A.  !!! Any direct visualization of the trajectory variability % should be
         % done before this step !!!
-        
-%         is_keeping_only_mutual_edge_pairs = number_of_edges_per_vertex >= 4 ;
         is_keeping_only_mutual_edge_pairs = false ;
         
         [ edges2vertices, original_edge_indices ] = clean_edge_pairs( edges2vertices, edge_energies, is_keeping_only_mutual_edge_pairs );
         
         edge_space_subscripts  =  edge_space_subscripts( original_edge_indices );
         edge_scale_subscripts  =  edge_scale_subscripts( original_edge_indices );
-        edge_energies          =          edge_energies( original_edge_indices );             
-
-        % preserve the unsmoothed edges.  Only use the smoothed edges for the crop_edges function.
-        % Need unsmoothed edges for many clean_edges functions such as for identifying children
-        % parent relationships in clean_edge_cycles
-        edge_space_subscripts_unsmoothed = edge_space_subscripts ;
-        edge_scale_subscripts_unsmoothed = edge_scale_subscripts ;
-                edge_energies_unsmoothed = edge_energies         ;
-                     
-%         sigma_edge_smoothing = 0.5 ;
-%         sigma_edge_smoothing = 0 ;
-                          
-        if sigma_edge_smoothing
+        edge_energies          =          edge_energies( original_edge_indices );
             
-            [ edge_space_subscripts, edge_scale_subscripts, edge_energies ]                               ...
-                                         = smooth_edges_V2( edge_space_subscripts, edge_scale_subscripts, ...
-                                                            edge_energies,                                ...
-                                                            sigma_edge_smoothing, ...
-                                                            lumen_radius_in_microns_range, microns_per_voxel );         
-                                                        
-        end
-                          
-        [ excluded_edges_logical ]     ...
-                          = crop_edges_V200( edge_space_subscripts, edge_scale_subscripts, edge_energies,       ...
-                                             lumen_radius_in_microns_range, microns_per_voxel,  ...
-                                             size_of_image                                                      );
-                                         
-                          edges2vertices( excluded_edges_logical, : ) = [ ];
-                          
-%                    edge_space_subscripts( excluded_edges_logical )    = [ ];
-%                    edge_scale_subscripts( excluded_edges_logical )    = [ ];
-%                            edge_energies( excluded_edges_logical )    = [ ];
-       
-        edge_space_subscripts_unsmoothed( excluded_edges_logical )    = [ ];
-        edge_scale_subscripts_unsmoothed( excluded_edges_logical )    = [ ];
-                edge_energies_unsmoothed( excluded_edges_logical )    = [ ];
-                
-        edge_space_subscripts = edge_space_subscripts_unsmoothed ;
-        edge_scale_subscripts = edge_scale_subscripts_unsmoothed ;
-        edge_energies         =         edge_energies_unsmoothed ;        
-                                                                               
-% %         % instead do a volume conflict test and select the best contrast object at conflicts                                           
-% %         [ mean_edge_energies, chosen_edge_indices, edges2vertices ]                                   ...
-% %                           = choose_edges_V200( edges2vertices, edge_energies, edge_space_subscripts, edge_scale_subscripts,      ...
-% %                                                lumen_radius_in_pixels_range,            ...
-% %                                                length_dilation_ratio_vertices,                        ...
-% %                                                length_dilation_ratio_edges, size_of_image             );
+%         
+% %         is_vertex_A_present = or( edges2vertices( :, 1 ) == vertex_A, edges2vertices( :, 2 ) == vertex_A );
+% %         is_vertex_B_present = or( edges2vertices( :, 1 ) == vertex_B, edges2vertices( :, 2 ) == vertex_B );
+% %         
+% %         edge_index = find( is_vertex_A_present & is_vertex_B_present )'; if edge_index, warning([ 'edge_index', num2str( edge_index )]), end        
+%                 
+% %                                                                                        
+% % % %         % instead do a volume conflict test and select the best contrast object at conflicts                                           
+% % % %         [ mean_edge_energies, chosen_edge_indices, edges2vertices ]                                   ...
+% % % %                           = choose_edges_V200( edges2vertices, edge_energies, edge_space_subscripts, edge_scale_subscripts,      ...
+% % % %                                                lumen_radius_in_pixels_range,            ...
+% % % %                                                length_dilation_ratio_vertices,                        ...
+% % % %                                                length_dilation_ratio_edges, size_of_image             );
+% % % % 
+% % % %         edge_space_subscripts            = edge_space_subscripts(            chosen_edge_indices );
+% % % %         edge_scale_subscripts            = edge_scale_subscripts(            chosen_edge_indices );
+% % % %         edge_energies                    = edge_energies(                    chosen_edge_indices );
+% % % % 
 % % 
-% %         edge_space_subscripts            = edge_space_subscripts(            chosen_edge_indices );
-% %         edge_scale_subscripts            = edge_scale_subscripts(            chosen_edge_indices );
-% %         edge_energies                    = edge_energies(                    chosen_edge_indices );
-% % 
-% %         edge_space_subscripts_unsmoothed = edge_space_subscripts_unsmoothed( chosen_edge_indices );
-% %         edge_scale_subscripts_unsmoothed = edge_scale_subscripts_unsmoothed( chosen_edge_indices );
-% %         edge_energies_unsmoothed         = edge_energies_unsmoothed(         chosen_edge_indices );            
-% % 
-
-        chosen_edge_indices = clean_edges_cycles( edges2vertices );
+% 
+%         % sort edges before removing orphans, because that function relies on an energy-sorted input
+%         
+%         
+% 
+%         % remove orphans before AND after removing cycles
+%         chosen_edge_indices = clean_edges_orphans( edge_space_subscripts, size_of_image, vertex_space_subscripts );
+% 
+%         edges2vertices        = edges2vertices( chosen_edge_indices, : );
+%         
+% %         is_vertex_A_present = or( edges2vertices( :, 1 ) == vertex_A, edges2vertices( :, 2 ) == vertex_A );
+% %         is_vertex_B_present = or( edges2vertices( :, 1 ) == vertex_B, edges2vertices( :, 2 ) == vertex_B );
+% %         
+% %         edge_index = find( is_vertex_A_present & is_vertex_B_present )'; if edge_index, warning([ 'edge_index', num2str( edge_index )]), end                
+% 
+%         edge_space_subscripts = edge_space_subscripts( chosen_edge_indices );
+%         edge_scale_subscripts = edge_scale_subscripts( chosen_edge_indices );
+%         edge_energies         = edge_energies(         chosen_edge_indices );
+        
+        % move this earlier and make it a WHILE loop
+%         chosen_edge_indices = clean_edges_vertex_degree_excess( edges2vertices, 3 );
+        chosen_edge_indices = clean_edges_vertex_degree_excess( edges2vertices, 4 ); % SAM 10/29/21
 
         edges2vertices        = edges2vertices( chosen_edge_indices, : );
-
+        % 
         edge_space_subscripts = edge_space_subscripts( chosen_edge_indices );
         edge_scale_subscripts = edge_scale_subscripts( chosen_edge_indices );
         edge_energies         = edge_energies(         chosen_edge_indices );
-
+        
         chosen_edge_indices = clean_edges_orphans( edge_space_subscripts, size_of_image, vertex_space_subscripts );
 
         edges2vertices        = edges2vertices( chosen_edge_indices, : );
@@ -3067,20 +3436,68 @@ if productive( 4 )
         edge_scale_subscripts = edge_scale_subscripts( chosen_edge_indices );
         edge_energies         = edge_energies(         chosen_edge_indices );
 
-%         chosen_edge_indices = clean_edges_vertex_degree_excess( edges2vertices, 4 ); % 4 is max degree of junction allowed
+        chosen_edge_indices = clean_edges_cycles( edges2vertices );
+
+        edges2vertices        = edges2vertices( chosen_edge_indices, : );
+
+%         is_vertex_A_present = or( edges2vertices( :, 1 ) == vertex_A, edges2vertices( :, 2 ) == vertex_A );
+%         is_vertex_B_present = or( edges2vertices( :, 1 ) == vertex_B, edges2vertices( :, 2 ) == vertex_B );
+%         
+%         edge_index = find( is_vertex_A_present & is_vertex_B_present )'; if edge_index, warning([ 'edge_index', num2str( edge_index )]), end        
+        
+        edge_space_subscripts = edge_space_subscripts( chosen_edge_indices );
+        edge_scale_subscripts = edge_scale_subscripts( chosen_edge_indices );
+        edge_energies         = edge_energies(         chosen_edge_indices );
+
+%         chosen_edge_indices = clean_edges_orphans( edge_space_subscripts, size_of_image, vertex_space_subscripts );
+% 
+%         edges2vertices        = edges2vertices( chosen_edge_indices, : );
+% 
+% %         is_vertex_A_present = or( edges2vertices( :, 1 ) == vertex_A, edges2vertices( :, 2 ) == vertex_A );
+% %         is_vertex_B_present = or( edges2vertices( :, 1 ) == vertex_B, edges2vertices( :, 2 ) == vertex_B );
+% %         
+% %         edge_index = find( is_vertex_A_present & is_vertex_B_present )'; if edge_index, warning([ 'edge_index', num2str( edge_index )]), end        
+%         
+%         edge_space_subscripts = edge_space_subscripts( chosen_edge_indices );
+%         edge_scale_subscripts = edge_scale_subscripts( chosen_edge_indices );
+%         edge_energies         = edge_energies(         chosen_edge_indices );
+%         
+%         % move this earlier and make it a WHILE loop
+%         chosen_edge_indices = clean_edges_vertex_degree_excess( edges2vertices, 3 );
 % 
 %         edges2vertices        = edges2vertices( chosen_edge_indices, : );
 %         % 
 %         edge_space_subscripts = edge_space_subscripts( chosen_edge_indices );
 %         edge_scale_subscripts = edge_scale_subscripts( chosen_edge_indices );
 %         edge_energies         = edge_energies(         chosen_edge_indices );
-
-        % add vertices where children edges meet their parents
-        [ edge_space_subscripts, edge_scale_subscripts, edge_energies, edges2vertices, vertex_space_subscripts, vertex_scale_subscripts, vertex_energies ] ...
-                     = add_vertices_to_edges( edge_space_subscripts, edge_scale_subscripts, edge_energies, edges2vertices, vertex_space_subscripts, vertex_scale_subscripts, vertex_energies, size_of_image );
-                 
-        edge_space_subscripts = cellfun( @double, edge_space_subscripts, 'UniformOutput', false );
-
+%         
+%         chosen_edge_indices = clean_edges_orphans( edge_space_subscripts, size_of_image, vertex_space_subscripts );
+% 
+%         edges2vertices        = edges2vertices( chosen_edge_indices, : );
+% 
+%         edge_space_subscripts = edge_space_subscripts( chosen_edge_indices );
+%         edge_scale_subscripts = edge_scale_subscripts( chosen_edge_indices );
+%         edge_energies         = edge_energies(         chosen_edge_indices );
+%         
+% 
+% % %         % add vertices where children edges meet their parents
+% % %         [ edge_space_subscripts, edge_scale_subscripts, edge_energies, edges2vertices, ...
+% % %                     vertex_space_subscripts, vertex_scale_subscripts, vertex_energies, bridge_edges ] ...
+% % %             = add_vertices_to_edges( edge_space_subscripts, edge_scale_subscripts, edge_energies, ...
+% % %                                      edges2vertices, vertex_space_subscripts, ...
+% % %                                      vertex_scale_subscripts, vertex_energies, size_of_image, ...
+% % %                                      microns_per_voxel, lumen_radius_in_microns_range, ...
+% % %                                      data_directory, [ energy_handle, ROI_names{ ROI_index }], ...
+% % %                                      space_strel_apothem_edges, max_edge_length_per_origin_radius );
+% %                  
+% %         edge_space_subscripts = cellfun( @double, edge_space_subscripts, 'UniformOutput', false );
+% % 
+% % %         if any( cellfun( @length, edge_energies ) == 1 ) 
+% % %             
+% % %             'here'
+% % %             
+% % %         end
+        
         if sigma_edge_smoothing
 
             [ edge_space_subscripts, edge_scale_subscripts, edge_energies ]                               ...
@@ -3088,21 +3505,50 @@ if productive( 4 )
                                                             edge_energies,                                ...
                                                             sigma_edge_smoothing, ...
                                                             lumen_radius_in_microns_range, microns_per_voxel );
+%             [ edge_space_subscripts, edge_scale_subscripts, edge_energies ]                               ...
+%                                          = smooth_edges_V2( edge_space_subscripts, edge_scale_subscripts, ...
+%                                                             path_to_energy_data,                                ...
+%                                                             sigma_edge_smoothing, ...
+%                                                             lumen_radius_in_microns_range, microns_per_voxel );
+            
                                                         
+        else
+        
+            edge_space_subscripts = cellfun( @double, edge_space_subscripts, 'UniformOutput', false );
+            
         end
 
-        mean_edge_energies = get_edge_metric( edge_energies );
-                 
-%         runtime_measurement_string = evalc( 'toc' );
-% 
-%         digit_indices = regexp( runtime_measurement_string, '\d' );        
-% 
-%         edges_runtime_in_seconds = sscanf( runtime_measurement_string( digit_indices( 1 ) : end ), '%f' );
+        mean_edge_energies = get_edge_metric( edge_energies ); % !!!!!!!!!! name is misleading it is an average, but not necesserily the arithmetic mean
+              
+        % adjust edge energies by normalizing each one by the energy of its higher energy vertex.
+        edges2energy_of_worse_vertex = max( vertex_energies( edges2vertices ), [ ], 2 );
+        
+        mean_edge_energies =   - mean_edge_energies ./         edges2energy_of_worse_vertex ;
+             edge_energies = cellfun( @( x, y ) - x ./ y,                                               ...
+                                      edge_energies, num2cell( edges2energy_of_worse_vertex ), ...
+                                      'UniformOutput', false                                          );
 
+%         edges2vertex_energies = vertex_energies( edges2vertices );
+%         
+%         mean_edge_energies =      - mean_edge_energies .^ 2 ./ prod( edges2vertex_energies );
+%              edge_energies = cellfun( @( x, y, z ) - x .^ 2 ./ y ./ z,                               ...
+%                                          edge_energies,    num2cell( edges2vertex_energies( :, 1 )), ...
+%                                                            num2cell( edges2vertex_energies( :, 2 )), ...
+%                                       'UniformOutput', false                                         );
+                                  
+%         edges2energy_of_best_vertex = min( vertex_energies( edges2vertices ), [ ], 2 );
+%         
+%         mean_edge_energies =   - mean_edge_energies ./         edges2energy_of_best_vertex ;
+%              edge_energies = cellfun( @( x, y ) - x ./ y,                                               ...
+%                                       edge_energies, num2cell( edges2energy_of_best_vertex ), ...
+%                                       'UniformOutput', false                                          );
+  
+        mean_edge_energies( isnan( mean_edge_energies )) = - Inf ;
+        
         edges_runtime_in_seconds = toc ;
 
         disp([ 'Runtime for edges workflow for image ', ROI_names{ ROI_index }( 2 : end ), ' was ', num2str( round( edges_runtime_in_seconds )), ' seconds' ])
-                                         
+                                                 
         % saving edge outputs
         save(  path_to_edges            , ...
               'edge_energies'           , ...
@@ -3111,10 +3557,18 @@ if productive( 4 )
               'edge_scale_subscripts'   , ...
      ...         'edge_lengths'            , ...
               'edges2vertices'          , ...
+       ...       'bridge_edges'            , ...
             'vertex_space_subscripts'   , ...
             'vertex_scale_subscripts'   , ...
             'vertex_energies'           , ...
-              'edges_runtime_in_seconds'  );
+              'edges_runtime_in_seconds' );
+          
+
+%         save(  path_to_edges                , ...
+%               'edge_energies_backup'        , ...
+%               'edge_space_subscripts_backup', ... 
+%               'edge_scale_subscripts_backup', ...
+%               'edges2vertices_backup', '-append'         );          
           
     end % FOR ROI
     
@@ -3193,6 +3647,12 @@ for ROI_index = ROI_index_range
         
         mean_edge_energies = - 1000 * edgeCuratorNetwork_V4_20(simpleFeatureArray(edgeFeaturePool)') ;        
         
+%         % convert energies to simply the sort indices instead (guarantees integer values with known
+%         % range).
+%         [ ~, mean_edge_energies ] = sort( mean_edge_energies );
+%         
+%         mean_edge_energies = mean_edge_energies - numel( mean_edge_energies ) - 1  ;
+        
         edge_energies = cellfun(@(x,y) x*ones(size(y)), num2cell( mean_edge_energies ), edge_energies, 'UniformOutput', false);
         
 %         edge_numels = cellfun( @numel, edge_energies );
@@ -3209,6 +3669,8 @@ for ROI_index = ROI_index_range
 %         if ~ exist( 'length_dilation_ratio',       'var' ), length_dilation_ratio       = 1;   end
         if ~ exist( 'length_dilation_ratio_edges', 'var' ), length_dilation_ratio_edges = 2/3; end
         
+        if ~ exist( 'intensity_limits',            'var' ), intensity_limits = [ 0, 1000 ];    end
+        
         [ mean_edge_energies, edges2vertices, edge_energies, edge_space_subscripts, edge_scale_subscripts, ~, ~, ~, ~, vertex_space_subscripts, vertex_scale_subscripts ] ...
                                   = edge_curator( edge_energies, edge_space_subscripts, edge_scale_subscripts,          ...
                                                   edges2vertices, vertex_space_subscripts,                              ...
@@ -3216,7 +3678,7 @@ for ROI_index = ROI_index_range
                                                   1, length_dilation_ratio_edges,          ...
                                                   microns_per_voxel, path_to_original_data, path_to_saved_curation,     ...
                                                   path_to_energy_data, intensity_limits, [ min( mean_edge_energies ), 0 ], 1 );
-
+                                              
         number_of_vertices_added_in_curator = numel(vertex_scale_subscripts) - numel(vertex_energies);
         vertex_energies = [vertex_energies; -Inf*ones(number_of_vertices_added_in_curator,1)];
 
@@ -3224,6 +3686,19 @@ for ROI_index = ROI_index_range
 
     end %IF isManual
 
+    switch edge_curation
+
+        case { 'auto', 'machine-auto' }
+
+            % convert energies to simply the sort indices instead (guarantees integer values with known
+            % range). This is for compatability with the noise study, where the energy images are
+            % used to decide global threshold values and those images are int16. SAM 5/21/21
+            [ ~, mean_edge_energies ] = sort( mean_edge_energies );
+
+            mean_edge_energies = 2 ^ 16 * ( mean_edge_energies - numel( mean_edge_energies )) / numel( vertex_energies ) - 1  ;
+            
+    end
+    
     switch edge_curation
 
         case { 'auto', 'machine-auto', 'machine-manual', 'manual' }
@@ -3234,22 +3709,31 @@ for ROI_index = ROI_index_range
 % 
 %             edge_curation_runtime_in_seconds = sscanf( runtime_measurement_string( digit_indices( 1 ) : end ), '%f' );
 %             
+            
             edge_curation_runtime_in_seconds = toc ;
 
-            disp([ 'Runtime for edge_curation workflow for image ', ROI_names{ ROI_index }( 2 : end ), ' was ', num2str( round( edge_curation_runtime_in_seconds )), ' seconds' ])
+            if ~ isempty( edge_energies ) % sam 1/27/22
+            
+                disp([ 'Runtime for edge_curation workflow for image ', ROI_names{ ROI_index }( 2 : end ), ' was ', num2str( round( edge_curation_runtime_in_seconds )), ' seconds' ])
 
-            save( path_to_curated_edges         , ...
-                                 'edge_energies', ...
-                         'mean_edge_energies', ...
-                         'edge_space_subscripts', ...
-                         'edge_scale_subscripts', ...
-                                'edges2vertices', ...
-              ...                    'edge_lengths', ...
-                       'vertex_space_subscripts', ...
-                       'vertex_scale_subscripts', ...
-                       'vertex_energies'        , ...
-                                 'edge_curation', ...
-              'edge_curation_runtime_in_seconds'  );      
+                save( path_to_curated_edges         , ...
+                                     'edge_energies', ...
+                             'mean_edge_energies', ...
+                             'edge_space_subscripts', ...
+                             'edge_scale_subscripts', ...
+                                    'edges2vertices', ...
+                  ...                    'edge_lengths', ...
+                           'vertex_space_subscripts', ...
+                           'vertex_scale_subscripts', ...
+                           'vertex_energies'        , ...
+                                     'edge_curation', ...
+                  'edge_curation_runtime_in_seconds'  );    
+              
+            else
+                
+                disp([ '!edge_curation workflow for image ', ROI_names{ ROI_index }( 2 : end ), ' was canceled by user! (', num2str( round( edge_curation_runtime_in_seconds )), ' seconds). (no variables were overwritten.)' ])
+                
+            end
 
         otherwise % do nothing
 
@@ -3330,7 +3814,7 @@ if visual( 4 )
                                        double([      space_subscripts,      scale_subscripts ]), ...
                                                 edge_space_subscripts, edge_scale_subscripts,    ...
                                                       'UniformOutput', false                     );
-
+                                                  
             visualize_edges_V180( edge_subscripts, mean_edge_energies, lumen_radius_in_pixels_range, ...
                                   size_of_image, path_to_curated_spheres_visual_file, ...
                                   path_to_curated_centerline_visual_file                              )
@@ -3382,10 +3866,6 @@ if forgetful( 2 )
 end % IF forgetful
 
 %% 5: assign strand edges and bifurcation vertices to the network                                   
-
-% exporting_flow_field = special_output( 2 );
-
-% exporting_casX_file = special_output( 7 );
 %% ----------------------------------------- Production ------------------------------------------- 
 
 if productive( 5 )
@@ -3415,7 +3895,7 @@ if productive( 5 )
 %         edge_scale_subscripts    = edge_scale_subscripts( chosen_edge_indices );
 %         edge_energies            = edge_energies(         chosen_edge_indices );        
                 
-        [ bifurcation_vertices, vertex_indices_in_strands,                                            ...
+        [ bifurcation_vertices, ~,                                            ...
            edge_indices_in_strands, end_vertices_of_strands ]      = get_network_V190( edges2vertices );
                                             
         % sort the strand output
@@ -3436,7 +3916,9 @@ if productive( 5 )
 
         strand_space_subscripts = cellfun( @( x ) x( :, 1 : 3 ), strand_subscripts, 'UniformOutput', false );
         strand_scale_subscripts = cellfun( @( x ) x( :,   4   ), strand_subscripts, 'UniformOutput', false );
-
+        
+        sigma_strand_smoothing = 2 ^ 0.5 / 2 ; % SAM 1/4/22
+        
         if sigma_strand_smoothing
         
             [ strand_space_subscripts, strand_scale_subscripts, strand_energies ]  ...
@@ -3444,6 +3926,11 @@ if productive( 5 )
                                                             strand_energies,                                  ...
                                                             sigma_strand_smoothing,     ...
                                                             lumen_radius_in_microns_range, microns_per_voxel  );
+%             [ strand_space_subscripts, strand_scale_subscripts, strand_energies ]  ...
+%                                          = smooth_edges_V2( strand_space_subscripts, strand_scale_subscripts, ...
+%                                                             path_to_energy_data,                                  ...
+%                                                             sigma_strand_smoothing,     ...
+%                                                             lumen_radius_in_microns_range, microns_per_voxel  );
                                                         
         end % IF smoothing
                                                     
@@ -3475,7 +3962,12 @@ if productive( 5 )
               'network_runtime_in_seconds' , ...
               'network_statistics'         , ...
               'strands2vertices'             );
-          
+        
+%         % !!!!!!!!!!!!!! ________________ experimental line ________________________ !!!!!!!!!!!!!!!!!!!!!!!
+%         threshold = 10 ; combine_strands( path_to_energy_settings, [ path_to_energy_data, '.mat' ], path_to_curated_edges, path_to_network, threshold ) % SAM 1/20/22
+%         % !!!!!!!!!!!!!! ^^^^^^^^^^^^^^^^ experimental line ^^^^^^^^^^^^^^^^^^^^^^^^ !!!!!!!!!!!!!!!!!!!!!!!  
+        
+        
     end % FOR ROI
     
     production_times{ 5 } = attempted_production_times{ 5 };
@@ -3552,7 +4044,18 @@ if visual( 5 )
              lumen_radius_in_pixels_range, size_of_image, strands_visual_bifurcations_file )                             
         %% visualize strands                                                                        
 %         edge_strand_indices   = cell2mat( edge_indices_in_strands );
+%         visualize_edges_V180( strand_subscripts, mean_strand_energies,    ...
+%                               lumen_radius_in_pixels_range,               ...
+%                               size_of_image, strands_visual_spheres_file, ...
+%                               strands_visual_centerline_file              )
         visualize_edges_V180( strand_subscripts, mean_strand_energies,    ...
+                              lumen_radius_in_pixels_range,               ...
+                              size_of_image, strands_visual_spheres_file, ...
+                              strands_visual_centerline_file              )
+                          
+        [ ~, energy_indices ] = sort( mean_strand_energies, 'descend' ); % display sorting index instead of energy (because discretization was producing all zero result) % SAM 2/13/22
+        
+        visualize_edges_V180( strand_subscripts, - energy_indices,    ...
                               lumen_radius_in_pixels_range,               ...
                               size_of_image, strands_visual_spheres_file, ...
                               strands_visual_centerline_file              )
@@ -3562,7 +4065,12 @@ end % IF visual
 %% -------------------------------------- Special Outputs ----------------------------------------- 
 
 if any( special_output )
+%     SpecialOutput_core_values = { 'histograms', 'flow-field', 'depth', 'strands', 'directions', '3D-strands', 'casX', 'upsampled', 'depth-stats', 'vmv', 'original-stats', '3D-directions' };    
+
+    saving_figures = true; 
     
+    if saving_figures, number_of_figures_open = length(findobj(allchild(0), 'flat', 'Type', 'figure')); end
+
     load( path_to_energy_settings )
 
     for ROI_index = ROI_index_range
@@ -3573,8 +4081,9 @@ if any( special_output )
         path_to_curated_edges              = [ vector_directory,           'curated_',   edges_handle, ROI_names{ ROI_index }]; %  vectors path    
         path_to_network                    = [ vector_directory,                       network_handle, ROI_names{ ROI_index }];  
         
-        path_to_saved_curation          = [ curation_directory, edges_handle, ROI_names{ ROI_index }];        
+        path_to_saved_curation          = [ curation_directory, edges_handle, ROI_names{ ROI_index }];
         
+        strands_visual_spheres_file              = [ visual_vector_directory,  network_handle, '_strands_spheres',               ROI_names{ ROI_index }, '.tif' ];
         strands_visual_spheres_upsampled_file    = [ visual_vector_directory,  network_handle, '_strands_spheres_upsampled',     ROI_names{ ROI_index }, '.tif' ];
         strands_visual_centerline_upsampled_file = [ visual_vector_directory,  network_handle, '_strands_centerlines_upsampled', ROI_names{ ROI_index }, '.tif' ];              
         strands_visual_annuli_file               = [ visual_vector_directory,  network_handle, '_strands_annuli',                ROI_names{ ROI_index }, '.tif' ];
@@ -3585,26 +4094,53 @@ if any( special_output )
         
         try load( path_to_saved_curation, 'intensity_limits' ), end % if this fails, the intensity limits will be automatically chosen from earlier
         
-        %% network statistics (strand histograms )                                                  
+        %% network statistics (histograms)                                                          
         
         if special_output( 1 )
             
-            network_histogram_plotter( network_statistics )
+            is_windowing_in_z = false ;
             
-            number_of_bins = 45 ;
-        
-            area_histogram_plotter( strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins );
-        
+            if is_windowing_in_z
+                
+%                 z_threshold_min = 0 ;                
+%                 z_threshold_max = 100 ;
+%                 z_threshold_min = 100 ;                
+%                 z_threshold_max = 200 ;
+                z_threshold_min = 200 ;                
+                z_threshold_max = 600 ;
+                
+                strand_ave_pos_z          = cellfun( @( x ) mean(   x( 2 : end    , 3 )                                 ...
+                                                                  + x( 1 : end - 1, 3 )) / 2 .* microns_per_voxel( 3 ), ...
+                                                       strand_subscripts );
+                                                   
+%                 bifurcation_vertex_space_subscripts = vertex_space_subscripts( bifurcation_vertices, : );
+                
+                is_strand_in_z_window = strand_ave_pos_z                    > z_threshold_min ...
+                                      & strand_ave_pos_z                    < z_threshold_max ;
+%                 is_vertex_in_z_window = bifurcation_vertex_space_subscripts > z_threshold_min ...
+%                                       & bifurcation_vertex_space_subscripts < z_threshold_max ;
+                
+                strand_subscripts    =    strand_subscripts( is_strand_in_z_window );
+%                 bifurcation_vertices = bifurcation_vertices( is_vertex_in_z_window );
+
+                network_statistics = calculate_network_statistics( strand_subscripts, bifurcation_vertices, lumen_radius_in_microns_range, microns_per_voxel, size_of_image );
+ 
+            end
+            
+            number_of_bins = 15 ;
+            area_histogram_plotter( strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins, ROI_names{ ROI_index }( 2 : end ), network_handle );            
+            
+            statistics_to_plot = { }; % code for default: all statistics listed
+            number_of_bins = 10 ;
+            network_histogram_plotter( network_statistics, statistics_to_plot, number_of_bins, ROI_names{ ROI_index }( 2 : end ), network_handle )
+                            
         end        
-        %% flow field export                                                                        
+        %% flow field export (flow-field)                                                           
         
         if special_output( 2 )
             
             % save function 7/13/18
-            vertex_subscripts = [ double( vertex_space_subscripts ), double( vertex_scale_subscripts )];
             
-%             edge_subscripts   = cellfun( @( x, y ) [ double( x ), double( y )], edge_space_subscripts, edge_scale_subscripts, 'UniformOutput', false );
-
             microns_per_pixel_xy = microns_per_voxel( 1 );
 
             z_per_xy_length_of_pxl_ratio = microns_per_voxel( 3 ) / microns_per_voxel( 1 );
@@ -3630,9 +4166,11 @@ if any( special_output )
                       ...            'edge_subscripts',               ...
                       ...            'edge_energies',                 ...
                       ...            'mean_edge_energies',            ...
-                                       'strand_space_subscripts',  ...
-                                       'strand_scale_subscripts',  ...
-                                       'strand_energies',          ...
+                      ...                 'strand_space_subscripts',  ...
+                      ...                 'strand_scale_subscripts',  ...
+                                          'strand_subscripts',        ...
+                                          'strand_energies',          ...
+                                          'visual_data_directory', ...
                                              'vessel_directions',  ...
                                   'lumen_radius_in_pixels_range',  ...
                                   'lumen_radius_in_microns_range', ...
@@ -3641,15 +4179,13 @@ if any( special_output )
                                   'microns_per_pixel_xy',          ...
                                   'microns_per_voxel',             ...
                                   'z_per_xy_length_of_pxl_ratio',  ...
-                                  'vertex_subscripts',             ...
                                   'file_name',                     ...
                                   'tissue_type_cutoffs_in_microns' )
 
-            % !! pass in the directory structure to output these fields into the data output
             [ flow_field, tissue_type_image ] = flow_field_subroutine( path_to_flow_field_export );
                              
         end % IF exporting        
-        %% 2D depth visualization (red to white gradient color)                                     
+        %% 2D depth visualization, red to white gradient (depth)                                    
         
         is_inverted_original = false ;
         
@@ -3657,7 +4193,9 @@ if any( special_output )
         
         number_of_slices = 1 ;
         
-        size_dilation = 0.25 ;
+%         size_dilation = 0.25 ;
+%        size_dilation = 0.5 ;
+         size_dilation = 1 ;
         
 %         y_crop_limits = [ 1, size_of_image( 1 )];
 %         x_crop_limits = [ 1, size_of_image( 2 )];
@@ -3687,13 +4225,13 @@ if any( special_output )
                 visualize_strands_via_color_V200(                                                    ...
                         strand_subscripts, vessel_directions, mean_strand_energies,                  ...
                         lumen_radius_in_pixels_range, size_dilation,                                             ...
-                        data_directory, [ original_data_handle, ROI_names{ ROI_index }],             ...
+                        data_directory, [ original_data_handle, ROI_names{ ROI_index }], network_handle,  ...
                         y_crop_limits, x_crop_limits, z_crop_limits( slice_index, : ), ...
                         intensity_limits, is_inverted_original, are_vectors_opaque, 'depth', microns_per_voxel )
 
             end            
         end
-        %% 2D strand visualization (random color assignment)                                        
+        %% 2D strand visualization, random color assignment (strands)                               
         
         if special_output( 4 )
         %         number_of_strands = length( edge_indices_in_strands );
@@ -3716,13 +4254,13 @@ if any( special_output )
                 visualize_strands_via_color_V200(                                                    ...
                         strand_subscripts, vessel_directions, mean_strand_energies,                  ...
                         lumen_radius_in_pixels_range, size_dilation,                                             ...
-                        data_directory, [ original_data_handle, ROI_names{ ROI_index }],             ...
+                        data_directory, [ original_data_handle, ROI_names{ ROI_index }], network_handle,  ...
                         y_crop_limits, x_crop_limits, z_crop_limits( slice_index, : ), ...
                         intensity_limits, is_inverted_original, are_vectors_opaque, 'strands', microns_per_voxel )
 
             end
         end
-        %% 2D direction visualization                                                               
+        %% 2D direction visualization (directions)                                                  
         
         if special_output( 5 )
             
@@ -3731,45 +4269,74 @@ if any( special_output )
                 visualize_strands_via_color_V200(                                                    ...
                         strand_subscripts, vessel_directions, mean_strand_energies,                  ...
                         lumen_radius_in_pixels_range, size_dilation,                                             ...
-                        data_directory, [ original_data_handle, ROI_names{ ROI_index }],             ...
+                        data_directory, [ original_data_handle, ROI_names{ ROI_index }], network_handle,  ...
                         y_crop_limits, x_crop_limits, z_crop_limits( slice_index, : ), ...
                         intensity_limits, is_inverted_original, are_vectors_opaque, 'directions', microns_per_voxel )
 
             end            
         end
-        %% 3D strand visualization (random color assignment)                                        
+        %% 3D strand or directions visualization (3D-strands | 3D-directions)                            
         
-        if special_output( 6 )
-
-    %         max_edge_energies( edge_junction_indices ) = 0 ; % to make image without junctions 
-
-            number_of_slices = 1 ;
+        if special_output( 6 ) || special_output( 12 )
             
-            resolution_factor = 0.5 ;
+            color_code_indices = [ 6  * special_output( 6  ), ...
+                                   12 * special_output( 12 )  ];
+            
+            for color_code_idx = color_code_indices
 
-            for slice_index = 1 : number_of_slices 
+                switch color_code_idx
+                    case 6 ,  color_code = 'strands'    ;
+                    case 12,  color_code = 'directions' ;
+                    otherwise color_code = 'none'       ;
+                end
+                
+                if ~ strcmp( color_code, 'none' )
+            %         max_edge_energies( edge_junction_indices ) = 0 ; % to make image without junctions 
 
-                visualize_strands_via_color_3D_V2(                                                     ...
-                        strand_subscripts,                                                             ...
-...                        mean_strand_energies - max( mean_strand_energies ), microns_per_voxel( 1 ),    ...
-                        mean_strand_energies, microns_per_voxel( 1 ),    ...
-                        lumen_radius_in_pixels_range, resolution_factor,                                               ...
-                        [ round( size_of_image( 1 ) / number_of_slices ) * ( slice_index - 1 ) + 1,    ...
-                          round( size_of_image( 1 ) / number_of_slices ) *   slice_index            ], ...
-                        [ 1, size_of_image( 2 )], [ 1, size_of_image( 3 )], 0                          )
+                    number_of_slices = 2 ;
 
+                    resolution_factor = 0.75 ;
+
+                    for slice_index = 1 : number_of_slices 
+
+        %                 [ ~, longest_dimension ] = max( size_of_image .* microns_per_voxel );
+        %                 
+        %                 shorter_dims = setdif([ 1, 2, 3 ], longest_dimension );
+
+                        visualize_strands_via_color_3D_V2(                                                     ...
+                                strand_subscripts,                                                             ...
+        ...                        mean_strand_energies - max( mean_strand_energies ), microns_per_voxel( 1 ),    ...
+                                mean_strand_energies, min( microns_per_voxel ),    ...
+                                lumen_radius_in_pixels_range, resolution_factor,                                               ...
+                                [ round( size_of_image( 1 ) / number_of_slices ) * ( slice_index - 1 ) + 1,    ...
+                                  round( size_of_image( 1 ) / number_of_slices ) *   slice_index            ], ...
+                                [ 1, size_of_image( 2 )], [ 1, size_of_image( 3 )], 0, ROI_names{ ROI_index }( 2 : end ), network_handle, color_code )
+
+                    end
+                end
             end
         end      
-        %% casX export                                                                              
-        
+        %% casX export (casX)                                                                       
+        % % output_to_LPPD, SAM 6/10/19
+        % This function takes the strand and vertex objects and converts them into the format that the LPPD
+        % lab in Chicago, IL is expecting.  Format specified in the .casX file format documented in the
+        % Andreas Linninger/Grant Hartung directory.
         if special_output( 7 )
             
-            [ point_coordinates, arc_connectivity, arc_diameters ] = strand2casx( vertex_space_subscripts, strands2vertices, strand_subscripts, microns_per_voxel, lumen_radius_in_microns_range );
+%             [ strands2vertices ] = fix_strand_vertex_mismatch( vertex_space_subscripts, strand_subscripts, strands2vertices );
+            
+            [ point_coordinates, arc_connectivity, arc_diameters ] = strand2casx( strand_subscripts, microns_per_voxel, lumen_radius_in_microns_range );
         
             save([ path_to_network, '_casX' ], 'point_coordinates', 'arc_connectivity', 'arc_diameters' );
-
+            
+            casx_mat2file([ path_to_network, '.casx' ], point_coordinates, arc_connectivity, arc_diameters )
+            
         end % IF exporting_casX_file
-        %% upsampled rendering                                                                      
+        %% upsampled rendering (upsampled)                                                          
+% !!!!!!!!! add a natural sampling rate interpolation option that samples each strand at a rate
+% proportional to its sampled radius. This would be ideal for sharing data across platforms and
+% compressing, but not for rendering in a particular resolution.
+
         if special_output( 8 )
 %         For the noise study: upsample the vectors for rendering the ground truth image before blurring.
 
@@ -3784,27 +4351,92 @@ if any( special_output )
 
             vessel_wall_thickness_in_voxels = vessel_wall_thickness_in_microns ./ microns_per_voxel .* resolution_factors( 1 : 3 );
 
-            visualize_edges_V180( strand_subscripts_upsampled, mean_strand_energies,    ...
+            microns_per_voxel_upsampled = microns_per_voxel ./ resolution_factors( 1 : 3 );
+            
+            lumen_radius_in_microns_range_upsampled = lumen_radius_in_pixels_range_upsampled( :, 1 ) ...
+                                                   .* microns_per_voxel_upsampled( 1 );
+            
+%             visualize_edges_V180( strand_subscripts_upsampled, mean_strand_energies,    ...
+%                                   lumen_radius_in_pixels_range_upsampled,               ...
+%                                   size_of_image_upsampled, strands_visual_spheres_upsampled_file, ...
+%                                   strands_visual_centerline_upsampled_file                        )
+% replacing energy labeling with index labeling to recover radii inside the noise study SAM 5/4/21                              
+            visualize_edges_V180( strand_subscripts_upsampled, - ( 1 : length( mean_strand_energies ))',    ...
                                   lumen_radius_in_pixels_range_upsampled,               ...
                                   size_of_image_upsampled, strands_visual_spheres_upsampled_file, ...
                                   strands_visual_centerline_upsampled_file                        )
-                              
-            visualize_edges_annuli( strand_subscripts_upsampled, mean_strand_energies,  ...
-                                    lumen_radius_in_pixels_range_upsampled,             ...
-                                    vessel_wall_thickness_in_voxels,                    ...
-                                    size_of_image_upsampled, strands_visual_annuli_file )
 
+          visualize_edges_annuli( strand_subscripts_upsampled, mean_strand_energies,  ...
+                                  lumen_radius_in_pixels_range_upsampled,             ...
+                                  vessel_wall_thickness_in_voxels,                    ...
+                                  size_of_image_upsampled, strands_visual_annuli_file )
+                              
+            strand_radii_upsampled = cellfun( @( x ) exp( interp1( log( lumen_radius_in_microns_range_upsampled ), x( :, 4 ))), strand_subscripts_upsampled, 'UniformOutput', false );
+            
+            visual_contrast = 1e3 ; % for writing decimals as uint16, agrees with line in noise study
+            
+            % replace index labeling with direct radius labeling (0 in background)
+            visualize_strands(    strand_subscripts_upsampled, strand_radii_upsampled, ...
+                                  lumen_radius_in_pixels_range_upsampled,              ...
+                                  size_of_image_upsampled, strands_visual_spheres_upsampled_file, visual_contrast )
+                                                            
         end
-        %% depth-statistics                                                                         
+        %% depth-statistics (depth-stats) (Z dimension, i.e. 3rd dimension of y, x, z input array)  
         if special_output( 9 )
             
-            number_of_bins = 30 ;
+%             number_of_bins = 30 ;
+            bin_width  = 15 ; % microns in depth 
+            number_of_bins = round( size_of_image( 3 ) * microns_per_voxel( 3 ) / bin_width ); % every bin_width microns
             
-            [ z_bin_ave_z, z_bin_length_densities, z_bin_SA_density, z_bin_vol_densities, z_bin_ave_radius ] = calculate_depth_statistics( strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins );
+            [ z_bin_ave_z, z_bin_length_densities, z_bin_SA_density, z_bin_vol_densities, z_bin_ave_radius ] = calculate_depth_statistics( strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins, ROI_names{ ROI_index }( 2 : end ), network_handle );
                                     
+        end   
+        %% vmv export (vmv)                                                                         
+        % % strand2vmv, SAM 8/4/20
+        % This function takes the strand and vertex objects and converts them into the format Blue Brain
+        % Project (Blue Brain Project (BBP), E´cole Polytechnique Fe´de´rale de Lausanne (EPFL), Campus
+        % Biotech, 1202 Geneva, Switzerland) created for rendering in Blender.
+
+        if special_output( 10 )
+            
+            [ point_coordinates, strand_points ] = strand2vmv( strand_subscripts, microns_per_voxel, lumen_radius_in_microns_range );
+            
+            disp(['Saving .vmv network output file to: ', path_to_network ])
+            
+            save([ path_to_network, '_vmv' ], 'point_coordinates', 'strand_points' );
+            
+            vmv_mat2file([ path_to_network, '.vmv' ], point_coordinates, strand_points )
+            
         end
+        %% original image quality statistics                                    
         
+        if special_output( 11 )
+           
+%             % define mean signal and standard deviation for locations inside and outside the strands
+%             % spheres segmentation for the image whole and individual slices
+%             [ mean_signal, stdev_signal, mean_signal_at_slice, stdev_signal_at_slice ] ...
+%                 = calculate_image_stats( strands_spheres_file, original_file, microns_per_voxel );
+            
+%             original_image_statistics = calculate_image_statistics( strands_visual_spheres_file, path_to_original_data );
+         	original_image  =  double(  h52mat( path_to_original_data ));
+              signal_binary = logical( tif2mat( strands_visual_spheres_file ));
+
+            original_image_statistics = calculate_image_statistics_from_binary(   signal_binary, ...
+                                                                                original_image   );
+                                                                   
+            clear original_image signal_binary
+            
+            save(  path_to_network ,           ...
+                  'original_image_statistics', ...
+                  '-append'                    );
+                    
+        end
+                
     end % FOR ROI
+    
+    %% Saving Figures                                                                           
+    if saving_figures, save_figures( visual_data_directory, number_of_figures_open ), end
+    
 end % IF visual
 
 %% Auxiliary Functions                                                                              
@@ -3834,7 +4466,7 @@ end % IF visual
         
         switch vertex_curation
         
-            case { 'manual', 'auto', 'machine-manual', 'machine-auto' }
+            case { 'manual', 'auto', 'machine-manual', 'machine-auto', 'mutual edges' }
 
                 curative( 3 ) = true ;
             
@@ -3932,7 +4564,7 @@ end % IF visual
 
     function [ validation_flag, special_output ] = validate_special_output( x )
         
-        SpecialOutput_core_values = { 'histograms', 'flow-field', 'depth', 'strands', 'directions', '3D-strands', 'casX', 'upsampled', 'depth-stats' };
+        SpecialOutput_core_values = { 'histograms', 'flow-field', 'depth', 'strands', 'directions', '3D-strands', 'casX', 'upsampled', 'depth-stats', 'vmv', 'original-stats', '3D-directions' };
         
         SpecialOutput_values = [{ 'none' }, SpecialOutput_core_values, { 'all' }];
 
