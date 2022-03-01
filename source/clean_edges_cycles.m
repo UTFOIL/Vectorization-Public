@@ -79,7 +79,6 @@ while checking_for_cycle
     
     cycle_group_index_range = 1 : number_of_cycle_conncomps ;
     
-    % changed from PARFOR to FOR 6/8/20
     for cycle_group_index = cycle_group_index_range
                 
         possible_vertex_pairs_for_cycle                                                        ...

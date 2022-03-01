@@ -4,9 +4,34 @@ function [ blurred_image ] = gaussian_blur( image, pixels_per_sigma_gaussian )
 
 size_of_image = size( image );
 
+% pad_lengths = 2 * ceil( pixels_per_sigma_gaussian * 3 / 2 ) + mod( size_of_image, 2 );
+% 
+% padded_image = padarray( image, pad_lengths, mean( image( : )), 'post' ); % changed padding value from default (0) to the mean image value. SAM 210909
+
+% changed padding to do mean value by slice SAM 210914
+pixels_per_sigma_gaussian( 3 ) = pixels_per_sigma_gaussian( 3 ) * 2 ; % do temporary change to z-Gaussian. put padding above and below in z
+
 pad_lengths = 2 * ceil( pixels_per_sigma_gaussian * 3 / 2 ) + mod( size_of_image, 2 );
 
-padded_image = padarray( image, pad_lengths, 'post' );
+pixels_per_sigma_gaussian( 3 ) = pixels_per_sigma_gaussian( 3 ) / 2 ; % undo temporary change
+
+padded_image = zeros( size_of_image + pad_lengths );
+
+z_pad_length_pre  =  ceil( pad_lengths( 3 ) / 2 );
+z_pad_length_post = floor( pad_lengths( 3 ) / 2 );
+
+padded_image( :, :,   1 : z_pad_length_pre            ) = median( image( :, :,  1  ), 'all' );
+padded_image( :, :, end - z_pad_length_post + 1 : end ) = median( image( :, :, end ), 'all' );
+
+z_range = 1 : size_of_image( 3 );
+
+for z_slice = z_range
+    
+                     padded_image( :, :, z_slice + z_pad_length_pre )              ...
+        = padarray(         image( :, :, z_slice ),  pad_lengths([ 1, 2 ]),        ...
+                    median( image( :, :, z_slice ), 'all' ),                'post' );
+    
+end
 
 image_dft = fftn( padded_image );
 
@@ -37,6 +62,6 @@ padded_blurred_image = ifftn( blurred_image_dft, 'symmetric' );
 
 blurred_image = padded_blurred_image( 1 : size_of_image( 1 ), ...
                                       1 : size_of_image( 2 ), ...
-                                      1 : size_of_image( 3 )  );
+                 z_pad_length_pre + ( 1 : size_of_image( 3 )) );
 
 end

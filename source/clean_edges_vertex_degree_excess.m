@@ -28,11 +28,13 @@ adjacency_matrix    = sparse( edges2vertices( :, 1 ),                ...
                               number_of_vertices,                    ...
                               number_of_edges                        );
     
-vertex_degrees = sum( adjacency_matrix );
+vertex_degrees = sum( adjacency_matrix, 1 ) + sum( adjacency_matrix, 2 )';
 
 vertex_excess_degrees = vertex_degrees - number_of_edges_per_vertex ;
 
 vertices_of_excess_degree = find( vertex_excess_degrees > 0 );
+
+edges_to_remove = [ ];
 
 for vertex_index = vertices_of_excess_degree
         
