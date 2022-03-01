@@ -475,7 +475,3 @@ bibtex:
   publisher={Cold Spring Harbor Laboratory}
 }
 ```
-
-## Supplementary Figure
-
-Supplementary figure (S1_fig) to the SLAVV methods paper is shared [here](https://github.com/UTFOIL/Vectorization-Public/blob/master/S1_fig/S1_fig.pdf).
