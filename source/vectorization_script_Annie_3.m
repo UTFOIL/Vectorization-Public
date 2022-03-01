@@ -1,39 +1,28 @@
-%% 2017MMDD_TX_RD chronic vectorization
-% SAM 8/2/2019
-% summarizes vectorizations done earlier this week, and sets a standard for future vectorizations.
-% This script was used for the following datasets:
+%% Annie vectorization
+% 2/27/20 SAM
 
-% % 20170802_TxRed_Chronic
-% imaging_session_and_ROI_name = '20170802_TxRed_Chronic\Processed_Images_Stack03\' ;
-% imaging_session_and_ROI_name = '20170802_TxRed_Chronic\Processed_Images_Stack05\' ;
-% imaging_session_and_ROI_name = '20170802_TxRed_Chronic\Processed_Images_Stack06\' ;
+% Input stacks:
 
-% 20170809_TxRed_Chronic
-% imaging_session_and_ROI_name = '20170809_TxRed_Chronic\Processed_Images_Stack01\' ;
-% imaging_session_and_ROI_name = '20170809_TxRed_Chronic\Processed_Images_Stack02\' ;
-%
-% imaging_session_and_ROI_nam = '20170809_TxRed_Chronic\Processed_Images_Stack0' ;
+% OutputDirectory = 'E:\Annie\ScanImage\' ;
+% OutputDirectory = 'E:\Annie\ScanImage\200302 vascular compare distortion rg vs gg\' ; 
+% OutputDirectory = 'E:\Annie\200923 2x2 vasculature RG med filter\200923 2x2 vasculature RG med filter' ;
+OutputDirectory = 'E:\Annie\images\201211\' ;
 
-% imaging_session_and_ROI_nam = '20170901_TxRed_Chronic\Processed_Images_Stack0' ;
-% is_tiled = false
+microns_per_voxel = [ ];
 
-% 10/30/19 SAM
-imaging_session_and_ROI_nam = '20170809_TxRed_Chronic\tiling 180628\' ;
-input_name = '20170809_txRed_chronic_tiled.tif' ;
-is_tiled = true ;
+% input_names{ 1 } = '200207_RG_14p0MHz_1e4_00001_2p0x_16frAvg_00001.tif' ;
+% input_names{ 1 } = 'resStack.tif'   ; microns_per_voxel( 1, 1 : 3 ) = [ 1.3, 0.9, 5 ];
+% input_names{ 2 } = 'galvoStack.tif' ; microns_per_voxel( 2, 1 : 3 ) = [ 1.1, 1.1, 5 ];
+% input_names{ 1 } = 'Fused_medfilt_nobg.tif' ; microns_per_voxel( 1, 1 : 3 ) = [ 1.37, 1.33, 3 ];
+%%%% !!!!!!!!!!!!!!!!!!!!!!! just caught error in voxel aspect ratio. switch x and y for
+%%%% microns_per_voxel above this tag SAM 12/15/20
+input_names{ 1 } = '201211_Fused_nobg.tif' ; microns_per_voxel( 1, 1 : 3 ) = [1.34, 1.36, 3];
 
-if is_tiled
+number_of_stacks = length( input_names );
 
-    OutputDirectory = [ 'E:\2P imaging\', imaging_session_and_ROI_nam ];
+stackID_range = 1 : number_of_stacks ;        
 
-    stackID_range = 1 ;        
-
-else
-    
-    % stackID_range = 3 : 6
-    % stackID_range = 1 : 6
-    
-end
+% Workflow:
 
 % start_workflow = 'energy' ;
 % start_workflow = 'vertices' ;
@@ -41,17 +30,11 @@ end
 % start_workflow = 'network' ;
 start_workflow = 'none' ;
 
+% Settings:
+
 PSF_fudge_factor = 2 ;
 
 for stackID = stackID_range
-    
-    if ~ is_tiled
-        
-        imaging_session_and_ROI_name = [ imaging_session_and_ROI_nam, num2str( stackID ), '\' ];
-
-        OutputDirectory = [ 'E:\2P imaging\', imaging_session_and_ROI_name, 'PMT01_Red_Images\' ];
-
-    end
     
     switch start_workflow
     
@@ -68,26 +51,20 @@ for stackID = stackID_range
                                         'Presumptive',                       true,                              ...
                                         'matching_kernel_string',            '3D gaussian conv annular pulse',            ... % !!!! depricated parameter !!!! built-in parmater to energy_filter, A = 6 !!!!! make this a recorded input
                  ...                       'symmetry_ratio_factor',                    1.5,         ... !!! depricated parameter.  
-                                        'gaussian_to_ideal_ratio',                  0.5,         ...
-                                        'spherical_to_annular_ratio',               6/7, ...
-                                        'microns_per_voxel',                        [ 1.07, 1.07, 5 ],          ...
-                                        'radius_of_smallest_vessel_in_microns',     1.5,                          ...
+                                        'gaussian_to_ideal_ratio',               0.6,         ...
+                                     'spherical_to_annular_ratio',               0.8, ...
+...                                        'microns_per_voxel',                        [0.78, 0.78, 5],          ... 
+                                        'microns_per_voxel',                        microns_per_voxel( stackID, : ),          ... 
+                                       'radius_of_smallest_vessel_in_microns',      1.5,                         ...
                                         'radius_of_largest_vessel_in_microns',      60,                         ...
                                         'approximating_PSF',                        true,                       ...
                                         'excitation_wavelength',                    1.3 * PSF_fudge_factor,     ...
                                         'scales_per_octave',                        3,                        ... 
                                         'max_voxels_per_node_energy',               1e6,                    ...
                                         'vessel_wall_thickness_in_microns',         0                           };
-        
-        if is_tiled
 
-            time_stamp = vectorize_V200([ OutputDirectory, input_name ], name_value_pair_inputs{ 1, : }); 
+            time_stamp = vectorize_V200([ OutputDirectory, input_names{ stackID }], name_value_pair_inputs{ 1, : }); 
 
-        else
-
-            time_stamp = vectorize_V200([ OutputDirectory, 'PMT01_Red_Raw_Data_16bit.tif' ], name_value_pair_inputs{ 1, : }); 
-
-        end
         
         otherwise
 
@@ -96,25 +73,27 @@ for stackID = stackID_range
                                         'PreviousWorkflow',                 'recent',          ...
                                         'StartWorkflow',                    start_workflow,    ...
                                    ...     'FinalWorkflow',                    'network',         ...
-                                        'Visual',                           'productive',      ...
-    ...                                    'Visual',                           'network',      ...
+    ...                                    'Visual',                           'productive',      ...
+                     ...                   'Visual',                           'vertices',      ...
                                         'NewBatch',                         'no',              ...
                                         'Presumptive',                       true,             ...
-                                 ...       'VertexCuration',                   'manual',          ...
-                                        'VertexCuration',                   'none',          ...
-                                        'length_dilation_ratio_vertices',   2,               ... new default
-                                        'number_of_edges_per_vertex',       2,               ... new default 11/6/19
+                                        'VertexCuration',                   'manual',          ...
+                            ...            'VertexCuration',                   'none',          ...
+                           ...             'VertexCuration',                   'mutual edges',          ...
+                           ...          'VertexCuration',                   'auto',          ...
+                                        'space_strel_apothem_edges',        int64(1),           ...
+                                        'number_of_edges_per_vertex',       2,               ... 
                             ...            'number_of_edges_per_vertex',       4,               ...
                                         'sigma_edge_smoothing',             0.5,               ...
-                            ...            'EdgeCuration',                     'manual'           };
-                                        'EdgeCuration',                     'none', ...
+                                        'EdgeCuration',                     'manual', ...
+                           ...             'EdgeCuration',                     'none', ...
     ...                                    'SpecialOutput', { 'depth', 'strands', 'directions', 'upsampled', '3D-strands' }};
     ...                                    'SpecialOutput', { '3D-strands' }};
-    ...                                    'SpecialOutput', { 'depth-stats' }};
-                                        'SpecialOutput', { 'upsampled' }};    
+...                                        'SpecialOutput', { 'depth-stats' }};
+    ...                                    'SpecialOutput', { 'upsampled' }};    
     ...                                     'SpecialOutput', { 'depth', 'directions' }};
-...                                        'SpecialOutput', 'histograms' };    
-           ...                             'SpecialOutput', { 'casx', 'vmv' }};
+                                        'SpecialOutput', { 'depth-stats', 'histograms', 'vmv', 'depth', 'strands', 'directions' }};    
+
             time_stamp = vectorize_V200( name_value_pair_inputs{ 1, : }); 
     end            
 end

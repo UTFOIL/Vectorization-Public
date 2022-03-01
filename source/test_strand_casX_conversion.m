@@ -16,7 +16,7 @@ network_statistics = calculate_network_statistics( strand_subscripts, bifurcatio
 network_histogram_plotter( network_statistics )
 network_histogram_plotter( network_statistics, 'strand_z_direction' )
 
-[ point_coordinates, arc_connectivity, arc_diameters ] = strand2casx( vertex_space_subscripts, strands2vertices, strand_subscripts, microns_per_voxel, lumen_radius_in_microns_range );
+[ point_coordinates, arc_connectivity, arc_diameters ] = strand2casx( strand_subscripts, microns_per_voxel, lumen_radius_in_microns_range );
 
 [ vertex_space_subscripts_2, vertex_scale_subscripts_2, bifurcation_vertices_2, strands2vertices_2, strand_space_subscripts_2, strand_scale_subscripts_2, microns_per_voxel_2, lumen_radius_in_microns_range_2, size_of_image_2 ] = casx2strand( point_coordinates, arc_connectivity, arc_diameters );
 
