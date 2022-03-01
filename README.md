@@ -496,3 +496,19 @@ bibtex:
 }
 ```
 
+### [Mathematical synthesis of the cortical circulation for the whole mouse brain—part II: Microcirculatory closure
+](https://neurophysics.ucsd.edu/publications/micc.12687.pdf)
+
+bibtex:
+
+```
+@article{hartung2021mathematical,
+  title={Mathematical synthesis of the cortical circulation for the whole mouse brain—part II: Microcirculatory closure},
+  author={Hartung, Grant and Badr, Shoale and Mihelic, Samuel and Dunn, Andrew and Cheng, Xiaojun and Kura, Sreekanth and Boas, David A and Kleinfeld, David and Alaraj, Ali and Linninger, Andreas A},
+  journal={Microcirculation},
+  volume={28},
+  number={5},
+  pages={e12687},
+  year={2021}
+}
+```
