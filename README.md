@@ -514,3 +514,22 @@ bibtex:
   publisher={Optical Society of America}
 }
 ```
+
+### Evaluation of resonant scanning as a high-speed imaging technique for two-photon imaging of cortical vasculature
+
+[```https://opg.optica.org/boe/fulltext.cfm?uri=boe-13-3-1374```](https://opg.optica.org/boe/fulltext.cfm?uri=boe-13-3-1374)
+
+bibtex:
+
+```
+@article{zhou2022evaluation,
+  title={Evaluation of resonant scanning as a high-speed imaging technique for two-photon imaging of cortical vasculature},
+  author={Zhou, Annie and Engelmann, Shaun A and Mihelic, Samuel A and Tomar, Alankrit and Hassan, Ahmed M and Dunn, Andrew K},
+  journal={Biomedical Optics Express},
+  volume={13},
+  number={3},
+  pages={1374--1385},
+  year={2022},
+  publisher={Optica Publishing Group}
+}
+```
