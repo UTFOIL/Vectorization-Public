@@ -1,12 +1,11 @@
-function [ mean_edge_energies, edges2vertices, edge_energies, edge_space_subscripts,                ...
-           edge_scale_subscripts, index_image, true_edges, displayed_edges, deleted_edges,...
-           vertex_space_subscripts, vertex_scale_subscripts                               ]         ...
-            = edge_curator( edge_energies, edge_space_subscripts, edge_scale_subscripts,         ...
-                              edges2vertices, vertex_space_subscripts,                              ...
-                              vertex_scale_subscripts, lumen_radius_in_microns_range,               ...
-                              length_dilation_ratio_vertices, length_dilation_ratio_edges,          ...
+function [ mean_edge_energies, edges2vertices, edge_energies, edge_space_subscripts, edge_scale_subscripts, index_image ] ...
+            = edge_curator_V6( edge_energies, edge_space_subscripts, edge_scale_subscripts,            ...
+                              edges2vertices, degrees_of_edges, vertex_space_subscripts, ...
+                              vertex_scale_subscripts, lumen_radius_in_microns_range,      ...
                               microns_per_pixel, path_to_original_data, path_to_saved_curation,     ...
-                              path_to_energy_data, intensity_limits, energy_limits, threshold_percent_overlap )
+                              path_to_energy_data, intensity_limits, energy_limits, ...
+                              threshold_percent_overlap                                                           )                                                     
+                              %EDIT! WAS 02/24/19
 %% vertex_curator SAM 7/19/18
 % This function creates and runs the graphical user interface for the manual curation of vertices.
 % It shows a projection of the vertices and (inverted) raw data overlay.  User has control over the
@@ -89,33 +88,36 @@ function [ mean_edge_energies, edges2vertices, edge_energies, edge_space_subscri
 %
 % V5: converted mean_edge_energies to a z-score.  Edited V4 changes (removed the multiple edge
 % conflict test) SAM 2/13/19
+%
+% V6: WAS 02/24/19
+%
+% 1. Added binarize button to the energy histogram
+% 2. Added "mean_edge_intensities" which is defnied as the 
 
 
-%% Initializations         
-   
-initial_load_variables = {  'edge_energies', ...
-                    'edge_space_subscripts', ...
-                    'edge_scale_subscripts', ...
-                           'edges2vertices', ...
-                'max_number_of_added_edges', ...
-                         'intensity_limits', ...
-                            'energy_limits'  };
 
+
+%% Initializations  
+
+% % this should perhaps be an input
+% threshold_percent_overlap = 1 ;    
+
+%intensity_limits_options = {intensity_limits, [0 1]};
+intensity_limits_binarized = false;
+        
 max_number_of_added_edges = 1000 ;
 
 listing_for_path_to_saved_curation = dir([ path_to_saved_curation, '.mat' ]);
 
 if ~ isempty( listing_for_path_to_saved_curation )
 
-    answer = questdlg( 'Load the previously saved curation?', 'Edge Curator' );
+    answer = questdlg( 'Load the previously saved curation?' );
 
     if strcmp( answer, 'Yes' )
             
-        load( path_to_saved_curation, initial_load_variables{ : });
-        
-        % these are placeholder variables, will be rewritten later, added objects removed for
-        % accounting purposes only
-        
+        load( path_to_saved_curation,  'edge_energies', 'edge_space_subscripts',     'edge_scale_subscripts', ...
+                                      'edges2vertices',      'degrees_of_edges', 'max_number_of_added_edges'  );
+            
         % cell vectors
         edge_energies         =         edge_energies( max_number_of_added_edges + 2 : end );
         edge_space_subscripts = edge_space_subscripts( max_number_of_added_edges + 2 : end );      
@@ -127,22 +129,7 @@ if ~ isempty( listing_for_path_to_saved_curation )
         
         load_upon_startup = true ;
     
-    elseif isempty( answer ) || strcmp( answer, 'Cancel' ) % The "X" or 'Cancel'
-
-              edge_energies = [ ]; % sam 1/27/22
-        
-%         mean_edge_energies = get_edge_metric( edge_energies );
-              mean_edge_energies = [ ];
-          
-                index_image = [ ];
-        
-                 true_edges = [ ];
-            displayed_edges = [ ];
-              deleted_edges = [ ];
-              
-        return
-        
-    else % 'No'
+    else
         
         load_upon_startup = false ;
         
@@ -153,61 +140,21 @@ else
 
 end
 
-vertex_color =  ones( 1, 1, 3 );
-% vertex_color( 3 ) = 0 ; % yellow/gold
-% vertex_color( 1 ) = 0 ; % green+blue=aqua
-% vertex_color( 1 ) = 0.5 ; % green+blue=aqua
-% % gray
-% vertex_color([ 1, 3 ]) = 0.5 ; % bright green
-% vertex_color( 2 ) = 0 ; % purple
-% vertex_color( : ) =  [ 0.5, 0.5, 1 ]; % bb blue
-% vertex_color( : ) =  [ 1, 0, 1 ]; % bb purple
-% vertex_color( : ) =  [ 0, 0, 1 ]; % blue
-% vertex_color( : ) =  [ 0.3, 0.7, 1 ]; % edge color (true)
-vertex_color( : ) =  [ 0.7, 0.3, 1 ]; % hot blue
-
-centerline_color = zeros( 1, 1, 3 ); 
-centerline_color( 2 ) = 1 ; % green
-% centerline_color( : ) = [ 0.7, 1, 0.3 ]; % hot green
-centerline_color( : ) = [ 0.3, 1, 0.7 ]; % cool green
+vertex_color = ones( 1, 1, 3 ); vertex_color( 3 ) = 0 ; % yellow/gold
 
     %% Figures                                  
-origin = [ 0.1, 0.4 ];
-    
-scaling = 0.7 ;
-    
-bottom_buffer = 0.05 ;
-
-left_buffer = bottom_buffer / 2 ;
-
-spacer = 0.005 ;
-
-histo_widths = 0.19 ;
-
-histo_heights = 0.45 ;
-
-half_screen = 1 - left_buffer - 2 * histo_widths - spacer ;
-
-filesep_indices = regexp( path_to_saved_curation, filesep );
-
-edge_set_name =  path_to_saved_curation( filesep_indices( end ) + 1 : end );
-
-digit_indices = regexp( edge_set_name, '\d' ); % \d searches for digits
-
-dataset_name =  edge_set_name( digit_indices( 12 ) + 2 : end ); % 12 digits in the date-time stamp
-
-display_figure = figure( 'Name'     ,[ dataset_name, ': Edge Curator: Volume Display' ], ...
+display_figure = figure( 'Name'     , 'Edge Curator: Volume Display', ...
                          'Units'    , 'normalized',                     ...
                          'SizeChangedFcn',@main_figure_size_update,     ...
                          'Visible', 'off',                              ...
-                         'OuterPosition' , scaling * [ origin + [ left_buffer, bottom_buffer ], [ half_screen - spacer - left_buffer , 2 * histo_heights + spacer ]]);
+                         'Position' , [ 0.015, 0.1, 0.65, 0.65 ]        );
     
 display_figure.Units = 'pixels' ; 
 
 % % force square dimensions
 % display_figure.Position([ 3, 4 ]) = min( display_figure.Position([ 3, 4 ]));
 
-display_axes = axes( 'OuterPosition', [0.075, 0.15, 0.85, 0.85]);
+display_axes = axes( 'Position', [0.075, 0.15, 0.85, 0.85]);
 display_axes.Units = 'pixels';
     
 h = pan( display_figure );
@@ -218,108 +165,69 @@ h.ActionPostCallback = @update_xy_zoom ;
 h.Enable             =            'on' ;
 
 % intensity_histo figure and axes initializations
-intensity_histo_figure = figure( 'Name'     , [ dataset_name, ': Edge Curator: Intensity Histogram' ], ...
+intensity_histo_figure = figure( 'Name'     , 'Edge Curator: Intensity Histogram', ...
                                  'Units'    , 'normalized',                          ...
-                                 'OuterPosition' , scaling * [ origin + [ half_screen, bottom_buffer ], [ histo_widths, histo_heights ]]);
+                                 'Position' , [ 0.4, 0.05, 0.4, 0.35 ]              );
 
-% intensity_histo_figure.Units = 'pixels' ; 
-% 
-% % force square dimensions
-% intensity_histo_figure.Position([ 3, 4 ]) = min( intensity_histo_figure.Position([ 3, 4 ]));
-% 
-% intensity_histo_figure.Visible = 'off' ;
+intensity_histo_figure.Units = 'pixels' ; 
 
-intensity_histo_axes = axes( 'OuterPosition', [ 0.1, 0.3, 0.8, 0.6 ]);
+% force square dimensions
+intensity_histo_figure.Position([ 3, 4 ]) = min( intensity_histo_figure.Position([ 3, 4 ]));
+
+intensity_histo_figure.Visible = 'off' ;
+
+intensity_histo_axes = axes( 'Position', [ 0.1, 0.3, 0.8, 0.6 ]);
 
 zoom( intensity_histo_figure, 'yon' )
 
 % intensity_histo figure and axes initializations
-energy_histo_figure = figure( 'Name'     , [ dataset_name, ': Edge Curator: Energy Histogram' ], ...
+energy_histo_figure = figure( 'Name'     , 'Edge Curator: Energy Histogram', ...
                               'Units'    , 'normalized',                       ...
-                              'OuterPosition' , scaling * [ origin + [ half_screen + histo_widths + spacer, bottom_buffer ], [ histo_widths, histo_heights ]]);
+                              'Position' , [ 0.4, 0.55, 0.4, 0.35 ]            );
 
-% energy_histo_figure.Units = 'pixels' ; 
-% 
-% % force square dimensions
-% energy_histo_figure.Position([ 3, 4 ]) = min( energy_histo_figure.Position([ 3, 4 ]));
-% 
-% energy_histo_figure.Visible = 'off' ;
+energy_histo_figure.Units = 'pixels' ; 
 
-energy_histo_axes = axes( 'OuterPosition', [ 0.1, 0.3, 0.8, 0.6 ]);
+% force square dimensions
+energy_histo_figure.Position([ 3, 4 ]) = min( energy_histo_figure.Position([ 3, 4 ]));
+
+energy_histo_figure.Visible = 'off' ;
+
+energy_histo_axes = axes( 'Position', [ 0.1, 0.3, 0.8, 0.6 ]);
 
 zoom( energy_histo_figure, 'yon' )
 
 % % mini_map figure and axes initializations
-minimap_figure = figure( 'Name'     , [ dataset_name, ': Edge Curator: Volume Map' ], ...
+minimap_figure = figure( 'Name'     , 'Edge Curator: Reference Volume', ...
                          'Units'    , 'normalized',                       ...
                     'SizeChangedFcn',@minimap_figure_size_update,         ...
                            'Visible','off',                               ...
-                         'OuterPosition' , scaling * [ origin + [ half_screen, bottom_buffer + histo_heights + spacer ], [ 2 * histo_widths + spacer, histo_heights ]]);
+                         'Position' , [ 0.6, .3, 0.45, 0.45 ]             );
                            
 minimap_figure.Units = 'pixels' ; 
  
 % minimap_figure.Position([ 3, 4 ]) = min( minimap_figure.Position([ 3, 4 ]));
 
-minimap_axes = axes(minimap_figure, 'OuterPosition', [0.2, 0.2, 0.7, 0.7]);
+minimap_axes = axes(minimap_figure, 'Position', [0.2, 0.2, 0.7, 0.7]);
 minimap_axes.Units = 'pixels';
 view(minimap_axes,3);
     %% Variables                                
-% depricated variables:
-y_limits = [ ];
-x_limits = [ ];
-z_limits = [ ];
-
-z_thickness = [ ];
-z_depth     = [ ];
-z_range     = [ ];
-
-depth_dimension = [ ];
-
+    
 % initialize global variables
-depth_range                 = [ ];
-FOV_limits                  = [ ];
+z_range                     = [ ];
+z_limits                    = [ ];
 edge_centers                = [ ];
 index_image_2D              =  1 ;
 vertex_index_image_2D       =  1 ;
-centerlines_image_2D        = [ ];
 index2intensity             = [ ];
 index_image_crop            = [ ];
-centerlines_image_crop      = [ ];
 truth_image_uint8           = [ ];
 in_view_edges_z             = [ ];
-% gaussian_weight_in_z        = [ ];
+gaussian_weight_in_z        = [ ];
 original_image_crop_2D      = [ ];
-adjusted_original_image_2D      = [ ]; 
-are_intensity_limits_binarized  = true ;
-edge_display_method = 1 ;
-
-is_intensity_inverted = true ;
-
-counter_toggle              = 0 ;
-counter_threshold           = 0 ;
-counter_add_vertex          = 0 ;
-counter_add_edge            = 0 ;
-elapsed_time                = 0 ;
-
-tstart = tic ;
-
-projection_dimension = 3 ;
-
-dimension_order_matrix ...
-    = [ 2, 3, 1 ; ...% y-projection
-        3, 1, 2 ; ...% x-projection
-        1, 2, 3   ]; % dimension permutation to project in different dimensions
-
-dimension_letters = { 'Y', 'X', 'Z' };
-
-dimension_order = dimension_order_matrix( projection_dimension, : );
-
-dimension_order = [ 1, 2, 3 ]; % dimension permutation to project in different dimensions
+inverted_original_image_2D  = [ ];
 
 vertex_structure_positions_linear_indexing = [ ];
   edge_structure_positions_linear_indexing = [ ];
-  
-  edge_positions_linear_indices = [ ];
    
 size_of_minimap             = 100 ;
 energy_threshold            = 0   ;
@@ -335,32 +243,36 @@ border_color                = 0.25;
 in_view_color               = 0.49;
 
 % last_vertex_index = max( edges2vertices( : ));
-% last_vertex_index = length( vertex_space_subscripts );
+last_vertex_index = length( vertex_space_subscripts );
 
 % add a row for the background when indexing by the index image (that image has ones on background)
-number_of_edges = length( edge_energies );
+number_of_edges = length( edge_energies );   
 
 number_of_added_edges = 0 ;
 
-[ mean_edge_energies ] = get_edge_metric( edge_energies );
+% mean_edge_energies    = cellfun( @mean,  edge_energies );    
+
+mean_edge_energies    = cellfun( @( x ) - std( x ) / mean( x ),  edge_energies );      
+
+% % subtract off a linear fit to the energy vs edge ordinate.  This line is fully constrained by the energies of the terminal vertices.  SAM 2/21/19
+% mean_edge_energies    = cellfun( @( x ) - std( x' - linspace( x( 1 ), x( end ), length( x ))) / mean( x ),  edge_energies );    
     
 mean_edge_energies    = [ zeros( max_number_of_added_edges + 1, 1 ); mean_edge_energies ];
+mean_edge_intensities = zeros(numel(mean_edge_energies),1);
 
 edges2vertices        = [ zeros( max_number_of_added_edges + 1, 2, 'uint32' ); edges2vertices ];
-
-% degrees_of_edges      = [  ones( max_number_of_added_edges + 1, 1, 'uint16' ); degrees_of_edges ];
 
 edge_space_subscripts = [ cell( max_number_of_added_edges + 1, 1 ); edge_space_subscripts ];
 edge_scale_subscripts = [ cell( max_number_of_added_edges + 1, 1 ); edge_scale_subscripts ];                      
 edge_energies         = [ cell( max_number_of_added_edges + 1, 1 ); edge_energies         ];
 
-edge_space_subscripts( 1 : max_number_of_added_edges + 1 ) = { zeros( 1, 3 )};
-edge_scale_subscripts( 1 : max_number_of_added_edges + 1 ) = { 1 };
+edge_space_subscripts( 1 : max_number_of_added_edges + 1 ) = { zeros( 1, 3, 'uint16' )};
+edge_scale_subscripts( 1 : max_number_of_added_edges + 1 ) = { uint8( 1 )};
         edge_energies( 1 : max_number_of_added_edges + 1 ) = { 0 };
                             
 length_of_edge_lists = number_of_edges + max_number_of_added_edges + 1 ;
 
-% vertex_code_in_index_image_2D = last_vertex_index + length_of_edge_lists + 1 ;
+vertex_code_in_index_image_2D = last_vertex_index + length_of_edge_lists + 1 ;
 
 % intialize logical vectors of class assignment
    true_edges          = ones(  length_of_edge_lists, 1, 'logical' );
@@ -381,72 +293,30 @@ in_view_edges_xy(  1 : max_number_of_added_edges + 1 ) = false ;
 
 maximum_number_of_backups = 20 ;
 
-backup_ordinate = 0 ;
+backup_ordinate = uint8( 0 );
 
 % pull original from h5 files       
 original_image = h52mat( path_to_original_data );
 
 size_of_image = size( original_image );
 
-% % main display image initializtion, background is coded by last_vertex_index plus one
-% index_image = 1 + last_vertex_index * ones( size_of_image, 'uint32' );
-
-% main display image initializtion, background is coded by zero
-      index_image = zeros( size_of_image, 'int32' );
-
-centerlines_image = zeros( size_of_image, 'logical' );
+% main display image initializtion, background is coded by last_vertex_index plus one
+index_image = 1 + last_vertex_index * ones( size_of_image, 'uint32' );
 
 number_of_pixels_2D = size_of_image( 1 ) * size_of_image( 2 ) ;
 
 % initialize axis limits
-FOV_limits( 1, 1 : 2 ) = [ 1, size_of_image( 1 )];
-FOV_limits( 2, 1 : 2 ) = [ 1, size_of_image( 2 )];
+y_limits = [ 1, size_of_image( 1 )];
+x_limits = [ 1, size_of_image( 2 )];
 
-display_axes.XLim = FOV_limits( 2, : );
-display_axes.YLim = FOV_limits( 1, : );
+display_axes.XLim = x_limits ;
+display_axes.YLim = y_limits ;
 
-% initialize depth_of_view and view_thickness for initial viewing and slider limits
-depth_of_view      = round( size_of_image( 3 ) / 2 );
-view_thickness_max =        size_of_image( 3 );
+% initialize z_depth and z_thickness for initial viewing and slider limits
+z_depth         = round( size_of_image( 3 ) / 2 );
+z_thickness_max =        size_of_image( 3 );
 
-% view_thickness = min( 5, view_thickness_max );     
-view_thickness = 0 ;
-
-autosave_variables = { 'true_edges', ...
-                   'deleted_edges', ...
-                 'displayed_edges', ...
-                      'FOV_limits', ...
-                         'depth_of_view', ...
-                     'view_thickness', ...
-                  'edges2vertices', ...
-           'edge_space_subscripts', ...
-           'edge_scale_subscripts', ...
-           'vertex_space_subscripts', ...
-           'vertex_scale_subscripts', ...
-           'edge_energies'        , ...
-      'mean_edge_energies'        , ...
-                'intensity_limits', ...
-                   'energy_limits', ...
-           'number_of_added_edges', ...
-                'energy_threshold', ...
-                'xy_threshold_mat', ...
-                'yz_threshold_mat', ...
-                'xz_threshold_mat', ...
-                'threshold_mat_3D', ...
-              'counter_add_edge'  , ...
-              'counter_add_vertex', ...
-              'counter_toggle'    , ...
-              'counter_threshold' , ...
-           'is_intensity_inverted', ...
-                 'dimension_order', ...
-      'projection_dimension'      , ...
-             'number_of_pixels_2D'  };
-          
-save_variables = [ autosave_variables{ : }, ...
-              {          'backup_ordinate', ...
-               'max_number_of_added_edges', ...
-                            'elapsed_time', }];
-
+z_thickness = min( 5, z_thickness_max );         
     %% Templates and Images                     
 
 % precalculating the volumes of influence of the vertices as linear indices into the 3D image for
@@ -456,29 +326,19 @@ number_of_scales = length( lumen_radius_in_microns_range );
 
 scale_subscript_range = 1 : number_of_scales ;
 
-vertex_element_linear_indexing_templates = cell( number_of_scales, 1 );
-  edge_element_linear_indexing_templates = cell( number_of_scales, 1 );
+structuring_element_linear_indexing_templates = cell( number_of_scales, 1 );
 
-vertex_radii_in_pixels_range =  length_dilation_ratio_vertices ...
-                             .* lumen_radius_in_microns_range  ...
-                             ./ microns_per_pixel              ;
-                  
-  edge_radii_in_pixels_range =  length_dilation_ratio_edges   ...
-                             .* lumen_radius_in_microns_range ...
-                             ./ microns_per_pixel             ;
-                  
+radii_in_pixels_range = lumen_radius_in_microns_range ./ microns_per_pixel ;
+
 for scale_subscript = scale_subscript_range
       
-    % find all pixel locations within the ellipsoid radii from the element position
-    vertex_element_linear_indexing_templates{ scale_subscript }                                                        ...
-        = int64( construct_structuring_element( vertex_radii_in_pixels_range( scale_subscript, : ), size_of_image ));
+    % find all pixel locations within the ellipsoid radii from the vertex position    
+    structuring_element_linear_indexing_templates{ scale_subscript }                                            ...
+        = int32( construct_structuring_element( radii_in_pixels_range( scale_subscript, : ), size_of_image ));
      
-      edge_element_linear_indexing_templates{ scale_subscript }                                                        ...
-        = int64( construct_structuring_element(   edge_radii_in_pixels_range( scale_subscript, : ), size_of_image ));
-     
-end % constructing edge and vertex element templates FOR scale
+end % constructing relative elements FOR scale
 
-% initialize_structuring_elements
+initialize_structuring_elements
 
 %% User interfaces                          
 
@@ -521,43 +381,41 @@ redo_button           = uicontrol( display_figure, 'Style'   , 'pushbutton',    
                                                    'Position', [ 0.175, 0.0125, 0.125, 0.05],   ...
                                                    'Callback', @redo_curation                   );      
                                                                                           
-depth_of_view_label         = uicontrol( display_figure, 'Style'   , 'pushbutton',                          ...
+z_depth_label         = uicontrol( display_figure, 'Style'   , 'text',                          ...
                                                    'Units'   , 'normalized',                    ...
                                                    'Position', [ 0.4125, 0.105, 0.165, 0.03 ],  ...
                                                    'String'  , 'Z-Depth',                       ...
                                                    'FontName', 'Times New Roman',               ...
                                                    'FontUnits', 'normalized',                   ...
-                                                   'FontSize', 0.5,                             ...
-                                                   'Callback', @projection_dimension_callback   );                                               
+                                                   'FontSize', 0.5                              );                                               
                                                
-depth_of_view_slider        = uicontrol( display_figure, 'Style'   , 'slider',                        ...
+z_depth_slider        = uicontrol( display_figure, 'Style'   , 'slider',                        ...
                                                    'Min'     , 1,                               ...
                                                    'Max'     , size_of_image( 3 ),              ...
-                                                 'SliderStep', [        1   / size_of_image( 3 ),  ...
-                                                 ( 2 * view_thickness + 1 ) / size_of_image( 3 ) ],... % slider moves the distance of the slice thickness ...
-                                                   'Value'   , 1,                               ...
+                                                 'SliderStep', [ 1 / size_of_image( 3 ),        ...
+                                                                 5 / size_of_image( 3 )  ],     ...
+                                                   'Value'   , 0,                               ...
                                                    'Units'   , 'normalized',                    ...
                                                    'Position', [ 0.305, 0.075, 0.385, 0.04],    ...
-                                                   'Callback', @change_depth_of_view                  ); 
+                                                   'Callback', @change_z_depth                  ); 
 
-view_thickness_slider    = uicontrol( display_figure, 'Style'   , 'slider',                        ...
+z_thickness_slider    = uicontrol( display_figure, 'Style'   , 'slider',                        ...
                                                    'Min'     , 0,                               ...
-                                                   'Max'     ,   log((      size_of_image( dimension_order( 3 )) - 1 ) * 3 / 2 + 1 ),  ...
-                                                 'SliderStep', [ log( 1 / ( size_of_image( dimension_order( 3 )) - 1 ) * 3 / 2 + 1 ),  ...
-                                                                 log( 5 / ( size_of_image( dimension_order( 3 )) - 1 ) * 3 / 2 + 1 ) ],...                                                   
+                                                   'Max'     , z_thickness_max,                 ...
+                                                 'SliderStep', [ 1 / z_thickness_max,           ...
+                                                                 5 / z_thickness_max  ],        ...                                                   
                                                    'Value'   , 0,                               ...
                                                    'Units'   , 'normalized',                    ...
                                                    'Position', [ 0.305, 0.0325, 0.385, 0.03],   ...
-                                                   'Callback', @change_view_thickness              );
+                                                   'Callback', @change_z_thickness              );
 
-view_thickness_label     = uicontrol( display_figure, 'Style'   , 'pushbutton',                          ...
+z_thickness_label     = uicontrol( display_figure, 'Style'   , 'text',                          ...
                                                    'Units'   , 'normalized',                    ...
                                                    'Position', [ 0.4125, 0, 0.165, 0.03 ],      ...
                                                    'String'  , 'Z-Thickness',                   ...
                                                    'FontName', 'Times New Roman',               ...
                                                    'FontUnits', 'normalized',                   ...
-                                                   'FontSize', 0.5,                             ...
-                                                   'Callback', @projection_dimension_callback   );                                           
+                                                   'FontSize', 0.5                              );                                               
 					                                     
 paint_button          = uicontrol( display_figure, 'Style'   , 'pushbutton',                    ...
                                                    'Units'   , 'normalized',                    ...
@@ -579,21 +437,12 @@ sweep_button          = uicontrol( display_figure, 'Style'   , 'pushbutton',    
                                                
 add_button            = uicontrol( display_figure, 'Style'   , 'pushbutton',                    ...
                                                    'Units'   , 'normalized',                    ...
-                                                   'Position', [ 0.825, 0.09166666, 0.125, 0.0333333],...
-                                                   'String'  , 'Add Edge',                      ...
+                                                   'Position', [ 0.825, 0.075, 0.125, 0.05],    ...
+                                                   'String'  , 'Add',                           ...
                                                    'FontName', 'Times New Roman',               ...
                                                    'FontUnits', 'normalized',                   ...
                                                    'FontSize', 0.5,                             ...                                                                                                      
                                                    'Callback', @add_callback                    );
-                                               
-add_vertex_button            = uicontrol( display_figure, 'Style'   , 'pushbutton',             ...
-                                                   'Units'   , 'normalized',                    ...
-                                                   'Position', [ 0.825, 0.05208333, 0.125, 0.0333333],...
-                                                   'String'  , 'Add Vertex',                    ...
-                                                   'FontName', 'Times New Roman',               ...
-                                                   'FontUnits', 'normalized',                   ...
-                                                   'FontSize', 0.5,                             ...                                                                                                      
-                                                   'Callback', @add_vertex_callback             );
 
 toggle_button         = uicontrol( display_figure, 'Style'   , 'pushbutton',                    ...
                                                    'String'  , 'Toggle',                        ...
@@ -601,7 +450,7 @@ toggle_button         = uicontrol( display_figure, 'Style'   , 'pushbutton',    
                                                    'FontName', 'Times New Roman',               ...
                                                    'FontUnits', 'normalized',                   ...
                                                    'FontSize', 0.5,                             ...                                                                                                      
-                                                   'Position', [ 0.825, 0.0125, 0.125, 0.0333333],...
+                                                   'Position', [ 0.825, 0.0125, 0.125, 0.05],   ...
                                                    'Callback', @toggle_callback                 );  
                                                                                                                                                                                                                                                          
 %% intensity histogram controls                                               
@@ -643,20 +492,9 @@ intensity_max_label    = uicontrol( intensity_histo_figure,                     
                                                     'FontUnits', 'normalized',                  ...
                                                     'FontSize', 0.5,                            ...                                                    
                                                     'String'  , 'Max'                           );
-                                                
-
-invert_button           = uicontrol( intensity_histo_figure,                                      ...
-                                                    'Style'   , 'pushbutton',                    ...
-                                                    'Units'   , 'normalized',                    ...
-                                                    'Position', [ 0.4, 0.93, 0.2, 0.05 ],        ...
-                                                    'String'  , 'Inverted',                      ...
-                                                    'FontName', 'Times New Roman',               ...
-                                                    'FontUnits', 'normalized',                   ...
-                                                    'FontSize', 0.5,                             ...                                                                                                      
-                                                    'Callback', @invert_callback               );
                                                         
 %% energy histogram controls
-energy_min_text_box       = uicontrol( energy_histo_figure,                                     ...
+intensity_min_text_box    = uicontrol( energy_histo_figure,                                     ...
                                                     'Style'   , 'edit',                         ...
                                                     'Units'   , 'normalized',                   ...
                                                     'Position', [ 0.1, 0.1, 0.2, 0.075 ],       ...
@@ -666,7 +504,7 @@ energy_min_text_box       = uicontrol( energy_histo_figure,                     
                                                     'Callback', @change_energy_min,             ...
                                                     'String'  , num2str( energy_limits( 1 ))    );
                                                         
-energy_max_text_box       = uicontrol( energy_histo_figure,                                     ...
+intensity_max_text_box    = uicontrol( energy_histo_figure,                                     ...
                                                     'Style'   , 'edit',                         ...
                                                     'Units'   , 'normalized',                   ...
                                                     'Position', [ 0.7, 0.1, 0.2, 0.075 ],       ...
@@ -685,6 +523,17 @@ energy_threshold_text_box = uicontrol( energy_histo_figure,                     
                                                     'FontSize', 0.5,                            ...                                                   
                                                     'String'  , '0',                            ...
                                                     'Callback', @apply_energy_threshold         );
+
+%EDIT! WAS 02/24/19                                                
+binarize_button           = uicontrol( energy_histo_figure, ...
+                                                    'Style'   , 'pushbutton',                    ...
+                                                    'Units'   , 'normalized',                    ...
+                                                    'Position', [ 0.4, 0.025, 0.2, 0.065],   ...
+                                                    'String'  , 'Sweep',                         ...
+                                                    'FontName', 'Times New Roman',               ...
+                                                    'FontUnits', 'normalized',                   ...
+                                                    'FontSize', 0.5,                             ...                                                                                                      
+                                                    'Callback', @binarize_callback                  );
                                                         
 energy_min_label          = uicontrol( energy_histo_figure, ...
                                                     'Style'   , 'text',                         ...
@@ -723,17 +572,7 @@ true_label                = uicontrol( energy_histo_figure,                     
                                                     'FontSize', 1,                              ...         
                                              'BackgroundColor', [ 0, 1, 1 ],                    ...                                                                                                        
                                                     'String'  , 'True'                          );
-
-binarize_button           = uicontrol( energy_histo_figure, ...
-                                                    'Style'   , 'pushbutton',                    ...
-                                                    'Units'   , 'normalized',                    ...
-                                                    'Position', [ 0.4, 0.93, 0.2, 0.05 ],        ...
-                                                    'String'  , 'Binary',                        ...
-                                                    'FontName', 'Times New Roman',               ...
-                                                    'FontUnits', 'normalized',                   ...
-                                                    'FontSize', 0.5,                             ...                                                                                                      
-                                                    'Callback', @binarize_callback               );
-                                                                                                                                                
+                                                
 false_label               = uicontrol( energy_histo_figure,                                     ...
                                                     'Style'   , 'text',                         ...
                                                     'Units'   , 'normalized',                   ...
@@ -929,10 +768,10 @@ z_total_label           = uicontrol( minimap_figure,                            
 %% initialize displays
 load_colormap
 
-if load_upon_startup, load_curation, else initialize_structuring_elements, end %#ok<SEPEX>
-
 paint_index_image, update_edge_intensities, update_z_zoom
 update_z_sliders, update_minimap, update_xy_zoom
+
+if load_upon_startup, load_curation, end
                      
 % turn all figures visible     
 
@@ -947,46 +786,41 @@ intensity_histo_figure.Visible = 'on';
     function initialize_structuring_elements
 
         % precalculate linear indices from space subscripts in the image
-%         degrees_of_edges_uint_32 = uint32([ ones( max_number_of_added_edges + 1, 1 ); degrees_of_edges ]);
-%         degrees_of_edges_uint_32 = uint32( degrees_of_edges );
-        degrees_of_edges_uint_32 = uint32( cellfun( @length, edge_scale_subscripts ));
+        degrees_of_edges_uint_32 = uint32([ ones( max_number_of_added_edges + 1, 1 ); degrees_of_edges ]);
 
-        edge_space_subscripts_mat =         cell2mat( edge_space_subscripts );
-        edge_scale_subscripts_mat = uint8(  cell2mat( edge_scale_subscripts ));        
+        edge_scale_subscripts_mat = cell2mat( edge_scale_subscripts );
+        edge_space_subscripts_mat = cell2mat( edge_space_subscripts );
 
-        space_subscripts_int64 = int64( edge_space_subscripts_mat );
+        space_subscripts_int32 = int32( edge_space_subscripts_mat );
 
-        position_linear_indices =   space_subscripts_int64( :, 1 )                                               ...
-                                + ( space_subscripts_int64( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
-                                + ( space_subscripts_int64( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
+        position_linear_indices =   space_subscripts_int32( :, 1 )                                               ...
+                                + ( space_subscripts_int32( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
+                                + ( space_subscripts_int32( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
 
         sphere_position_linear_indices_cell = num2cell( position_linear_indices );
-        
-        edge_positions_linear_indices        = mat2cell( position_linear_indices, degrees_of_edges_uint_32 );
 
-        structuring_element_linear_indexing = edge_element_linear_indexing_templates( edge_scale_subscripts_mat );
+        structuring_element_linear_indexing = structuring_element_linear_indexing_templates( edge_scale_subscripts_mat );
 
-        sphere_structure_positions_linear_indexing = cellfun( @plus, structuring_element_linear_indexing, ...
-                                                                     sphere_position_linear_indices_cell, ...
-                                                                                  'UniformOutput', false  ); 
+        sphere_structure_positions_linear_indexing = cellfun( @plus, structuring_element_linear_indexing,   ...
+                                                                     sphere_position_linear_indices_cell,   ...
+                                                                                     'UniformOutput', false ); 
 
 %         vertex_structure_positions_linear_indexing = structuring_element_linear_indexing_templates( edge_scale_subscripts_mat );
 
-        % !!!!!!!!!!!!! mat2cell may have bug for type non-double second inputs
         sphere_structure_positions_linear_indexing_edge_cell = mat2cell( sphere_structure_positions_linear_indexing,  degrees_of_edges_uint_32, 1 );
 
 %         end_vertices_structure_positions_linear_indexing_1 = cellfun( @( x ) x{  1  }, sphere_structure_positions_linear_indexing_edge_cell, 'UniformOutput', false );
 %         end_vertices_structure_positions_linear_indexing_2 = cellfun( @( x ) x{ end }, sphere_structure_positions_linear_indexing_edge_cell, 'UniformOutput', false );
 
-        space_subscripts_int64 = int64( vertex_space_subscripts );
+        space_subscripts_int32 = int32( vertex_space_subscripts );
 
-        position_linear_indices =   space_subscripts_int64( :, 1 )                                               ...
-                                + ( space_subscripts_int64( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
-                                + ( space_subscripts_int64( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
+        position_linear_indices =   space_subscripts_int32( :, 1 )                                               ...
+                                + ( space_subscripts_int32( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
+                                + ( space_subscripts_int32( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
 
         vertex_position_linear_indices_cell = num2cell( position_linear_indices );
 
-        structuring_element_linear_indexing = vertex_element_linear_indexing_templates( round( vertex_scale_subscripts ));
+        structuring_element_linear_indexing = structuring_element_linear_indexing_templates( vertex_scale_subscripts );
 
         vertex_structure_positions_linear_indexing = cellfun( @plus, structuring_element_linear_indexing,   ...
                                                                        vertex_position_linear_indices_cell, ...
@@ -999,13 +833,13 @@ intensity_histo_figure.Visible = 'on';
 
         edge_structure_positions_linear_indexing = cellfun( @( x ) unique( x, 'rows' ), edge_structure_positions_linear_indexing, 'UniformOutput', false );
 
-        edge_structure_positions_subscript_xy = cellfun( @( x )      1 + mod( x - 1,  prod( size_of_image([ 1, 2 ]))), edge_structure_positions_linear_indexing, 'UniformOutput', false );
+        edge_structure_positions_subscript_xy = cellfun( @( x ) 1 + mod( x - 1, prod( size_of_image([ 1, 2 ]))), edge_structure_positions_linear_indexing, 'UniformOutput', false );
         
-        edge_structure_positions_subscript_z  = cellfun( @( x ) floor( double( x ) ./ prod( size_of_image([ 1, 2 ]))), edge_structure_positions_linear_indexing, 'UniformOutput', false );
+        edge_structure_positions_subscript_z  = cellfun( @( x ) floor( x ./     prod( size_of_image([ 1, 2 ]))), edge_structure_positions_linear_indexing, 'UniformOutput', false );
         
-        edge_structure_positions_subscript_y  = cellfun( @( x )      1 + mod( x - 1,        size_of_image( 1 )),       edge_structure_positions_subscript_xy,    'UniformOutput', false );
+        edge_structure_positions_subscript_y  = cellfun( @( x ) 1 + mod( x - 1,       size_of_image( 1 )),       edge_structure_positions_subscript_xy,    'UniformOutput', false );
         
-        edge_structure_positions_subscript_x  = cellfun( @( x ) floor( double( x ) ./       size_of_image( 1 )),       edge_structure_positions_subscript_xy,    'UniformOutput', false );        
+        edge_structure_positions_subscript_x  = cellfun( @( x ) floor( x ./           size_of_image( 1 )),       edge_structure_positions_subscript_xy,    'UniformOutput', false );        
                 
         edge_structure_positions_subscripts = cellfun( @( y, x, z ) [ y, x, z ], edge_structure_positions_subscript_y,                        ...
                                                                                  edge_structure_positions_subscript_x,                        ...
@@ -1014,6 +848,8 @@ intensity_histo_figure.Visible = 'on';
         edge_centers = cellfun( @( x ) round( mean( x, 1 )), edge_structure_positions_subscripts, 'UniformOutput', false );
 
         edge_centers = cell2mat( edge_centers );
+        
+        update_mean_edge_intensities;
 
     end
         %% overlay                                  
@@ -1024,9 +860,14 @@ intensity_histo_figure.Visible = 'on';
     %     %false positives shine though
     %     truth_image_uint8 = uint8(logical(truth_image_uint8).*128);
 
-        % combine the raw and truth images into overlay
-        overlay_image = truth_image_uint8 + adjusted_original_image_2D ;
-
+        %EDIT! WAS 02/24/19
+        if (intensity_limits_binarized)
+            overlay_image = uint8(logical(truth_image_uint8).*128) + inverted_original_image_2D ;
+        else
+            % combine the raw and truth images into overlay
+            overlay_image = truth_image_uint8 + inverted_original_image_2D ;
+        end
+        
         % draw the image in the display axes
         image( display_axes, overlay_image )
 
@@ -1037,8 +878,8 @@ intensity_histo_figure.Visible = 'on';
         display_axes.XTickLabel = '' ;
         display_axes.YTickLabel = '' ;
 
-        display_axes.XLim = FOV_limits( dimension_order( 2 ), : );
-        display_axes.YLim = FOV_limits( dimension_order( 1 ), : );
+        display_axes.XLim = x_limits ;
+        display_axes.YLim = y_limits ;
 
     %     display_axes.ButtonDownFcn = @vertex_toggler2 ;
 
@@ -1055,85 +896,34 @@ intensity_histo_figure.Visible = 'on';
         % % for a x-z projection
         % permute( index_image, [ 2, 3, 1 ])
         
-              index_image_crop = permute(       index_image,        dimension_order );
-              index_image_crop =                index_image_crop( :, :, depth_range );
-        
-        centerlines_image_crop = permute( centerlines_image,        dimension_order );
-        centerlines_image_crop =          centerlines_image_crop( :, :, depth_range );
-        
-        update_index_image_2D_crop
+        index_image_crop = index_image( :, :, z_range );
+
+        update_index_image_2D
 
     end % update_index_image_2D_crop
 
-    function update_index_image_2D_crop
+    function update_index_image_2D
         
-        centerlines_image_2D = max( centerlines_image_crop, [ ], 3 ); % opaque ray tracing in depth
-        
-        for index = 1 : 2 % 1. vertices 2. edges
-        
-            object_index_image_crop = index_image_crop ;
-
-            if index == 1, object_index_image_crop = - object_index_image_crop ; end    
-
-            object_index_image_crop( object_index_image_crop < 0 ) = 0 ; % remove 1. edges xor 2. vertices
-            
-%             object_index_image_2D = max( object_index_image_crop ~= 0, [ ], 3 ); % opaque ray tracing to first object in depth dimension
-            
-            [ ~ , argmax_vertex_image_2D ] = max( object_index_image_crop ~= 0, [ ], 3 ); % opaque ray tracing in depth
-            
-            linear_index_of_max_image_2D = zeros( size( argmax_vertex_image_2D ));
-
-            linear_index_of_max_image_2D( : ) = ( argmax_vertex_image_2D( : ) - 1 ) * number_of_pixels_2D + ( 1 : number_of_pixels_2D )';
-            
-            if index == 1 % vertices
-
-                vertex_index_image_2D = object_index_image_crop( linear_index_of_max_image_2D );
-
-            else % edges
-
-                       index_image_2D = object_index_image_crop( linear_index_of_max_image_2D ) ;
-                       index_image_2D( index_image_2D  < 0 ) = 0 ; % remove vertices
-                       index_image_2D( index_image_2D == 0 ) = 1 ; % set background from 0 to 1
-
-            end    
-        end % FOR vertices and edges
-            
-%         [ ~, argmax_vertex_image_2D ] = max( index_image_crop ~= last_vertex_index + 1 , [ ], 3 );
-%         [ ~ , argmax_vertex_image_2D ] = max( index_image_crop ~= 0 || index_image_crop ~= 1, [ ], 3 );
-%         [ ~ , argmax_vertex_image_2D ] = max( object_index_image_crop ~= 0, [ ], 3 );
-
-%         [ ~ , argmax_vertex_image_2D ] = min( index_image_crop ~= 0, [ ], 3 );
-%         argmax_vertex_image_2D = max(argmax_vertex_image_2D, argmax_index_image_2D);
+        [ ~, argmax_vertex_image_2D ] = max( index_image_crop ~= last_vertex_index + 1 , [ ], 3 );
 
         % number_of_pixels_2D = numel( argmax );
 
-%         linear_index_of_max_image_2D = zeros( size( argmax_vertex_image_2D ));
-% 
-%         linear_index_of_max_image_2D( : ) = ( argmax_vertex_image_2D( : ) - 1 ) * number_of_pixels_2D + ( 1 : number_of_pixels_2D )';
+        linear_index_of_max_image_2D = zeros( size( argmax_vertex_image_2D ));
+
+        linear_index_of_max_image_2D( : ) = ( argmax_vertex_image_2D( : ) - 1 ) * number_of_pixels_2D + ( 1 : number_of_pixels_2D )';
 
         % index2intensity has the first index dedicated to background and no indices dedicated to
         % vertices (most indies are dedicated to edges).  Subtracting off vertices and background
         % (unsigned integer type will round those to zero), then adding one so that the first real edge
         % points to the second entry in index2intensity.                        
-%         vertex_index_image_2D = index_image_crop( linear_index_of_max_image_2D ); 
-%         vertex_index_image_2D = - index_image_crop( linear_index_of_max_image_2D ); 
-
+        vertex_index_image_2D = index_image_crop( linear_index_of_max_image_2D ); 
+        
         % background coded as zero for vertex index image
-%         vertex_index_image_2D( vertex_index_image_2D >= last_vertex_index + 1 ) = 0 ;
-%         vertex_index_image_2D( vertex_index_image_2D < 0 ) = 0 ;
-                
+        vertex_index_image_2D( vertex_index_image_2D >= last_vertex_index + 1 ) = 0 ;
+        
 %         vertex_index_image_2D = vertex_index_image_2D + 1 ;
-
-%         centerlines_image_2D = max( centerlines_image_crop, [ ], 3 );
                 
-% %         index_image_2D = index_image_crop( linear_index_of_max_image_2D ) - ( last_vertex_index + 1 ) + 1 ;
-% %        index_image_2D = index_image_crop ;
-%         index_image_2D = index_image_crop( linear_index_of_max_image_2D ) ;
-%         
-%         index_image_2D( index_image_2D < 0 ) = 0 ;
-%         
-% %        index_image_2D = index_image_2D + 1 ;
-%         index_image_2D(index_image_2D == 0) = 1 ;
+        index_image_2D = index_image_crop( linear_index_of_max_image_2D ) - ( last_vertex_index + 1 ) + 1 ;
                 
         update_edge_intensities
 
@@ -1141,88 +931,45 @@ intensity_histo_figure.Visible = 'on';
 
     function update_edge_intensities
 
-%         % !!!! change this to an update edge color and make the color code the direction, or assign
-%         % random colors. expand IF to SWITCH with at least 4 cases !!!!!!!!!!!        
-%         if ( are_intensity_limits_binarized  )
-% 
-%             index2intensity = 128 * ones( size( mean_edge_energies ));
-%             
-%         else
-%             
-%             index2intensity = 128 * min( 1, (     energy_limits( 2 ) - mean_edge_energies )   ...
-%                                               / ( energy_limits( 2 ) - energy_limits( 1 )));
-% 
-%         end % IF binarized intensity
-        
-        switch edge_display_method
-            
-            case 1 % binary
-                
-                index2intensity = 128 * ones( size( mean_edge_energies ));
-                
-            case 2 % energy weighted
-                
-                index2intensity = 128 * min( 1, (     energy_limits( 2 ) - mean_edge_energies )   ...
-                                                  / ( energy_limits( 2 ) - energy_limits( 1 )));
-                
-            case 3 % random unique
-                
-                index2intensity = 128 * randperm( numel( mean_edge_energies )) / numel( mean_edge_energies );
-                
-            case 4
-                
-                
-        end
-
+        index2intensity = 128 * min( 1, (     energy_limits( 2 ) - mean_edge_energies )   ...
+                                          / ( energy_limits( 2 ) - energy_limits( 1 )));
         update_truth_image
 
     end % update_truth_image_intensity
 
     function update_truth_image
-        
+
         truth_image_uint8 =  uint8( index2intensity( index_image_2D )                     ...
-                                    .* double( displayed_edges( index_image_2D ) & ~ deleted_edges( index_image_2D ))       ...
+                                    .* double( displayed_edges( index_image_2D ))       ...
                                     .* cat( 3,         double( ~ true_edges( index_image_2D ))  ...
                                                + 0.3 * double(   true_edges( index_image_2D )), ...
                                                  0.3 * double( ~ true_edges( index_image_2D ))  ...
                                                + 0.7 * double(   true_edges( index_image_2D )), ...
                                                  0.3 * double( ~ true_edges( index_image_2D ))  ...
-                                               +       double(   true_edges( index_image_2D ))) ...
-                                    .* ~ centerlines_image_2D                                  ) ... % show edge wherever there is no centerline
-                          +  uint8( 128 *     vertex_color .* logical( vertex_index_image_2D ) .* ( index_image_2D == 1 ) .* ~ centerlines_image_2D )      ... % show vertex wherever there is no edge or centerline
-                          +  uint8( 128 * centerline_color .*           centerlines_image_2D  );
+                                               +       double(   true_edges( index_image_2D )))) ...
+                          +  uint8( 64 * vertex_color .* logical( vertex_index_image_2D ));
                                                             
 
     end % update_truth_image
-
-%     function update_centerlines_image
-%         
-%         centerlines_image = 
-%         
-%     end % update_centerlines_image
         %% raw                                      
     function update_original_image
 
         % crop 3D volume
-        original_image_crop = permute( original_image, dimension_order );
-
-        original_image_crop = original_image_crop( :, :, depth_range );
+        original_image_crop = original_image( :, :, z_range );
 
         % take a cube of the 3D image, max project in the third dimension and if requested, 
         [ original_image_crop_2D, argmax_original_image_2D ] = max( original_image_crop, [ ], 3 );
 
     %     if gaussian_depth
 
-%         % do Guassian weighting in the third dimension based on the z location of the argument of
-%         % the max projection
-%         minimum_intensity_in_crop = double( min( original_image_crop_2D( : )));
-% 
-%         original_image_crop_2D = double(   original_image_crop_2D                  ...
-%                                          - minimum_intensity_in_crop )             ...
-%                                .* gaussian_weight_in_z( argmax_original_image_2D ) ...
-%                                + minimum_intensity_in_crop ;
+        % do Guassian weighting in the third dimension based on the z location of the argument of
+        % the max projection
+        minimum_intensity_in_crop = double( min( original_image_crop_2D( : )));
 
-        original_image_crop_2D = double( original_image_crop_2D );
+        original_image_crop_2D = double(   original_image_crop_2D                  ...
+                                         - minimum_intensity_in_crop )             ...
+                               .* gaussian_weight_in_z( argmax_original_image_2D ) ...
+                               + minimum_intensity_in_crop ;
 
     %     end % IF gaussian_depth
 
@@ -1232,26 +979,26 @@ intensity_histo_figure.Visible = 'on';
 
     function update_original_image_intensity
 
-        % adjust (and possibly invert the contrast for the 2D original image and restrict intensity
-        % values to the integers 0 : 128
-        adjusted_original_image_2D                                                 ...
-                    = uint8( is_intensity_inverted * 128           ...
-                 + ( - 1 ) ^ is_intensity_inverted                 ...
-                 * min( 1,   ( original_image_crop_2D - intensity_limits( 1 )) ...
-                           / ( intensity_limits( 2 )  - intensity_limits( 1 )))...
-                 * 128                                                         );  
+        % adjust contrast for the 2D original image and 
+        % restrict intensity values to the integers 0 : 255
+        inverted_original_image_2D                                                    ...
+            = uint8( 128                                                              ...
+                     - min( 1, (     original_image_crop_2D - intensity_limits( 1 ))  ...
+                                 / ( intensity_limits( 2 )  - intensity_limits( 1 ))) ...
+                     * 128                                                            );  
+
         intensity_histo_axes.XLim = intensity_limits([ 1, 2 ]);                 
 
     end % update_original_image_contrast
         %% histogram                                
     function update_intesnity_histogram
 
-        y_range =   max(               1                     , round( FOV_limits( dimension_order( 1 ), 1 ))) ...
-                  : min( size_of_image( dimension_order( 1 )), round( FOV_limits( dimension_order( 1 ), 2 ))) ;
+        y_range =   max(      1            , round( y_limits( 1 ))) ...
+                  : min( size_of_image( 1 ), round( y_limits( 2 ))) ;
 
-        x_range =   max(               1                     , round( FOV_limits( dimension_order( 2 ), 1 ))) ...
-                  : min( size_of_image( dimension_order( 2 )), round( FOV_limits( dimension_order( 2 ), 2 ))) ;
-              
+        x_range =   max(      1            , round( x_limits( 1 ))) ...
+                  : min( size_of_image( 2 ), round( x_limits( 2 ))) ;
+
         histogram( original_image_crop_2D( y_range, x_range ), 'Parent', intensity_histo_axes, 'FaceColor', [ 0, 0, 0 ], 'EdgeColor', 'none' );
 
         try
@@ -1268,14 +1015,14 @@ intensity_histo_figure.Visible = 'on';
 
     function update_energy_histogram
 
-        histogram( mean_edge_energies( in_view_edges & displayed_edges & ~ deleted_edges ), 'Parent', energy_histo_axes, 'FaceColor', [0, 0, 0], 'EdgeColor', 'white' );
+        histogram( mean_edge_energies( in_view_edges & displayed_edges ), 'Parent', energy_histo_axes, 'FaceColor', [0, 0, 0], 'EdgeColor', 'white' );
         
         colormap( energy_histo_axes, colormap_mat );
         
         %COMMENT OUT TO SHOW ALL THRESHOLDS ON HISTOGRAM
-        adj_y_lim = 1 + [round((size_of_minimap-1)*FOV_limits( 1, 1)/size_of_image(1)) round((size_of_minimap-1)*FOV_limits( 1, 2)/size_of_image(1))];    
-        adj_x_lim = 1 + [round((size_of_minimap-1)*FOV_limits( 2, 1)/size_of_image(2)) round((size_of_minimap-1)*FOV_limits( 2, 2)/size_of_image(2))];
-        adj_z_lim = 1 + [round((size_of_minimap-1)*FOV_limits( 3, 1)/size_of_image(3)) round((size_of_minimap-1)*FOV_limits( 3, 2)/size_of_image(3))];
+        adj_y_lim = 1 + [round((size_of_minimap-1)*y_limits(1)/size_of_image(1)) round((size_of_minimap-1)*y_limits(2)/size_of_image(1))];    
+        adj_x_lim = 1 + [round((size_of_minimap-1)*x_limits(1)/size_of_image(2)) round((size_of_minimap-1)*x_limits(2)/size_of_image(2))];
+        adj_z_lim = 1 + [round((size_of_minimap-1)*z_limits(1)/size_of_image(3)) round((size_of_minimap-1)*z_limits(2)/size_of_image(3))];
 
         adj_z_lim( 1 ) = max( adj_z_lim( 1 ) - 1, 1   );
         adj_z_lim( 2 ) = min( adj_z_lim( 2 ) + 1, size_of_minimap );
@@ -1360,9 +1107,9 @@ intensity_histo_figure.Visible = 'on';
 
     function update_threshold_visualization_matricies
 
-        adj_y_lim = 1 + [round(99*FOV_limits( 1, 1)/size_of_image(1)) round(99*FOV_limits( 1, 2)/size_of_image(1))];    
-        adj_x_lim = 1 + [round(99*FOV_limits( 2, 1)/size_of_image(2)) round(99*FOV_limits( 2, 2)/size_of_image(2))];
-        adj_z_lim = 1 + [round(99*FOV_limits( 3, 1)/size_of_image(3)) round(99*FOV_limits( 3, 2)/size_of_image(3))];
+        adj_y_lim = 1 + [round(99*y_limits(1)/size_of_image(1)) round(99*y_limits(2)/size_of_image(1))];    
+        adj_x_lim = 1 + [round(99*x_limits(1)/size_of_image(2)) round(99*x_limits(2)/size_of_image(2))];
+        adj_z_lim = 1 + [round(99*z_limits(1)/size_of_image(3)) round(99*z_limits(2)/size_of_image(3))];
 
         adj_z_lim( 1 ) = max( adj_z_lim( 1 ) - 1, 1   );
         adj_z_lim( 2 ) = min( adj_z_lim( 2 ) + 1, size_of_minimap );
@@ -1380,9 +1127,9 @@ intensity_histo_figure.Visible = 'on';
     function update_minimap
 
         % speed saver by locking resolution to size_of_minimap computationally
-        adj_y_lim = 1 + [round((size_of_minimap-1)*FOV_limits( 1, 1)/size_of_image(1)) round((size_of_minimap-1)*FOV_limits( 1, 2)/size_of_image(1))];    
-        adj_x_lim = 1 + [round((size_of_minimap-1)*FOV_limits( 2, 1)/size_of_image(2)) round((size_of_minimap-1)*FOV_limits( 2, 2)/size_of_image(2))];
-        adj_z_lim = 1 + [round((size_of_minimap-1)*FOV_limits( 3, 1)/size_of_image(3)) round((size_of_minimap-1)*FOV_limits( 3, 2)/size_of_image(3))];
+        adj_y_lim = 1 + [round((size_of_minimap-1)*y_limits(1)/size_of_image(1)) round((size_of_minimap-1)*y_limits(2)/size_of_image(1))];    
+        adj_x_lim = 1 + [round((size_of_minimap-1)*x_limits(1)/size_of_image(2)) round((size_of_minimap-1)*x_limits(2)/size_of_image(2))];
+        adj_z_lim = 1 + [round((size_of_minimap-1)*z_limits(1)/size_of_image(3)) round((size_of_minimap-1)*z_limits(2)/size_of_image(3))];
 
         adj_z_lim( 1 ) = max( adj_z_lim( 1 ) - 1, 1   );
         adj_z_lim( 2 ) = min( adj_z_lim( 2 ) + 1, size_of_minimap );
@@ -1475,18 +1222,18 @@ intensity_histo_figure.Visible = 'on';
         yticks(minimap_axes,  round(-size_of_image(1)*microns_per_pixel(1))   :round(size_of_image(1)*microns_per_pixel(1)/4):0 );
         zticks(minimap_axes, fliplr( 0   :-round(size_of_image(3)*microns_per_pixel(3)/4):round(-size_of_image(3)*microns_per_pixel(3))));
 
-        set( x_start_label, 'String', num2str( round( FOV_limits( 2, 1 ))));
-        set( y_start_label, 'String', num2str( round( FOV_limits( 1, 1 ))));
-        set( z_start_label, 'String', num2str(   max( FOV_limits( 3, 1 ), 1 )));
+        set( x_start_label, 'String', num2str( round( x_limits( 1 ))));
+        set( y_start_label, 'String', num2str( round( y_limits( 1 ))));
+        set( z_start_label, 'String', num2str(   max( z_limits( 1 ), 1 )));
 
-        set( x_end_label, 'String', num2str( round( FOV_limits( 2, 2 ))));
-        set( y_end_label, 'String', num2str( round( FOV_limits( 1, 2 ))));
-        set( z_end_label, 'String', num2str(   min( FOV_limits( 3, 2 ), size_of_image( 3 ))));
+        set( x_end_label, 'String', num2str( round( x_limits( 2 ))));
+        set( y_end_label, 'String', num2str( round( y_limits( 2 ))));
+        set( z_end_label, 'String', num2str(   min( z_limits( 2 ), size_of_image( 3 ))));
 
-        set( x_total_label, 'String', num2str( round( FOV_limits( 2, 2 )) - round( FOV_limits( 2, 1 )) + 1 ));
-        set( y_total_label, 'String', num2str( round( FOV_limits( 1, 2 )) - round( FOV_limits( 1, 1 )) + 1 ));
-        set( z_total_label, 'String', num2str(   min( FOV_limits( 3, 2 ), size_of_image( 3 )) ...
-                                               - max( FOV_limits( 3, 1 ), 1 ) + 1             ));
+        set( x_total_label, 'String', num2str( round( x_limits( 2 )) - round( x_limits( 1 )) + 1 ));
+        set( y_total_label, 'String', num2str( round( y_limits( 2 )) - round( y_limits( 1 )) + 1 ));
+        set( z_total_label, 'String', num2str(   min( z_limits( 2 ), size_of_image( 3 )) ...
+                                               - max( z_limits( 1 ), 1 ) + 1             ));
 
     end % update_minimap
 
@@ -1495,33 +1242,22 @@ intensity_histo_figure.Visible = 'on';
         % update main display
 
         % compute limits from the z depth and thickness settings
-        FOV_limits( dimension_order( 3 ), 1 : 2 ) = [ depth_of_view - view_thickness, ...
-                                                      depth_of_view + view_thickness  ];    
+        z_limits = [ z_depth - z_thickness, ...
+                     z_depth + z_thickness  ];    
 
-        depth_range = max(               1                     , FOV_limits( dimension_order( 3 ), 1 )) ...
-                    : min( size_of_image( dimension_order( 3 )), FOV_limits( dimension_order( 3 ), 2 )) ;
-            
-        FOV_limits( dimension_order( 3 ), 1 : 2 ) = [ depth_range( 1 ), depth_range( end )];
-        
-%         view_thickness_slider_thickness = max( round(( view_thickness ) / 4 ), 1 );        
-        set(  depth_of_view_slider, 'SliderStep', [ 1 /        size_of_image( dimension_order( 3 )), ...
-                                  ( 2 * view_thickness + 1 ) / size_of_image( dimension_order( 3 )) ]);
-        set( view_thickness_slider, 'SliderStep', [ log( 1 / ( size_of_image( dimension_order( 3 ) ) - 1 ) * 3 / 2 + 1 ), ...
-                                                    log( 5 / ( size_of_image( dimension_order( 3 ) ) - 1 ) * 3 / 2 + 1 ) ]);
-
-        set(  depth_of_view_slider, 'Max',       size_of_image( dimension_order( 3 ))) ;
-        set( view_thickness_slider, 'Max', log(( size_of_image( dimension_order( 3 )) - 1 ) * 3 / 2 + 1 ));
+        z_range = max(      1            , z_limits( 1 )) ...
+                : min( size_of_image( 3 ), z_limits( 2 )) ;
 
         % find vertices in the view in z
-        in_view_edges_z = edge_centers( :, dimension_order( 3 )) >= depth_range(  1  ) ... 
-                        & edge_centers( :, dimension_order( 3 )) <= depth_range( end ) ;
+        in_view_edges_z = edge_centers( :, 3 ) >= z_range(  1  ) ... 
+                        & edge_centers( :, 3 ) <= z_range( end ) ;
 
         in_view_edges = in_view_edges_xy & in_view_edges_z ;    
 
-%         % create gaussian for psuedo focus weighting    
-%         gaussian_weight_in_z = exp( - ( depth_range - depth_of_view ) .^ 2 / view_thickness ^ 2 / 4 );
-% 
-%         if view_thickness == 0, gaussian_weight_in_z( 1 ) = 1 ; end
+        % create gaussian for psuedo focus weighting    
+        gaussian_weight_in_z = exp( - ( z_range - z_depth ) .^ 2 / z_thickness ^ 2 / 4 );
+
+        if z_thickness == 0, gaussian_weight_in_z( 1 ) = 1 ; end
 
         update_index_image_crop, update_original_image, update_overlay
 
@@ -1533,10 +1269,8 @@ intensity_histo_figure.Visible = 'on';
 
     function update_z_sliders
 
-        set( depth_of_view_slider,  'Value',      1 ) % to refresh the slider, for some reason it doesn't refresh        
-        
-        set(  depth_of_view_slider, 'Value',      depth_of_view       )
-        set( view_thickness_slider, 'Value', log( view_thickness + 1 ))
+        set( z_depth_slider,     'Value', z_depth     )
+        set( z_thickness_slider, 'Value', z_thickness )
 
     end % update_sliders
 
@@ -1551,27 +1285,19 @@ intensity_histo_figure.Visible = 'on';
 % 
 %         display_length = min( x_length, y_length );
 % 
-%         FOV_limits( dimension_order( 2 ),  = [display_axes.XLim(1) display_axes.XLim(1) + display_length];
-%         FOV_limits( dimension_order( 1 ),  = [display_axes.YLim(1) display_axes.YLim(1) + display_length];
+%         x_limits = [display_axes.XLim(1) display_axes.XLim(1) + display_length];
+%         y_limits = [display_axes.YLim(1) display_axes.YLim(1) + display_length];
 % 
-%         display_axes.XLim(2) = FOV_limits( dimension_order( 2 ), (2);
-%         display_axes.YLim(2) = FOV_limits( dimension_order( 1 ), (2);
+%         display_axes.XLim(2) = x_limits(2);
+%         display_axes.YLim(2) = y_limits(2);
 
-        FOV_limits( dimension_order( 2 ), 1 : 2 ) = [ display_axes.XLim( 1 ), display_axes.XLim( 2 )];
-        FOV_limits( dimension_order( 1 ), 1 : 2 ) = [ display_axes.YLim( 1 ), display_axes.YLim( 2 )];
-        
-        ylim([ 1, size_of_image( dimension_order( 1 ))])
-        xlim([ 1, size_of_image( dimension_order( 2 ))])
-        
-        zoom( 'reset' )
-        
-        ylim( FOV_limits( dimension_order( 1 ), : ))
-        xlim( FOV_limits( dimension_order( 2 ), : ))        
+        x_limits = [ display_axes.XLim( 1 ), display_axes.XLim( 2 )];
+        y_limits = [ display_axes.YLim( 1 ), display_axes.YLim( 2 )];
 
-        in_view_edges_xy = edge_centers( :, dimension_order( 1 )) >= FOV_limits( dimension_order( 1 ), 1 ) ...
-                         & edge_centers( :, dimension_order( 1 )) <= FOV_limits( dimension_order( 1 ), 2 ) ... 
-                         & edge_centers( :, dimension_order( 2 )) >= FOV_limits( dimension_order( 2 ), 1 ) ... 
-                         & edge_centers( :, dimension_order( 2 )) <= FOV_limits( dimension_order( 2 ), 2 ) ;
+        in_view_edges_xy = edge_centers( :, 1 ) >= y_limits( 1 ) ...
+                         & edge_centers( :, 1 ) <= y_limits( 2 ) ... 
+                         & edge_centers( :, 2 ) >= x_limits( 1 ) ... 
+                         & edge_centers( :, 2 ) <= x_limits( 2 ) ;
 
         in_view_edges = in_view_edges_xy & in_view_edges_z ;
 
@@ -1580,63 +1306,23 @@ intensity_histo_figure.Visible = 'on';
 
     end % update_xy_zoom
 
-    function change_depth_of_view( source, ~ )
+    function change_z_depth( source, ~ )
 
         % update the z depth from the slide value, then update the crop
-        depth_of_view = round( source.Value ); 
+        z_depth = round( source.Value ); 
 
         update_z_zoom
 
-    end % change_depth_of_view
+    end % change_z_depth
 
-    function change_view_thickness( source, ~ )
+    function change_z_thickness( source, ~ )
 
-        % update the z thickness from the slide values
-        view_thickness = round( exp( source.Value )) - 1 ; 
+        % update the z depth from the slide value
+        z_thickness = round( source.Value ); 
 
-        update_z_zoom, update_z_sliders
+        update_z_zoom
 
-    end % change_view_thickness
-
-    function projection_dimension_callback( ~, ~ )
-
-        view_thickness = FOV_limits( dimension_order( 3 ), 2 ) ...
-                       - FOV_limits( dimension_order( 3 ), 1 ) ;  
-
-        if view_thickness == 0
-
-            FOV_limits( dimension_order( 3 ), 1 ) = max(               1,                      FOV_limits( dimension_order( 3 ), 1 ) - 1 );
-            FOV_limits( dimension_order( 3 ), 2 ) = min( size_of_image( dimension_order( 3 )), FOV_limits( dimension_order( 3 ), 2 ) + 1 );
-
-        end
-
-        projection_dimension = mod( projection_dimension, 3 ) + 1 ;
-
-%         dimension_letters = { 'Y', 'X', 'Z' };
-
-%         dimension_order_matrix ...
-%             = [ 2, 3, 1 ; ...% y-projection
-%                 3, 1, 2 ; ...% x-projection
-%                 1, 2, 3   ]; % dimension permutation to project in different dimensions
-
-        dimension_letter = dimension_letters{ projection_dimension };
-
-        set( view_thickness_label, 'string', [ dimension_letter, '-Thickness' ]);
-        set(  depth_of_view_label, 'string', [ dimension_letter, '-Depth' ]);
-
-        dimension_order = dimension_order_matrix( projection_dimension, : );
-
-        number_of_pixels_2D = prod( size_of_image( dimension_order( 1 : 2 )));
-
-        view_thickness = round((   FOV_limits( dimension_order( 3 ), 2 ) ...
-                                 - FOV_limits( dimension_order( 3 ), 1 ) - 1 ) / 2 );
-
-        depth_of_view = round((   FOV_limits( dimension_order( 3 ), 2 )      ...
-                                + FOV_limits( dimension_order( 3 ), 1 )) / 2 );
-
-        update_overlay, update_z_zoom, update_xy_zoom, update_z_sliders
-
-    end
+    end % change_z_thickness
 
         %% utility functions                        
     %EDIT: added this function to globalize colormap
@@ -1682,9 +1368,9 @@ intensity_histo_figure.Visible = 'on';
         
 %         display_axes.Position = [display_figure_position(3)*0.075, display_figure_position(4)*0.15, min(display_figure_position(3)*0.85,display_figure_position(4)*0.85), min(display_figure_position(3)*0.85,display_figure_position(4)*0.85)];        
         
-        image_aspect_x_over_y = microns_per_pixel( dimension_order( 2 )) * ( FOV_limits( dimension_order( 2 ), 2 ) - FOV_limits( dimension_order( 2 ), 1 ) + 1 ) ...
-                              / microns_per_pixel( dimension_order( 1 )) / ( FOV_limits( dimension_order( 1 ), 2 ) - FOV_limits( dimension_order( 1 ), 1 ) + 1 );
-
+        image_aspect_x_over_y = ( x_limits( 2 ) - x_limits( 1 ) + 1 ) ...
+                              / ( y_limits( 2 ) - y_limits( 1 ) + 1 );
+                                  
         display_figure_position_min = min( display_figure_position( 3 ) / image_aspect_x_over_y, ...
                                            display_figure_position( 4 ));
         
@@ -1703,11 +1389,27 @@ intensity_histo_figure.Visible = 'on';
         %% automatic backup operation               
     function backup_curation
 
-        save([ path_to_saved_curation, '_backup_', num2str( backup_ordinate )], autosave_variables{ : });
+        save([ path_to_saved_curation, '_backup_', num2str( backup_ordinate )],           'true_edges', ...
+                                                                                       'deleted_edges', ...
+                                                                                     'displayed_edges', ...
+                                                                                            'x_limits', ...
+                                                                                            'y_limits', ...
+                                                                                             'z_depth', ...
+                                                                                         'z_thickness', ...
+                                                                               'edge_space_subscripts', ...
+                                                                               'edge_scale_subscripts', ...
+                                                                               'edge_energies'        , ...
+                                                                                    'intensity_limits', ...
+                                                                                       'energy_limits', ...
+                                                                               'number_of_added_edges', ...
+                                                                                    'energy_threshold', ...
+                                                                                    'xy_threshold_mat', ...
+                                                                                    'yz_threshold_mat', ...
+                                                                                    'xz_threshold_mat', ...
+                                                                                    'degrees_of_edges', ...
+                                                                                    'threshold_mat_3D') ; 
 
-        backup_ordinate = mod( backup_ordinate + 1, maximum_number_of_backups ); 
-        
-        is_active = true ;
+        backup_ordinate = mod( backup_ordinate + 1, maximum_number_of_backups );                                                                                  
 
     end % backup_curation
         %% undo and redo                            
@@ -1729,8 +1431,8 @@ intensity_histo_figure.Visible = 'on';
 
         end
 
-        refresh_and_paint_index_image
-        
+        refresh_and_paint_index_image, update_z_zoom, update_xy_zoom, update_z_sliders, update_minimap
+
     end % undo_curation
 
     function redo_curation( ~, ~ )
@@ -1749,7 +1451,7 @@ intensity_histo_figure.Visible = 'on';
 
         end
 
-        refresh_and_paint_index_image
+        refresh_and_paint_index_image, update_z_zoom, update_xy_zoom, update_z_sliders, update_minimap
 
     end % redo_curation
         %% save and load                            
@@ -1760,17 +1462,37 @@ intensity_histo_figure.Visible = 'on';
 
         if ~ isempty( listing_for_path_to_saved_curation )
 
-            answer = questdlg( 'Overwrite the previously saved curation?', 'Edge Curator' );
+            answer = questdlg( 'Overwrite the previously saved curation?' );
 
             switch answer, case { 'no', 'cancel', '' }, return, end
 
         end
-        
-        elapsed_time = elapsed_time + is_active * toc( tstart );
-        
-        tstart = tic ;
 
-        save( path_to_saved_curation, save_variables{ : });
+        save( path_to_saved_curation,         'true_edges', ...
+                                           'deleted_edges', ...
+                                         'displayed_edges', ...
+                                   'edge_space_subscripts', ...
+                                   'edge_scale_subscripts', ...
+                                   'edge_energies'        , ...
+                         ...            'path_to_energy_data', ...
+                         ...          'path_to_original_data', ...
+                                        'intensity_limits', ...
+                                           'energy_limits', ...
+                                   'number_of_added_edges', ...
+                                         'backup_ordinate', ...
+                                                'x_limits', ...
+                                                'y_limits', ...
+                                                 'z_depth', ...
+                                             'z_thickness', ...
+                                        'energy_threshold', ...
+                                        'xy_threshold_mat', ...
+                                        'yz_threshold_mat', ...
+                                        'xz_threshold_mat', ...
+                          ...             'last_vertex_index', ...
+                                         'degrees_of_edges', ...
+                                           'edges2vertices', ...
+                                'max_number_of_added_edges', ...
+                                         'threshold_mat_3D') ;
 
     end % store_curation
 
@@ -1780,25 +1502,22 @@ intensity_histo_figure.Visible = 'on';
 
         load( path_to_saved_curation )
 
-        display_axes.XLim = FOV_limits( dimension_order( 2 ), : );
-        display_axes.YLim = FOV_limits( dimension_order( 1 ), : );
+        display_axes.XLim = x_limits ;
+        display_axes.YLim = y_limits ;
 
         initialize_structuring_elements
 
-        refresh_and_paint_index_image
-        
-        tstart = tic ;        
+
+        refresh_and_paint_index_image, update_z_zoom, update_xy_zoom, update_z_sliders, update_minimap   
 
     end % load_curation
-
         %% sweeping and painting operations         
     function sweep_index_image
 
-        % move any in view edges, displayed false, and not yet deleted to the deleted category
-        to_be_deleted_edges = ~ true_edges & in_view_edges & displayed_edges & ~ deleted_edges ;
+        % move any in view vertices displayed false to the deleted category
+        to_be_deleted_edges = ~ true_edges & in_view_edges & displayed_edges ;
 
-        % If ever once displayed, the edge will remain in the displayed vector
-%             displayed_edges = ~ to_be_deleted_edges & displayed_edges ; 
+            displayed_edges = ~ to_be_deleted_edges & displayed_edges ; 
               deleted_edges =   to_be_deleted_edges |   deleted_edges ;
         
         refresh_and_paint_index_image
@@ -1851,13 +1570,8 @@ intensity_histo_figure.Visible = 'on';
         % select the vertices to attempt to paint in the following FOR loop
         to_be_painted_edges = find( displayed_edges & ~ deleted_edges )';
 
-        % % main display image initializtion, background is coded by last_vertex_index plus one
-        % index_image = 1 + last_vertex_index * ones( size_of_image, 'uint32' );
-
-        % main display image initializtion, background is coded by zero
-              index_image = zeros( size_of_image, 'int32'   );
-        
-        centerlines_image = zeros( size_of_image, 'logical' );
+        % Initialize index image to background. Background is coded by last_vertex_index plus one
+        index_image = 1 + last_vertex_index * ones( size_of_image, 'uint32' );
 
         render_edges_in_index_image( to_be_painted_edges )
 
@@ -1871,18 +1585,14 @@ intensity_histo_figure.Visible = 'on';
         % select the vertices to attempt to paint in the following FOR loop
         to_be_painted_edges = find( displayed_edges & ~ deleted_edges )';
 
-        % % main display image initializtion, background is coded by last_vertex_index plus one
-        % index_image = 1 + last_vertex_index * ones( size_of_image, 'uint32' );
-
-        % main display image initializtion, background is coded by zero
-        index_image = zeros( size_of_image, 'int32' );
+        % background is coded by last_vertex_index plus one
+        index_image = 1 + last_vertex_index * ones( size_of_image, 'uint32' );
 
         % loop through the vertices from best to worst (lowest to highest energy). Should be sorted before
         % this function.
         for edge_index = to_be_painted_edges 
             
-%             index_image( edge_structure_positions_linear_indexing{ edge_index }) = last_vertex_index + edge_index ;
-            index_image( edge_structure_positions_linear_indexing{ edge_index }) = edge_index ;
+            index_image( edge_structure_positions_linear_indexing{ edge_index }) = last_vertex_index + edge_index ;
             
         end % edge FOR
         
@@ -1890,8 +1600,7 @@ intensity_histo_figure.Visible = 'on';
         
         for vertex_index = to_be_painted_vertices
             
-%             index_image( vertex_structure_positions_linear_indexing{ vertex_index }) = vertex_index ;
-            index_image( vertex_structure_positions_linear_indexing{ vertex_index }) = - vertex_index ;
+            index_image( vertex_structure_positions_linear_indexing{ vertex_index }) = vertex_index ;
 
         end % vertex FOR
 
@@ -1900,98 +1609,68 @@ intensity_histo_figure.Visible = 'on';
 
     end % FUNCTION paint_from_scratch
 
+    %EDIT! WAS 02/24/19
+    function update_mean_edge_intensities
+        edges_to_iterate_over = find( ~ deleted_edges );
+        
+        for edge_index = edges_to_iterate_over
+            mean_edge_intensities(edge_index) = mean(original_image(edge_structure_positions_linear_indexing{ edge_index }));
+        end
+    end
+
     function render_edges_in_index_image( to_be_painted_edges )
         
         % loop through the vertices from best to worst (lowest to highest energy). Should be sorted
-        % before this function.        
+        % before this function.
         for edge_A_index = to_be_painted_edges 
             
-% SAM 7/22/19, removing volume exclusion            
-%             index_image_snapshot = index_image( cell2mat( vertex_structure_positions_linear_indexing( edges2vertices( edge_A_index, : )')));
-%             
-%             % this is slightly inconsistent with the choose_edges_V200 function where the vertices
-%             % for each edge are defined as the first and last positions of that edge
-% %             index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 1 )}) = edges2vertices( edge_A_index, 1 );
-% %             index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 2 )}) = edges2vertices( edge_A_index, 2 );            
-%             
-%             index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 1 )}) = - edges2vertices( edge_A_index, 1 );
-%             index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 2 )}) = - edges2vertices( edge_A_index, 2 );            
-% 
-%             index_image_at_edge = index_image( edge_structure_positions_linear_indexing{ edge_A_index });
-%                         
-% %             number_of_voxels_at_edge = numel( index_image_at_edge );
-% 
-%             % check if this volume has any previously painted vertices that don't belong to this edge
-% %             if all(   index_image_at_edge >  last_vertex_index                 ...
-% %                     | index_image_at_edge == edges2vertices( edge_A_index, 1 ) ...
-% %                     | index_image_at_edge == edges2vertices( edge_A_index, 2 ) )
-% 
-% % SAM 7/22/19, removing volume exclusion
-% %             if all(   index_image_at_edge >  0                                   ...
-% %                     | index_image_at_edge == - edges2vertices( edge_A_index, 1 ) ...
-% %                     | index_image_at_edge == - edges2vertices( edge_A_index, 2 ) )
-%                 
-%                 % identify the edge objects in conflict with this edge           
-%                 unique_indices_at_edge = unique( index_image_at_edge );
-%                 
-%                 % exclude the background and vertices
-% %                 unique_indices_at_edge ...
-% %                                 = unique_indices_at_edge( unique_indices_at_edge > last_vertex_index + 1 );
-%                 unique_indices_at_edge ...
-%                                 = unique_indices_at_edge( unique_indices_at_edge > 0 );
-%                                                            
-%                 % translate the index image convention to the edge listing convention
-% %                 edge_indices_at_edge = unique_indices_at_edge - last_vertex_index ;
-%                 edge_indices_at_edge = unique_indices_at_edge ;
-%                 
-%                 % isolate the edge_structures for those edges in conflict with this edge
-%                 edge_structures_at_edge = edge_structure_positions_linear_indexing( edge_indices_at_edge );
-%                 
-%                 % measure the number of voxels in each edge structure in conflict                
-% %                 edge_numels_at_edge = cellfun( @numel, edge_structures_at_edge );
-% 
-% %                 % total number of edge voxels considered is those that are in the edge but not
-% %                 % either of its vertices.                
-% %                 edge_numels_at_edge = cellfun( @( x, y, z ) setdiff( x, union( y, z )), edge_structures_at_edge );
-%                 
-%                 number_of_edge_conflicts = length( edge_indices_at_edge );
-%                 
-%                 edge_conflict_ordinates = 1 : number_of_edge_conflicts ;                
-%                 
-% %                 edge_conflict_percentages = zeros( number_of_edge_conflicts, 1 );
-%                 edge_conflict_percentages    = zeros( number_of_edge_conflicts + 1, 1 );
-%                 
-%                 number_of_conflicting_voxels = zeros( number_of_edge_conflicts + 1, 1 );
-% 
-%                 for edge_conflict_ordinate = edge_conflict_ordinates
-%                     
-%                     % total number of edge voxels considered is those that are in the edge but not
-%                     % either of its vertices.                
-%                     edge_numels_at_edge = numel( setdiff(                                                                    edge_structures_at_edge{ edge_conflict_ordinate },       ...
-%                                                           cell2mat( vertex_structure_positions_linear_indexing( edges2vertices( edge_indices_at_edge( edge_conflict_ordinate ), : )'))));                    
-%                     
-%                     % count the voxels at edge A that are in conflict with edge B
-%                     number_of_conflicting_voxels( edge_conflict_ordinate, 1 ) = sum( index_image_at_edge == unique_indices_at_edge( edge_conflict_ordinate ));
-%                     
-%                     % normalized by edge B
-%                     edge_conflict_percentages( edge_conflict_ordinate, 1 ) = number_of_conflicting_voxels( edge_conflict_ordinate, 1 ) / edge_numels_at_edge ;
-%                     
-% %                     % normalized by edge A
-% %                     edge_conflict_percentages( edge_conflict_ordinate, 2 ) = number_of_conflicting_voxels / number_of_voxels_at_edge ;
-%                     
-%                 end % edge B FOR
-%                 
-%                 edge_numels_at_edge_A = numel( setdiff(             edge_structure_positions_linear_indexing{                 edge_A_index },    ...
-%                                                         cell2mat( vertex_structure_positions_linear_indexing( edges2vertices( edge_A_index, : )'))));  
-%                 
-% %                 edge_conflict_percentages( edge_conflict_ordinate + 1 ) = sum( number_of_conflicting_voxels ) / number_of_voxels_at_edge ;
-%                 edge_conflict_percentages( edge_conflict_ordinate + 1 ) = sum( number_of_conflicting_voxels ) / edge_numels_at_edge_A ;
-% 
-%                 if max( edge_conflict_percentages( : )) > threshold_percent_overlap
-%                     
-%                      displayed_edges( edge_A_index ) = false ;
-%                     
-%                 else %  volume has no significant conflicts with other edges
+            index_image_at_edge = index_image( edge_structure_positions_linear_indexing{ edge_A_index });
+            
+            number_of_voxels_at_edge = numel( index_image_at_edge );
+
+            % check if this volume has any previously painted vertices that don't belong to this edge
+            if all(   index_image_at_edge >  last_vertex_index                 ...
+                    | index_image_at_edge == edges2vertices( edge_A_index, 1 ) ...
+                    | index_image_at_edge == edges2vertices( edge_A_index, 2 ) )
+                
+                % identify the edge objects in conflict with this edge           
+                unique_indices_at_edge = unique( index_image_at_edge );
+                
+                % exclude the background and vertices
+                unique_indices_at_edge ...
+                                = unique_indices_at_edge( unique_indices_at_edge > last_vertex_index + 1 );
+                                                           
+                % translate the index image convention to the edge listing convention
+                edge_indices_at_edge = unique_indices_at_edge - last_vertex_index ;
+                
+                % isolate the edge_structures for those edges in conflict with this edge
+                edge_structures_at_edge = edge_structure_positions_linear_indexing( edge_indices_at_edge );
+                
+                % measure the number of voxels in each edge structure in conflict
+                edge_numels_at_edge = cellfun( @numel, edge_structures_at_edge );
+                
+                number_of_edge_conflicts = length( edge_indices_at_edge );
+                
+                edge_conflict_ordinates = 1 : number_of_edge_conflicts ;                
+                
+                edge_conflict_percentages = zeros( number_of_edge_conflicts, 2 );
+                
+                for edge_conflict_ordinate = edge_conflict_ordinates
+                  
+                    % count the voxels at edge A that are in conflict with edge B
+                    number_of_conflicting_voxels = sum( index_image_at_edge == unique_indices_at_edge( edge_conflict_ordinate ));
+                    
+                    % normalized by edge B
+                    edge_conflict_percentages( edge_conflict_ordinate, 1 ) = number_of_conflicting_voxels / edge_numels_at_edge( edge_conflict_ordinate );
+                    
+                    % normalized by edge A
+                    edge_conflict_percentages( edge_conflict_ordinate, 2 ) = number_of_conflicting_voxels / number_of_voxels_at_edge ;
+                    
+                end % edge B FOR
+
+                if max( edge_conflict_percentages( : )) > threshold_percent_overlap
+                    
+                else %  volume has no significant conflicts with other edges
                     
                     % The reason for the IF/ELSE (instead of just IF):  This way, this line is also
                     % reached when edge_conflict_percentages is empty (no edge conflicts)
@@ -2000,42 +1679,27 @@ intensity_histo_figure.Visible = 'on';
 
                     % paint the edge volume first with its unique index in the index image to mark and then
                     % overwrite the beginning and ending vertices with their unique indices
-%                     index_image( edge_structure_positions_linear_indexing{ edge_A_index }) = last_vertex_index + edge_A_index ;
-                    index_image( edge_structure_positions_linear_indexing{ edge_A_index }) = edge_A_index ;
+                    index_image( edge_structure_positions_linear_indexing{ edge_A_index }) = last_vertex_index + edge_A_index ;
 
-        %             index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 1 )}) = edges2vertices( edge_A_index, 1 );
-        %             index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 2 )}) = edges2vertices( edge_A_index, 2 );            
-
-                    index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 1 )}) = - int32(edges2vertices( edge_A_index, 1 ));
-                    index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 2 )}) = - int32(edges2vertices( edge_A_index, 2 ));            
+                    index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 1 )}) = edges2vertices( edge_A_index, 1 );
+                    index_image( vertex_structure_positions_linear_indexing{ edges2vertices( edge_A_index, 2 )}) = edges2vertices( edge_A_index, 2 );
                     
-                    centerlines_image( edge_positions_linear_indices{ edge_A_index }) = true ;
-                    
-%                 end % IF volume has significant conflicts with other edges                
-%             else % volume conflicts with at least one vertex of a higher energy edge
-%                 
-%                 displayed_edges( edge_A_index ) = false ;
-%                 
-%                 % put the image back how it was                
-%                 index_image( cell2mat( vertex_structure_positions_linear_indexing( edges2vertices( edge_A_index, : )'))) = index_image_snapshot ;
-%                 
-%             end % IF volume is blank canvas (no conflicts with vertices of a higher energy edge)
+                end % IF volume has significant conflicts with other edges                
+            end % IF volume is blank canvas (no conflicts with any higher energy vertices)
         end % edge A FOR
     end % FUNCTION render_edges_in_index_image
 
     function paint_new_edge( to_be_painted_edge_index )
-        
-        space_subscript_int64 = int64( edge_space_subscripts{ to_be_painted_edge_index });
 
-        edge_positions_linear_index =   space_subscript_int64( :, 1 )                                               ...
-                                    + ( space_subscript_int64( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
-                                    + ( space_subscript_int64( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
+       space_subscript_int32 = int32( edge_space_subscripts{ to_be_painted_edge_index });
+
+       edge_positions_linear_index =   space_subscript_int32( :, 1 )                                               ...
+                                   + ( space_subscript_int32( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
+                                   + ( space_subscript_int32( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
 
         edge_positions_linear_index_cell = num2cell( edge_positions_linear_index );
 
-        edge_positions_linear_indices{ to_be_painted_edge_index } = edge_positions_linear_index ;
-        
-        edge_structuring_element_linear_indexing = edge_element_linear_indexing_templates( uint8( edge_scale_subscripts{ to_be_painted_edge_index }));
+        edge_structuring_element_linear_indexing = structuring_element_linear_indexing_templates( edge_scale_subscripts{ to_be_painted_edge_index });
 
         sphere_structure_positions_linear_indexing_for_edge = cellfun( @plus, edge_structuring_element_linear_indexing, ...
                                                                                       edge_positions_linear_index_cell, ...
@@ -2052,24 +1716,13 @@ intensity_histo_figure.Visible = 'on';
         % volume exclusion for edge body: need to add the percentage based volume exclusion for the
         % edge bodies (not just their vertices).
         
-        % zero out the vertices previous to checking the edge volume
-%         index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 1 )}) = last_vertex_index + 1 ;
-%         index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 2 )}) = last_vertex_index + 1  ;        
-        index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 1 )}) = 0 ;
-        index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 2 )}) = 0 ;        
         
         % look at the edge volume to be painted and see if there are vertices in the way to delete
-%         indices_in_edge_volume = unique( index_image( edge_structure_positions_linear_indexing{ to_be_painted_edge_index }))';
-        indices_in_edge_volume = - unique( index_image( edge_structure_positions_linear_indexing{ to_be_painted_edge_index }))';
+        indices_in_edge_volume = unique( index_image( edge_structure_positions_linear_indexing{ to_be_painted_edge_index }))';
 
-%         to_be_deleted_vertex_indices = indices_in_edge_volume(    indices_in_edge_volume <= last_vertex_index                             ...
-%                                                                &  indices_in_edge_volume ~= edges2vertices( to_be_painted_edge_index, 1 ) ...
-%                                                                &  indices_in_edge_volume ~= edges2vertices( to_be_painted_edge_index, 2 ));
-        to_be_deleted_vertex_indices = indices_in_edge_volume(    indices_in_edge_volume >  0                                               ...
+        to_be_deleted_vertex_indices = indices_in_edge_volume(    indices_in_edge_volume <= last_vertex_index                             ...
                                                                &  indices_in_edge_volume ~= edges2vertices( to_be_painted_edge_index, 1 ) ...
                                                                &  indices_in_edge_volume ~= edges2vertices( to_be_painted_edge_index, 2 ));
-                                                           
-        to_be_deleted_vertex_indices = [ ]; % SAM 7/22/19, removing volume exclusion
 
         % once vertices are detected in the edge volume (that do not belong to this edge), erase any
         % edges corresponding to those vertices
@@ -2081,30 +1734,21 @@ intensity_histo_figure.Visible = 'on';
             % last_vertex_index plus one)
             for edge_index = to_be_deleted_edge_indices
 
-%                 index_image( edge_structure_positions_linear_indexing{ edge_index }) = last_vertex_index + 1 ;
-                      index_image( edge_structure_positions_linear_indexing{ edge_index }) = 0 ;
+                index_image( edge_structure_positions_linear_indexing{ edge_index }) = last_vertex_index + 1 ;
                 
-                centerlines_image(             edge_positions_linear_indices{ edge_index }) = false ;
-                
-                  deleted_edges( edge_index ) = true  ;
-                displayed_edges( edge_index ) = false ;
+                  deleted_edges( edge_index ) = true  ; 
+                displayed_edges( edge_index ) = false ;                 
 
             end % FOR deleted edge indices
         end % FOR deleted vertex indices
 
         % paint the edge volume first with its unique index in the index image to mark and then
         % overwrite the beginning and ending vertices with their unique indices
-%         index_image( edge_structure_positions_linear_indexing{ to_be_painted_edge_index }) = last_vertex_index + to_be_painted_edge_index ;
-%         
-%         index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 1 )}) = edges2vertices( to_be_painted_edge_index, 1 );
-%         index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 2 )}) = edges2vertices( to_be_painted_edge_index, 2 );
-        index_image( edge_structure_positions_linear_indexing{ to_be_painted_edge_index }) = to_be_painted_edge_index ;
+        index_image( edge_structure_positions_linear_indexing{ to_be_painted_edge_index }) = last_vertex_index + to_be_painted_edge_index ;
         
-        index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 1 )}) = - edges2vertices( to_be_painted_edge_index, 1 );
-        index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 2 )}) = - edges2vertices( to_be_painted_edge_index, 2 );
+        index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 1 )}) = edges2vertices( to_be_painted_edge_index, 1 );
+        index_image( vertex_structure_positions_linear_indexing{ edges2vertices( to_be_painted_edge_index, 2 )}) = edges2vertices( to_be_painted_edge_index, 2 );
 
-        centerlines_image( edge_positions_linear_indices{ to_be_painted_edge_index }) = true ;
-        
     end % paint_new_edge
         %% sweeping and painting                    
     function sweep_callback( ~, ~ )
@@ -2144,8 +1788,8 @@ intensity_histo_figure.Visible = 'on';
         [ x_click, y_click ] = ginput( 1 );
 
         % Get the edge index from the position of the mouse click. 
-        if    y_click > FOV_limits( dimension_order( 1 ), 1 ) && y_click < FOV_limits( dimension_order( 1 ), 2 ) ...
-           && x_click > FOV_limits( dimension_order( 2 ), 1 ) && x_click < FOV_limits( dimension_order( 2 ), 2 )
+        if    y_click > y_limits( 1 ) && y_click < y_limits( 2 ) ...
+           && x_click > x_limits( 1 ) && x_click < x_limits( 2 )
 
             % This will fail if user clicks outside the image. Exit the recursive function in that case.
             try edge_index = index_image_2D( round( y_click ), round( x_click )); catch, return, end
@@ -2160,23 +1804,7 @@ intensity_histo_figure.Visible = 'on';
         backup_curation
 
         true_edges( edge_index ) = ~ true_edges( edge_index );
-        
-%         % section added SAM 9/4/20
-%         edge_space_subscripts_temp = edge_space_subscripts ;
-%         
-%         edge_space_subscripts_temp{ ~ true_edges } = [ ];
-%                                 
-%         % !!! will empty edges pass thru nicely?
-%         chosen_edge_indices = clean_edges_orphans( edge_space_subscripts_temp, size_of_image, vertex_space_subscripts );
-% 
-%         rejected_edge_indices = setdif( 1 : length( edge_space_subscripts_temp ), chosen_edge_indices );
-%         
-%         true_edges( rejected_edge_indices ) = false ;
-%         
-%         % end: section added SAM 9/4/20
 
-        counter_toggle = counter_toggle + 1 ;        
-        
         update_truth_image, update_overlay
 
         % recall this function to select anew
@@ -2195,13 +1823,13 @@ intensity_histo_figure.Visible = 'on';
 %     %     [ x_click, y_click ] = ginput( 1 );
 %     % 
 %     %     % Get the vertex index from the position of the mouse click. 
-%     %     if    y_click > FOV_limits( dimension_order( 1 ), ( 1 ) && y_click < FOV_limits( dimension_order( 1 ), ( 2 ) ...
-%     %        && x_click > FOV_limits( dimension_order( 2 ), ( 1 ) && x_click < FOV_limits( dimension_order( 2 ), ( 2 )
+%     %     if    y_click > y_limits( 1 ) && y_click < y_limits( 2 ) ...
+%     %        && x_click > x_limits( 1 ) && x_click < x_limits( 2 )
 %     %    
 %     %         backup_curation
 %     %    
-%     %         z_start = max( FOV_limits( dimension_order( 3 ), ( 1 ), 1 ) ;
-%     %         z_end   = min( FOV_limits( dimension_order( 3 ), ( 2 ), size_of_image( dimension_order( 3 ) ));
+%     %         z_start = max( z_limits( 1 ), 1 ) ;
+%     %         z_end   = min( z_limits( 2 ), size_of_image( 3 ));
 %     %         z_count = z_end - z_start + 1 ;
 %     %    
 %     %         added_vertex_xy_subscripts = [ round( y_click ), round( x_click )];
@@ -2255,20 +1883,18 @@ intensity_histo_figure.Visible = 'on';
         [ x_click, y_click ] = ginput( 1 );
 
         % Get the vertex index from the position of the mouse click. 
-        if    y_click > FOV_limits( dimension_order( 1 ), 1 ) && y_click < FOV_limits( dimension_order( 1 ), 2 ) ...
-           && x_click > FOV_limits( dimension_order( 2 ), 1 ) && x_click < FOV_limits( dimension_order( 2 ), 2 )
+        if    y_click > y_limits( 1 ) && y_click < y_limits( 2 ) ...
+           && x_click > x_limits( 1 ) && x_click < x_limits( 2 )
 
             % This will fail if user clicks outside the image. Exit the recursive function in that case.
             try vertex_index_1 = vertex_index_image_2D( round( y_click ), round( x_click )); catch, return, end
-            
-            % !!!! put the Stopper here to navigate in the volume between vertex selections
             
             % prompt user to click the image
             [ x_click, y_click ] = ginput( 1 );         
             
             % Get the vertex index from the position of the mouse click. 
-            if    y_click > FOV_limits( dimension_order( 1 ), 1 ) && y_click < FOV_limits( dimension_order( 1 ), 2 ) ...
-               && x_click > FOV_limits( dimension_order( 2 ), 1 ) && x_click < FOV_limits( dimension_order( 2 ), 2 )
+            if    y_click > y_limits( 1 ) && y_click < y_limits( 2 ) ...
+               && x_click > x_limits( 1 ) && x_click < x_limits( 2 )
 
                 % This will fail if user clicks outside the image. Exit the recursive function in that case.
                 try vertex_index_2 = vertex_index_image_2D( round( y_click ), round( x_click )); catch, return, end
@@ -2288,196 +1914,49 @@ intensity_histo_figure.Visible = 'on';
 
         end % IF click inside current field of view
 
-        % check if user selected two vertices
-        if vertex_index_1 > 0 && vertex_index_2 > 0
+        backup_curation
+
+        voxel_aspect_ratio = microns_per_pixel ./ min( microns_per_pixel );
         
-            backup_curation
+        new_edge_subscripts = [ double( vertex_space_subscripts( vertex_index_1, 1 : 3 )) .* voxel_aspect_ratio, double( vertex_scale_subscripts( vertex_index_1 )); ...
+                                double( vertex_space_subscripts( vertex_index_2, 1 : 3 )) .* voxel_aspect_ratio, double( vertex_scale_subscripts( vertex_index_2 ))  ];
 
-            new_edge_subscripts = [ double( vertex_space_subscripts( vertex_index_1, 1 : 3 )), vertex_scale_subscripts( vertex_index_1 ); ...
-                                    double( vertex_space_subscripts( vertex_index_2, 1 : 3 )), vertex_scale_subscripts( vertex_index_2 )  ];
-
-            cumulative_lengths = [ 0; sum( max( abs((   new_edge_subscripts( 2, 1 : 3 )            ...
-                                                      - new_edge_subscripts( 1, 1 : 3 ))), [ ], 2 ))];
-
-            % interpolate the vector positions and size indices along the edge index, with even spacing
-            % along units of voxel lengths (anisotropically)
-            new_edge_subscripts_interpolated                               ...
-                    = interp1( cumulative_lengths,                         ...
-                               new_edge_subscripts,                        ...
-                               linspace( 0, cumulative_lengths( 2 ),       ...
-                                            cumulative_lengths( 2 ) + 1 )' );
-
-            to_be_painted_edge = number_of_added_edges + 2 ;
-
-            last_vertex_index = max( edges2vertices( : ));
-
-            % erase any edge that already connects these two vertices (must check A->B and B->A)
-            old_adjacency_indices = double( edges2vertices( :, 1 )) + double(last_vertex_index * ( edges2vertices( :, 2 ) - 1 ));
-
-            new_adjacency_index   =  [  double(  vertex_index_1  )  + last_vertex_index * ( double(    vertex_index_2     - 1 )), ...
-                                        double(  vertex_index_2  )  + last_vertex_index * ( double(    vertex_index_1     - 1 ))  ];
-
-            is_edge_redundant = old_adjacency_indices == new_adjacency_index( 1 ) | old_adjacency_indices == new_adjacency_index( 2 );
-
-              deleted_edges( is_edge_redundant ) = true  ;
-            displayed_edges( is_edge_redundant ) = false ; % this edge likely was unnoticed by curator
-
-            % record the new edge in the edge lists
-                edges2vertices( to_be_painted_edge, : ) = [ vertex_index_1, vertex_index_2 ];
-
-            mean_edge_energies( to_be_painted_edge, : ) = -Inf ;
-
-    % % for the energy convention, - stdev / mean, the best response is 0.
-    %         mean_edge_energies( to_be_painted_edge, : ) = 0 ;       
-
-         edge_space_subscripts{ to_be_painted_edge } = new_edge_subscripts_interpolated( :, 1 : 3 );
-         edge_scale_subscripts{ to_be_painted_edge } = new_edge_subscripts_interpolated( :,   4   );
-
-                 edge_energies{ to_be_painted_edge } = - Inf * ones( size( new_edge_subscripts_interpolated( :, 1 )));
-    %           degrees_of_edges( to_be_painted_edge ) =       uint16( size( new_edge_subscripts_interpolated, 1     ));
-
-            number_of_added_edges = number_of_added_edges + 1 ;
-
-            paint_new_edge( to_be_painted_edge );
-
-              deleted_edges( to_be_painted_edge ) = false ;
-            displayed_edges( to_be_painted_edge ) = true  ;
-
-            counter_add_edge = counter_add_edge + 1 ;
-            
-        end
-
+        cumulative_lengths = [                                                      0 ; ...
+                               sum((   new_edge_subscripts( 2, 1 : 3 )                  ...
+                                     - new_edge_subscripts( 1, 1 : 3 )) .^ 2 ) .^ 0.5   ];
+                                 
+        % interpolate the vector positions and size indices along the edge index, round to closest
+        % subscripts, then remove redundant vectors with unique function
+        new_edge_subscripts = unique( round( interp1( cumulative_lengths,                      ...
+                                                      new_edge_subscripts,                     ...
+                                                      ( 0 : 1 : cumulative_lengths( 2 ))' )    ...
+                                             ./ [ voxel_aspect_ratio, 1 ]                   ), ...
+                                      'rows'                                                   );
+                            
+        to_be_painted_edge = number_of_added_edges + 2 ;
+                                  
+            edges2vertices( to_be_painted_edge, : ) = [ vertex_index_1, vertex_index_2 ];
+%         mean_edge_energies( to_be_painted_edge, : ) = -Inf ;
+        mean_edge_energies( to_be_painted_edge, : ) = 0 ;        
+     edge_space_subscripts{ to_be_painted_edge } = new_edge_subscripts( :, 1 : 3 );
+     edge_scale_subscripts{ to_be_painted_edge } = new_edge_subscripts( :,   4   );     
+             edge_energies{ to_be_painted_edge } = - Inf * ones( size( new_edge_subscripts( :, 1 )));
+        
+        number_of_added_edges = number_of_added_edges + 1 ;
+        
+        paint_new_edge( to_be_painted_edge );
+        
+          deleted_edges( to_be_painted_edge ) = false ;
+        displayed_edges( to_be_painted_edge ) = true  ;
+        
         refresh_and_paint_index_image
-
-        add_button.Enable = 'on';         
-
+        
+        add_button.Enable = 'on';                
+        
     end % edge_placer (simple)
-
-        %% vertex placer
-    function add_vertex_callback( ~, ~ )
-        
-        refresh_index_image_all_vertices
-
-        % prompt user to click the image
-        [ x_click, y_click ] = ginput( 1 );
-
-        % Get the vertex index from the position of the mouse click. 
-        if    y_click > FOV_limits( dimension_order( 1 ), 1 ) && y_click < FOV_limits( dimension_order( 1 ), 2 ) ...
-           && x_click > FOV_limits( dimension_order( 2 ), 1 ) && x_click < FOV_limits( dimension_order( 2 ), 2 )
-       
-            z_start = max( FOV_limits( dimension_order( 3 ), 1 ), 1 ) ;
-            z_end   = min( FOV_limits( dimension_order( 3 ), 2 ), size_of_image( dimension_order( 3 ) ));
-            z_count = z_end - z_start + 1 ;
-
-            added_vertex_xy_subscripts = [ round( y_click ), round( x_click )];
-
-            starts([ dimension_order, 4 ]) = [ added_vertex_xy_subscripts, z_start, 1 ];
-            counts([ dimension_order, 4 ]) = [ 1, 1, z_count, 2 ];
-                        
-            vertex_energy_and_scale_index = h52mat( path_to_energy_data, starts, counts ); 
-
-            [ added_vertex_energy, added_vertex_z_relative ]                                            ...
-                                                      = min( vertex_energy_and_scale_index( z_count + 1 : end ));
-
-            added_vertex_scale_index = vertex_energy_and_scale_index( added_vertex_z_relative );
-
-            added_vertex_z_subscript = added_vertex_z_relative + z_start - 1 ;
-            
-            to_be_painted_subscripts( dimension_order ) = uint16([ added_vertex_xy_subscripts, ...
-                                                                   added_vertex_z_subscript    ]);
-
-%            to_be_painted_index = number_of_added_vertices + 2 ;
-            to_be_painted_index = numel(vertex_scale_subscripts) + 1;
-
-            radius_in_pixels                                                                              ...
-                    = uint16( round(    lumen_radius_in_microns_range( round( added_vertex_scale_index )) ...
-                                     ./ microns_per_pixel                                                 ));
-
-            % predict which vertices will overlap the outside of the image
-            subscript_max = to_be_painted_subscripts + radius_in_pixels ;
-            subscript_min = to_be_painted_subscripts - radius_in_pixels ;
-
-            y_is_over  = subscript_max( :, 1 ) > size_of_image( 1 );
-            x_is_over  = subscript_max( :, 2 ) > size_of_image( 2 );
-            z_is_over  = subscript_max( :, 3 ) > size_of_image( 3 );
-
-            y_is_under = subscript_min( :, 1 ) <         1         ;
-            x_is_under = subscript_min( :, 2 ) <         1         ;
-            z_is_under = subscript_min( :, 3 ) <         1         ;
-
-            % don't include vertices that touch the image boundary
-            excluded_vertex_flag = y_is_over | x_is_over | z_is_over | y_is_under | x_is_under | z_is_under ;
-
-            if excluded_vertex_flag
-
-                warning('Attempted to add object across the image boundary.')
-
-            else % vertex will not cross the image boundary
-
-                backup_curation
-
-%                vertex_energies(         to_be_painted_index    ) = added_vertex_energy      ;
-                vertex_scale_subscripts( to_be_painted_index    ) = added_vertex_scale_index ;
-                vertex_space_subscripts( to_be_painted_index, : ) = to_be_painted_subscripts ;                 
-                
-%                paint_new_vertex( to_be_painted_index )
-
-                space_subscript_int64 = int64( vertex_space_subscripts( to_be_painted_index, : ));
-
-                position_linear_index =   space_subscript_int64( :, 1 )                                               ...
-                                      + ( space_subscript_int64( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
-                                      + ( space_subscript_int64( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
-
-                structuring_element_linear_indexing = vertex_element_linear_indexing_templates{ round( vertex_scale_subscripts( to_be_painted_index ))};
-                
-                vertex_structure_positions_linear_indexing{ to_be_painted_index } = structuring_element_linear_indexing + position_linear_index ;
-                                                                                         
-                index_image( vertex_structure_positions_linear_indexing{ to_be_painted_index }) = - to_be_painted_index ;
-
-                counter_add_vertex = counter_add_vertex + 1 ;                
-                
-                update_z_zoom, update_xy_zoom, update_z_sliders
-                update_edge_intensities, update_energy_histogram, update_minimap
-                
-%                  deleted_vertices( to_be_painted_index ) = false ;
-%                displayed_vertices( to_be_painted_index ) = true ;
-
-%                update_vertex_intensities
-
-%                number_of_added_vertices = number_of_added_vertices + 1 ;          
-
-%                 update_index_image_2D_crop, update_overlay
-                %update_energy_histogram
-%                 refresh_index_image_all_vertices
-                
-                % recall this function to select anew
-                add_vertex_callback                        
-
-            end % vertex would cross the image boundary
-        end % IF click inside current field of view
-        refresh_and_paint_index_image
-    end % vertex_placer
 
         %% intensity histogram                      
 
-    function invert_callback( ~, ~) 
-
-        is_intensity_inverted = ~ is_intensity_inverted;
-
-        if is_intensity_inverted
-
-            invert_button.String = 'Inverted' ;
-
-        else
-
-            invert_button.String = 'Original' ;
-
-        end
-
-        update_original_image_intensity, update_overlay
-
-    end %invert_callback
-    
     function change_intensity_min( source, ~ )
 
         intensity_limits( 1 ) = str2num( source.String );
@@ -2493,46 +1972,17 @@ intensity_histo_figure.Visible = 'on';
         update_original_image_intensity, update_overlay
 
     end % change_intensity_limits
-        %% energy histogram      
+        %% energy histogram
+        
+    %EDIT! WAS 02/24/19
     function binarize_callback( ~, ~) 
         
-%         are_intensity_limits_binarized = ~ are_intensity_limits_binarized;
-%         
-%         if are_intensity_limits_binarized
-%             
-%             binarize_button.String = 'Binary' ;
-%             
-%         else
-%             
-%             binarize_button.String = 'Graded' ;
-%             
-%         end
-
-        edge_display_method = mod( edge_display_method, 3 ) + 1 ;
+        intensity_limits_binarized = ~intensity_limits_binarized;
         
-        switch edge_display_method
-            
-            case 1
-                
-                binarize_button.String = 'Binary' ;
-                
-                
-            case 2
-                
-                binarize_button.String = 'Graded' ;
-                
-            case 3
-
-                binarize_button.String = 'Unique' ;
-                
-            case 4
-                
-        end
-         
-        update_edge_intensities, update_overlay
+        update_overlay();
         
-    end %binarize_callback	
-	
+    end %binarize_callback
+        
     function change_energy_min( source, ~ )
 
         energy_limits( 1 ) = str2num( source.String );
@@ -2555,33 +2005,23 @@ intensity_histo_figure.Visible = 'on';
 
     function apply_energy_threshold( source, ~ )
 
-        backup_curation        
+%         if str2num( source.String ) <= 0
 
-        energy_threshold = max( str2num( source.String ), min( mean_edge_energies ));
+            backup_curation        
 
-        true_edges( in_view_edges ) = mean_edge_energies( in_view_edges ) ...
-                                    < energy_threshold                    ;
-                    
-%         % section added SAM 9/4/20
-%         edge_space_subscripts_temp = edge_space_subscripts ;
-%         
-%         edge_space_subscripts_temp{ ~ true_edges } = [ ];
-%                                 
-%         % !!! will empty edges pass thru nicely?
-%         chosen_edge_indices = clean_edges_orphans( edge_space_subscripts_temp, size_of_image, vertex_space_subscripts );
-% 
-%         rejected_edge_indices = setdif( 1 : length( edge_space_subscripts_temp ), chosen_edge_indices );
-%         
-%         true_edges( rejected_edge_indices ) = false ;
-%         
-%         % end: section added SAM 9/4/20
-        
-        update_threshold_visualization_matricies, update_minimap
-        update_truth_image, update_overlay, update_energy_histogram
+            energy_threshold = max( str2num( source.String ), min( mean_edge_energies ));
 
-        counter_threshold = counter_threshold + 1 ;        
-        
-        if energy_threshold > 0 || imag( energy_threshold ) ~= 0, warning( 'energy threshold should be non-positive real number' ), end
+            true_edges( in_view_edges ) = mean_edge_energies( in_view_edges ) ...
+                                        < energy_threshold                    ;
+
+            update_threshold_visualization_matricies, update_minimap
+            update_truth_image, update_overlay, update_energy_histogram
+
+%         else
+
+            warning( 'energy threshold should be non-positive real number' )
+
+%         end
 
         if energy_limits( 2 ) <= energy_threshold, warning('The energy threshold should be below the max'), end
 
@@ -2592,25 +2032,7 @@ intensity_histo_figure.Visible = 'on';
 %% Finalizations                                
 
 % wait for user to play on the curator
-time_to_check_activity = 60 ; % seconds
-
-is_curating = true ;
-
-while is_curating
-
-    is_active = false ;
-    
-    uiwait( display_figure, time_to_check_activity )
-    
-    elapsed_time = elapsed_time + is_active * toc( tstart );
-    
-    tstart = tic ;
-    
-    is_curating = ishandle(display_figure) && strcmp(get(display_figure, 'type'), 'figure');
-
-end
-
-is_active = false ; % time spent after closing curator is not active time (timer was just reset)
+uiwait( display_figure )
 
 store_curation
 

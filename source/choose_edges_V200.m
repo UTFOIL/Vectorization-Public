@@ -167,7 +167,7 @@ for scale_subscript = scale_subscript_range
     
     [ edge_element_linear_indexing{ scale_subscript },                                 ...
       edge_element_subscripts{      scale_subscript }, ]                               ...
-        = construct_structuring_element_V190( radii_in_pixels_at_scale, size_of_image  );
+        = construct_structuring_element( radii_in_pixels_at_scale, size_of_image  );
  
 end % constructing relative elements FOR scale
 
@@ -183,7 +183,7 @@ for scale_subscript = scale_subscript_range
     
     [ vertex_element_linear_indexing{ scale_subscript },                               ...
       vertex_element_subscripts{      scale_subscript }, ]                             ...
-        = construct_structuring_element_V190( radii_in_pixels_at_scale, size_of_image  );
+            = construct_structuring_element( radii_in_pixels_at_scale, size_of_image  );
  
 end % constructing relative elements FOR scale
 

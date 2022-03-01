@@ -32,28 +32,40 @@ while searching_for_orphans
     
     edge_locations = cell2mat( edge_locations_cell );
     
-    [ ~, unique_edge_location_indices ] = unique( edge_locations );
-
-    % throw out all of the unique ones and save the repeats
-    edge_location_repeats = edge_locations ; edge_location_repeats( unique_edge_location_indices ) = [ ];
+%     % unstable unique, because all these get deleted anyway
+%     [ ~, unique_edge_location_indices ] = unique( edge_locations );
+% 
+%     % throw out all of the unique ones and save the repeats
+%     edge_location_repeats = edge_locations ; edge_location_repeats( unique_edge_location_indices ) = [ ];
     
     % redefine the edge look up table because the number of edge list numbering has changed
     number_of_edges       = length( edge_locations_cell );    
     
     edge_index_range_cell = num2cell( 1 : number_of_edges )';
     
-    edge_index_LUT      = cellfun( @( x, y ) x * ones( size( y )), edge_index_range_cell, edge_locations_cell, 'UniformOutput', false  );    
+    edge_index_LUT = cellfun( @( x, y ) x * ones( size( y )), edge_index_range_cell,      edge_locations_cell, 'UniformOutput', false  );    
     
-    exterior_edge_locations                 = cell2mat( cellfun( @( x ) x( [ 1, end  ] ), edge_locations_cell, 'UniformOutput', false ));
-    exterior_edge_location_index2edge_index = cell2mat( cellfun( @( x ) x( [ 1, end  ] ), edge_index_LUT     , 'UniformOutput', false ));    
+    interior_edge_locations                 = cell2mat( cellfun( @( x ) x( 2 : end - 1 ), edge_locations_cell, 'UniformOutput', false ));    
+    exterior_edge_locations                 = cell2mat( cellfun( @( x ) x([ 1, end ]   ), edge_locations_cell, 'UniformOutput', false ));
+    exterior_edge_location_index2edge_index = cell2mat( cellfun( @( x ) x([ 1, end ]   ), edge_index_LUT     , 'UniformOutput', false ));  
     
-    % look for edge terminal locations that don't coincide with a vertex or any other edge location
-    [ ~, orphan_terminal_indices ] = setdiff( exterior_edge_locations( : ), union( edge_location_repeats, vertex_locations ));
+    
+%     % only the last location of an edge can be disjoint from any vertex location
+%     exterior_edge_locations                 = cell2mat( cellfun( @( x ) x( end ), edge_locations_cell, 'UniformOutput', false ));
+%     exterior_edge_location_index2edge_index = cell2mat( cellfun( @( x ) x( end ), edge_index_LUT     , 'UniformOutput', false ));    
+%     % no longer true, since get_edges_by_watershed function. SAM 9/23/20
+
+    % look for edge terminal locations that don't coincide with a vertex or any other edge location.
+    % (no repeats returnded by setdiff, but no repeats sought at this line (repeated locations are
+    % subtracted out by setdiff ))
+    
+%         [ ~, orphan_terminal_indices ] = setdiff( exterior_edge_locations( : ), union( edge_location_repeats, vertex_locations ));
+    [ ~, orphan_terminal_indices ] = setdiff( exterior_edge_locations( : ), union( interior_edge_locations, vertex_locations ));
     
     edge_indices_to_remove = exterior_edge_location_index2edge_index( orphan_terminal_indices );
         
     % erase these edges
-    original_edge_indices( edge_indices_to_remove    ) = [ ];    
+    original_edge_indices( edge_indices_to_remove    ) = [ ];
       edge_locations_cell( edge_indices_to_remove    ) = [ ];
 %            edges2vertices( edge_indices_to_remove, : ) = [ ];
 %     edge_space_subscripts( edge_indices_to_remove    ) = [ ];      
@@ -62,6 +74,57 @@ while searching_for_orphans
             
     searching_for_orphans = logical( length( edge_indices_to_remove ));
     
-end % WHILE searching for orphans
+end % WHILE searching for orphans (no parent)
+
+% %% remove child edges who only connect to other children or who have better energy than their possible parents
+% 
+% % !!!!!!!!!!!!!!!!!!!! WHILE WHILE WHILE
+% 
+% % look for edge external locations that don't coincide with a vertex (no repeats returned by
+% % setdiff)
+% child_external_edge_locations = setdiff( exterior_edge_locations( : ), vertex_locations )';
+% 
+% % find the repeats for the repeats for these child termini (that are disjoing from vertex locations)
+% child_external_edge_indices =  [ ];
+% 
+% for child_external_edge_location = child_external_edge_locations
+%     
+%     child_external_edge_indices = [ child_external_edge_indices, find( exterior_edge_locations( : ) == child_external_edge_location )' ];
+%     
+% end
+% 
+% edge_indices_for_children = exterior_edge_location_index2edge_index( child_external_edge_indices )';
+% 
+% is_child_edge_orphan = zeros( size( original_edge_indices ), 'logical' );
+% 
+% for child_edge_index = edge_indices_for_children
+%     
+%     child_parent_meeting_location = edge_locations_cell{ child_edge_index }( end );
+%     
+% %     if child_parent_meeting_location == 26028996
+% %         
+% %         pause
+% %         
+% %     end
+%     
+%     edges_coinciding_with_child = find( cellfun( @( x ) any( child_parent_meeting_location == x ), edge_locations_cell ));
+%     
+%     parents_coinciding_with_child = setdiff( edges_coinciding_with_child, edge_indices_for_children );
+%     
+%     if isempty( parents_coinciding_with_child )
+%                 
+%         is_child_edge_orphan( child_edge_index ) = true ;
+%         
+%     else
+%     
+%         best_parent_coinciding_with_child = parents_coinciding_with_child( 1 );
+% 
+%         is_child_edge_orphan( child_edge_index ) = child_edge_index < best_parent_coinciding_with_child ;
+%         
+%     end
+%     
+% end % FOR searching for orphans (parent of higher energy)
+% 
+% original_edge_indices( is_child_edge_orphan ) = [ ];
 
 end % FUNCTION clean_edges_orphans

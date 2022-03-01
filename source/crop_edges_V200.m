@@ -285,8 +285,8 @@ scale_is_max = cellfun( @max, has_max_scale_cell );
 scale_is_min = cellfun( @max, has_min_scale_cell );
 
 excluded_edges_logical =  y_is_over   |  x_is_over   | z_is_over  ...
-                       |  y_is_under  |  x_is_under  | z_is_under ...
-                       | scale_is_max | scale_is_min ;
+                       |  y_is_under  |  x_is_under  | z_is_under ;...
+        ...               | scale_is_max | scale_is_min ; % ... removed SAM 2/5/22
 
 %  edge_space_subscripts( excluded_edges_logical    ) = [ ];
 %  edge_scale_subscripts( excluded_edges_logical    ) = [ ];

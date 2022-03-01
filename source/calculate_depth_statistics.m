@@ -1,4 +1,4 @@
-function [ z_bin_ave_z, z_bin_length_densities, z_bin_SA_density, z_bin_vol_densities, z_bin_ave_radius, z_bin_ave_inclination ] = calculate_depth_statistics( strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins )
+function [ z_bin_ave_z, z_bin_length_densities, z_bin_SA_density, z_bin_vol_densities, z_bin_ave_radius, z_bin_ave_inclination ] = calculate_depth_statistics( strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins, ROI_name, network_handle )
 %% calculate_network_statistics SAM 5/25/19
 % This function calculates depth statistics for the input vectorized network to yield depth-resolved
 % statistics. All strands are transformed to an inter-position representation with associated
@@ -10,16 +10,10 @@ function [ z_bin_ave_z, z_bin_length_densities, z_bin_SA_density, z_bin_vol_dens
 
 %% inner-position strand quantities
 
-% strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins 
-
-num_vectors_strand = cellfun( @numel, strand_subscripts ) / 4 ;
-
-strand_subscripts = strand_subscripts( num_vectors_strand > 1 );
-
 lumen_radius_in_pixels_range = lumen_radius_in_microns_range ./ microns_per_voxel ;
 
 % interpolate vectors to be isotropic consistent with the dimension with the best resolution
-resolution_factors = max( lumen_radius_in_pixels_range( 1, [ 1, 2 ])) ./ lumen_radius_in_pixels_range( 1, : );
+resolution_factors = max( lumen_radius_in_pixels_range( 1, : )) ./ lumen_radius_in_pixels_range( 1, : );
 
 [ size_of_image, ~, strand_subscripts ] ...
                                             = resample_vectors( lumen_radius_in_pixels_range, [ resolution_factors, 1 ], strand_subscripts, size_of_image );
@@ -56,9 +50,10 @@ strand_inner_pos_z          = cellfun( @( x ) (   x( 2 : end    , 3 )           
 % strand inner-position inclination
 strand_inner_pos_inclinations                                                                          ...
                             = cellfun( @( x, delta_l )                                                 ...
-                                    asind( abs(   x( 2 : end    , 3 )                                  ...
+...                                    asind( abs(   x( 2 : end    , 3 )                                  ...
+                                           abs(   x( 2 : end    , 3 )                                  ...
                                                 - x( 1 : end - 1, 3 ))     .* microns_per_voxel( 3 )   ...
-                                                                           ./ delta_l               ), ...
+                                                                           ./ delta_l                , ... ),
                                        strand_subscripts, strand_delta_lengths, 'UniformOutput', false );
                                
 xy_area = prod( size_of_image([ 1, 2 ]) .* microns_per_voxel([ 1, 2 ]));
@@ -132,27 +127,32 @@ x = bin_z_limits( 1 : end - 1 );
 
 dx = bin_delta_z ;
 
-figure
+h = figure;
 
-subplot( 5, 1, 1 ), hold on, ylabel({ 'length density', '[um/um^3]'   }), dy = z_bin_length_densities ; 
-box_plotter( x, y, dx, dy )
-xlim([ bin_z_limits( 1 ), bin_z_limits( end )])
+x_axes_limits = [ 50 * floor( bin_z_limits(  1  ) / 50 ), ...
+                  50 *  ceil( bin_z_limits( end ) / 50 )  ];
 
-subplot( 5, 1, 2 ), hold on, ylabel({   'area density', '[um^2/um^3]' }), dy = z_bin_SA_density ;
-box_plotter( x, y, dx, dy )
-xlim([ bin_z_limits( 1 ), bin_z_limits( end )])
+set( h, 'Name', [ network_handle, '_', ROI_name, ' Depth Statistics' ])
 
-subplot( 5, 1, 3 ), hold on, ylabel({ 'volume density', '[um^3/um^3]' }), dy = z_bin_vol_densities ;
+subplot( 5, 1, 1 ), hold on, ylabel({                 'length density', '[um/um^3]'   }), dy = z_bin_length_densities ; 
 box_plotter( x, y, dx, dy )
-xlim([ bin_z_limits( 1 ), bin_z_limits( end )])
+xlim( x_axes_limits )
 
-subplot( 5, 1, 4 ), hold on, ylabel({         'radius', '[um]'        }), dy = z_bin_ave_radius ;
+subplot( 5, 1, 2 ), hold on, ylabel({                   'area density', '[um^2/um^3]' }), dy = z_bin_SA_density ;
 box_plotter( x, y, dx, dy )
-xlim([ bin_z_limits( 1 ), bin_z_limits( end )])
+xlim( x_axes_limits )
 
-subplot( 5, 1, 5 ), hold on, ylabel({    'inclination', '[degrees]'   }), dy = z_bin_ave_inclination ;
+subplot( 5, 1, 3 ), hold on, ylabel({                 'volume density', '[um^3/um^3]' }), dy = z_bin_vol_densities ;
 box_plotter( x, y, dx, dy )
-xlim([ bin_z_limits( 1 ), bin_z_limits( end )])
+xlim( x_axes_limits )
+
+subplot( 5, 1, 4 ), hold on, ylabel({ 'lat. area-weighted radius'     , '[um]'        }), dy = z_bin_ave_radius ;
+box_plotter( x, y, dx, dy )
+xlim( x_axes_limits )
+
+subplot( 5, 1, 5 ), hold on, ylabel({ 'lat. area-weighted inclination', '[z component]'   }), dy = z_bin_ave_inclination ;
+box_plotter( x, y, dx, dy )
+xlim( x_axes_limits )
 
 
 xlabel( 'depth [um]' )
