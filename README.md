@@ -496,7 +496,7 @@ bibtex:
 }
 ```
 
-### [Mathematical synthesis of the cortical circulation for the whole mouse brain—part II: Microcirculatory closure
+[### Mathematical synthesis of the cortical circulation for the whole mouse brain—part II: Microcirculatory closure
 ](https://neurophysics.ucsd.edu/publications/micc.12687.pdf)
 
 bibtex:
