@@ -1,5 +1,7 @@
 function network_histogram_plotter( network_statistics, statistics_to_plot, number_of_bins, ROI_name, network_handle ) %#ok<INUSL>
 
+is_box_histo = false ; % IF is_box_histo == false, is_approx_PDF = true ; end
+
 histogram_styles = { 'cumcount', 'count' };
 
 if ~ isempty( statistics_to_plot )
@@ -30,27 +32,40 @@ for statistic_index = statistic_indices
 
         subplot( 2, number_of_statistics, ( histogram_style_index - 1 ) * number_of_statistics + statistic_index )
     
+        min_stat = min( network_statistic );
+        max_stat = max( network_statistic );        
+        
         switch fields{ statistic_index }
 
             case { 'strand_z_direction', 'strand_tortuosity' } % statistics that have linear scale on x axis
 %             case 'strand_z_direction' % statistics that have linear scale on x axis
+                
+                if is_box_histo
 
-                edges = linspace( 0, 1, number_of_bins );
+                    edges = linspace( 0, 1, round( number_of_bins / 2 ));
 
-                histogram( network_statistic, edges, 'Normalization', histogram_styles{ histogram_style_index })
+                    histogram( network_statistic, edges, 'Normalization', histogram_styles{ histogram_style_index })
+                    
+                else % is_approx_PDF
+
+                    [ x, pdf, cdf ] = smooth_hist( network_statistic, ( max_stat - min_stat ) / round( number_of_bins / 2 ));
+
+                    if histogram_style_index == 1, plot( x, cdf )
+                    else,                          plot( x, pdf )
+                                      hold on, H = area( x, pdf ); set(H(1),'FaceColor',[0.5 0.75 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5 );
+                    end
+
+                end
                 
                 if histogram_style_index == 1, set( gca, 'XTickLabel', [ ]), end
-                
-                min_stat = min( network_statistic );
-                max_stat = max( network_statistic );                
-                
+                                
 %                 set( gca, 'xlim',       [ min_stat, max_stat ])                
                 set( gca, 'xlim',       [ 0, 1 ])
 
             otherwise % log scale on x axis
 
-                min_stat = min( network_statistic );
-                max_stat = max( network_statistic );
+%                 min_stat = min( network_statistic );
+%                 max_stat = max( network_statistic );
 
                 max_stat_log_10 =      floor( log( max_stat ) / log( 10 ))                       ;
                 min_stat_log_10 = min(  ceil( log( min_stat ) / log( 10 )), max_stat_log_10 - 1 );                
@@ -59,9 +74,27 @@ for statistic_index = statistic_indices
                 
                 X_ticks   = 10 .^ X_ticks_log_10 ;
                 
-                [ ~, edges ] = histcounts( log( network_statistic )/log( 10 ), number_of_bins );
+                if is_box_histo
+
+                    [ ~, edges ] = histcounts( log( network_statistic )/log( 10 ), number_of_bins );
+
+                    histogram( network_statistic, 10 .^ edges, 'Normalization', histogram_styles{ histogram_style_index })
                 
-                histogram( network_statistic, 10 .^ edges, 'Normalization', histogram_styles{ histogram_style_index })
+                else % is_approx_PDF
+                
+                    [ x, pdf, cdf ] = smooth_hist( log( network_statistic ) / log( 10 ), ( log( max_stat ) - log( min_stat )) / log( 10 ) / number_of_bins );
+                    
+                    if histogram_style_index == 1, plot( 10 .^ x, cdf )
+                    else,                          plot( 10 .^ x, pdf )
+                                      hold on, H = area( 10 .^ x, pdf ); set(H(1),'FaceColor',[0.5 0.75 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5 );
+                    end
+                        
+                    edges = x ;
+
+                    
+                                     
+                
+                end
                 
                 XTickLabels = { };
                 
@@ -77,7 +110,8 @@ for statistic_index = statistic_indices
                 set( gca, 'xscale',     'log',                                                 ...
                           'XTickLabel', XTickLabels, ...                    
                           'xlim',       [ min( 10 ^ edges( 1 ), X_ticks( 1 )), 10 ^ edges( end )],         ...
-                          'XTick',      X_ticks                                             )
+                          'XTick',      X_ticks, ...
+                          'XMinorTick','off')
 
         end % SWITCH field by which ones should have a log-distributed x axis
         
@@ -87,13 +121,14 @@ for statistic_index = statistic_indices
         
                 ylim([ 0, numel( network_statistic )])
                 
-                if statistic_index == 1, ylabel( 'cumulative number of strands' ), end
+                if statistic_index == 1,                  ylabel( 'num. strands' ),             end
 
                 if statistic_index ~= 1, set( gca, 'YTickLabel', [ ]), end                
                 
             case 'count'
                 
-                if statistic_index == 1, ylabel( 'number of strands' ),            end
+                if statistic_index == 1, if is_box_histo, ylabel( 'num. strands' ),                  ...
+                                        else,             ylabel( 'num. strands / abscissa (dB) units' ),  end, end
 
                 switch fields{ statistic_index }
                     
@@ -170,4 +205,3 @@ end % FOR statistic
 %     xlabel( 'strand volume (um^3)' )
 
 end % FUNCTION
-

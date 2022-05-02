@@ -9,6 +9,7 @@ metric = 'max' ; % 5/15/19 11:54
 
 % metric = 'mean' ; % 5/16/19 1917
 
+%% calculation
 switch metric
     
     case 'mean'

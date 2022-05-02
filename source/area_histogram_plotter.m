@@ -6,6 +6,18 @@ function area_histogram_plotter( strand_subscripts, lumen_radius_in_microns_rang
 % Inter-positions are then binned according to statistic value. The total length of vessels in each
 % bin are summed. Radius and depth are in microns, inclination in units of degrees.
 
+is_smoothing = true ;
+
+% % depth_bins = {[0, Inf]};
+% depth_bins = {[0, Inf], [0, 100], [100, 200], [200, Inf]};
+% 
+% number_depth_bins = length( depth_bins );
+% 
+% colors = [ 0,   0,    0;
+%            0.5, 0.75, 1;
+%            1, 0.5, 0.75;
+%            0.75, 1, 0.5 ];
+
 %% inner-position strand quantities
 
 lumen_radius_in_pixels_range = lumen_radius_in_microns_range ./ microns_per_voxel ;
@@ -64,23 +76,50 @@ strand_inner_pos_inclinations                                                   
 % decomposing:
 % delta_lengths           = cell2mat( strand_delta_lengths           );
 inner_pos_area          = cell2mat( strand_inner_pos_area          );
-inner_pos_radii         = cell2mat( strand_inner_pos_radii         );
-inner_pos_z             = cell2mat( strand_inner_pos_z             );
-inner_pos_inclinations  = cell2mat( strand_inner_pos_inclinations  );
-
-radius_limits = [ min( inner_pos_radii ) - eps, max( inner_pos_radii )]; % - eps becuase error was thrown when the smallest radius object didn't make it into the 1st bin because of rounding error during exp/log transform SAM 12/1/21
-
-inclin_limits = [ 0, 1 ];
+inner_pos_radius         = cell2mat( strand_inner_pos_radii         );
+inner_pos_z_pos             = cell2mat( strand_inner_pos_z             );
+inner_pos_inclin  = cell2mat( strand_inner_pos_inclinations  );
 
 %% sorting, binning
-[ x1, y1, dx1, dy1 ] = sort_and_bin_by_statistic( inner_pos_z,            inner_pos_area, number_of_bins,  z_pos_limits, false );
-[ x2, y2, dx2, dy2 ] = sort_and_bin_by_statistic( inner_pos_radii,        inner_pos_area, number_of_bins, radius_limits, true  );
-[ x3, y3, dx3, dy3 ] = sort_and_bin_by_statistic( inner_pos_inclinations, inner_pos_area, number_of_bins, inclin_limits, false );
+if is_smoothing, inner_pos_radius = log( inner_pos_radius ) / log( 10 ); end
 
- x = [  x1;  x2;  x3 ];
- y = [  y1;  y2;  y3 ];
-dx = [ dx1; dx2; dx3 ];
-dy = [ dy1; dy2; dy3 ];
+radius_limits = [ min( inner_pos_radius ) - eps, ...
+                  max( inner_pos_radius )        ]; % - eps becuase error was thrown when the smallest radius object didn't make it into the 1st bin because of rounding error during exp/log transform SAM 12/1/21
+inclin_limits = [ 0, 1 ];
+
+if is_smoothing
+    
+    z_pos_limits = [ min( inner_pos_z_pos ), ...
+                     max( inner_pos_z_pos )  ];
+    
+     z_pos_resolution = (  z_pos_limits( 2 ) -  z_pos_limits( 1 )) / number_of_bins ;
+    radius_resolution = ( radius_limits( 2 ) - radius_limits( 1 )) / number_of_bins ;
+    inclin_resolution = ( inclin_limits( 2 ) - inclin_limits( 1 )) / number_of_bins ;    
+    
+    [ x1, pdf1, cdf1 ] = smooth_hist( inner_pos_z_pos ,  z_pos_resolution, inner_pos_area );
+    [ x2, pdf2, cdf2 ] = smooth_hist( inner_pos_radius, radius_resolution, inner_pos_area );
+    [ x3, pdf3, cdf3 ] = smooth_hist( inner_pos_inclin, inclin_resolution, inner_pos_area );
+     
+    pdf = [  pdf1,  pdf2,  pdf3 ]';
+    cdf = [  cdf1,  cdf2,  cdf3 ]';
+      x = [    x1,    x2,    x3 ]';
+      y = cdf ;
+     dy = pdf ;
+     dx = zeros( size( x ));     
+    
+    else % binning
+    
+    [ x1, y1, dx1, dy1 ] = sort_and_bin_by_statistic( inner_pos_z_pos,  inner_pos_area, number_of_bins,  z_pos_limits, false );
+    [ x2, y2, dx2, dy2 ] = sort_and_bin_by_statistic( inner_pos_radius, inner_pos_area, number_of_bins, radius_limits, true  );
+    [ x3, y3, dx3, dy3 ] = sort_and_bin_by_statistic( inner_pos_inclin, inner_pos_area, number_of_bins, inclin_limits, false );
+
+     x = [  x1;  x2;  x3 ];
+     y = [  y1;  y2;  y3 ];
+    dx = [ dx1; dx2; dx3 ];
+    dy = [ dy1; dy2; dy3 ];
+
+end
+
 
 function [ x, y, dx, dy ] = sort_and_bin_by_statistic( inner_statistics, inner_pos_area, number_of_bins, statistic_limits, is_log_dist_stat )
 
@@ -149,39 +188,53 @@ for stat_i = 1 : 3
 %         subplot( 1, 3, stat_i ), hold on, 
         subplot( 2, 3, ( histogram_style_index - 1 ) * 3 + stat_i )
 
-        if histogram_style_index == 2 % count
-        
-            if stat_i == 1, ylabel( 'area [um^2]' ); end            
-            
-            box_plotter( x( stat_i, : ), y_zeros, dx( stat_i, : ), dy( stat_i, : ))
-
-            ylim([ 0, max( dy( : ))])            
-            
-        else % cumulative
-            
-            if stat_i == 1, ylabel( 'cumulative area [um^2]' ); end                        
-            
-            box_plotter( x( stat_i, : ), y_zeros, dx( stat_i, : ),  y( stat_i, : ))
-            
-            ylim([ 0, max(  y( : ))])            
-            
+        if is_smoothing
+            if stat_i == 2 % log x axis
+                fxn_plotter( 10 .^ x( stat_i, : ), pdf( stat_i, : ), cdf( stat_i, : ), histogram_style_index )
+            else % linear x axis
+                fxn_plotter(       x( stat_i, : ), pdf( stat_i, : ), cdf( stat_i, : ), histogram_style_index )
+            end
         end
             
-        x_limits = [ x( stat_i, 1 ), x( stat_i, end ) + dx( stat_i, end )];
+        if histogram_style_index == 2 % count
 
-        xlim( x_limits )
+            if ~ is_smoothing
+                if stat_i == 1, ylabel( 'area [um^2]' ); end
+            else
+                if stat_i == 1, ylabel( 'area [um^2] / abscissa (dB) units' ); end
+            end
 
-        max_x_log_10 =      floor( log( x_limits( 2 )) / log( 10 ))                    ;    
-        min_x_log_10 = min(  ceil( log( x_limits( 1 )) / log( 10 )), max_x_log_10 - 1 );
+            if ~ is_smoothing, box_plotter( x( stat_i, : ), y_zeros, dx( stat_i, : ),  dy( stat_i, : )), end
 
-        x_limits_log_10 = [ min_x_log_10, max_x_log_10 ];
+            if ~ is_smoothing, ylim([ 0, max( dy( stat_i, : ))]), end
 
-        x_ticks = 10 .^ x_limits_log_10 ;    
+        else % cumulative
 
+            if stat_i == 1, ylabel( 'area [um^2]' ); end                        
+
+            if ~ is_smoothing, box_plotter( x( stat_i, : ), y_zeros, dx( stat_i, : ),  y( stat_i, : )), end
+
+            ylim([ 0, max(  y( : ))])            
+
+        end 
+            
         switch stat_i
             case 1, xlabel( 'depth [um]' )
             case 2
 
+                if is_smoothing, x( stat_i, : ) = 10 .^ x( stat_i, : ); end
+                
+                x_limits = [ x( stat_i, 1 ), x( stat_i, end ) + dx( stat_i, end )];
+
+                xlim( x_limits )
+
+                max_x_log_10 =      floor( log( x_limits( 2 )) / log( 10 ))                    ;    
+                min_x_log_10 = min(  ceil( log( x_limits( 1 )) / log( 10 )), max_x_log_10 - 1 );
+
+                x_limits_log_10 = [ min_x_log_10, max_x_log_10 ];
+
+                x_ticks = 10 .^ x_limits_log_10 ;    
+                
                 xlabel( 'radius [um]' ) ...
 
                 set( gca,'xscale','log',                                                ...
@@ -189,6 +242,8 @@ for stat_i = 1 : 3
                                     [ '10^{', num2str( x_limits_log_10( 2 )), '}' ]  }, ...                    
                      'XTick',      x_ticks,                                             ...
                      'Xlim',       [ min( x_ticks( 1 ), x_limits( 1 )), x_limits( 2 )]   )
+                 
+                if is_smoothing, x( stat_i, : ) = log( x( stat_i, : )) / log( 10 ); end
 
             case 3, xlabel( 'inclination [z component]' ), set( gca, 'Xlim', [ 0, 1 ])
         end
@@ -214,14 +269,20 @@ end
 % box_plotter( x, y, dx, dy )
 % xlim([ bin_limits( 1 ), bin_limits( end )])
 
+function box_plotter( x, y, dx, dy )
 
+    for ii=1:length(x), rectangle('position',[x(ii) y(ii) dx(ii) dy(ii)]), end
 
-    function box_plotter( x, y, dx, dy )
-        
-        for ii=1:length(x), rectangle('position',[x(ii) y(ii) dx(ii) dy(ii)]), end
-        
-        set( gca, 'FontSize', 10 )
-        
-    end % FUNCTION box_plotter
+    set( gca, 'FontSize', 10 )
+
+end % FUNCTION box_plotter
+
+function fxn_plotter( x, pdf, cdf, histogram_style_index )
+    if histogram_style_index == 1, plot( x, cdf )
+    else,                          plot( x, pdf )
+...                      hold on, H = area( x, pdf ); set(H(1),'FaceColor',[0.5 0.75 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5 );
+                      hold on, H = area( x, pdf ); set(H(1),'FaceColor',[0.5 0.75 1], 'EdgeColor', 'none', 'FaceAlpha', 0.5 );                      
+    end
+end
 
 end % FUNCTION

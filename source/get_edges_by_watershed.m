@@ -80,33 +80,33 @@ number_of_vertices = length( vertex_locations );
 
 vertex_locations = int64( vertex_locations );
 
-
 % border_index = uint32( 1 );
 
 % numel_in_image = numel( energy_map );
 
 size_of_image = int64( size( energy_map ));
 
-cum_prod_image_dims = cumprod( size_of_image );
-
 % strel_apothem = max( round( strel_linear_LUT_range / cum_prod_image_dims( 2 )));
-strel_apothem = 1 ;
+strel_apothem = 1 ; cum_prod_image_dims = cumprod( size_of_image );
 
 % Linear indexing of the borders of the image:
 border_locations_Y = [ 0 : strel_apothem                            - 1, cum_prod_image_dims( 1 ) - strel_apothem                            : cum_prod_image_dims( 1 ) - 1 ]' + ( 1 : cum_prod_image_dims( 1 ) : cum_prod_image_dims( 3 ));
 border_locations_X = [ 0 : strel_apothem * cum_prod_image_dims( 1 ) - 1, cum_prod_image_dims( 2 ) - strel_apothem * cum_prod_image_dims( 1 ) : cum_prod_image_dims( 2 ) - 1 ]' + ( 1 : cum_prod_image_dims( 2 ) : cum_prod_image_dims( 3 ));
 border_locations_Z = [ 0 : strel_apothem * cum_prod_image_dims( 2 ) - 1, cum_prod_image_dims( 3 ) - strel_apothem * cum_prod_image_dims( 2 ) : cum_prod_image_dims( 3 ) - 1 ]' + ( 1 : cum_prod_image_dims( 3 ) : cum_prod_image_dims( 3 ));
+border_locations   = unique([ border_locations_Y( : ); ...
+                              border_locations_X( : ); ...
+                              border_locations_Z( : )]);
 
-border_locations = unique([ border_locations_Y( : ); border_locations_X( : ); border_locations_Z( : )]);
-                    
 % available_locations_map = zeros( size_of_image, 'logical' ); available_locations_map( vertex_locations ) = 1                          ;
-branch_order_map = zeros( size_of_image, 'uint8'   );
-vertex_index_map = zeros( size_of_image, 'uint32'  ); vertex_index_map( border_locations ) = 1 + number_of_vertices ; ...
-                                                      vertex_index_map( vertex_locations ) = 1 : number_of_vertices ; % last index is for the border N+first "original" vertex
-     pointer_map = zeros( size_of_image, 'uint64'  ); % pointers point to the center of the strel so that when watersheds join, we can trace back to their origin vertices
-    d_over_r_map = zeros( size_of_image            ); % distance traversed normalized by the radius of origin vertex
-    
-energy_map_backup = energy_map ;
+branch_order_map                                 = zeros( size_of_image, 'uint8'   );
+    d_over_r_map                                 = zeros( size_of_image            ); % distance traversed normalized by the radius of origin vertex
+     pointer_map                                 = zeros( size_of_image, 'uint64'  ); % pointers point to the center of the strel so that when watersheds join, we can trace back to their origin vertices
+vertex_index_map                                 = zeros( size_of_image, 'uint32'  ); 
+vertex_index_map(             vertex_locations ) = 1 : number_of_vertices ; % last index is for the border N+first "original" vertex    
+vertex_index_map(             border_locations ) = 1 + number_of_vertices ; ...
+vertex_energies = energy_map( vertex_locations );
+                  energy_map( vertex_locations ) = - Inf ; % note $&!!!: (vertex energies are encoded as -Inf to ensure their priority selection before any traces explore outward
+energy_map_temp = energy_map ;
 
 % moves_per_vertex = zeros([ number_of_vertices + 1 , 1 ], 'uint8' );
         
@@ -143,18 +143,21 @@ while true
 
 %     [ min_available_energy, current_available_index ] = min( energy_map( available_locations ));
 %     [ min_available_energy, current_available_index ] = min( energy_map_backup( available_locations ));
-    min_available_energy = energy_map_backup( current_location ); % pre-sorted % SAM 1/27/22
+       min_available_energy  =         energy_map_temp( current_location ); % pre-sorted % SAM 1/27/22
+    if min_available_energy == -Inf,   energy_map_temp( current_location )  ...
+                                     = energy_map(      current_location ); end % reset vertex energy to original value see note: $&!!!
     
 %     % requiring an available move
 %     if isempty( current_available_index ), break, end    
 
 %     current_location           = available_locations( current_available_index );        
     current_strel_vertex_index =    vertex_index_map( current_location );
+    
     is_new_trace_from_current_location = pointer_map( current_location ) == 0 ;        
     
 %     if ~ is_new_trace_from_current_location % only check this if it is not a vertex location to save time
         % requiring negative edge energy to explore    
-        if min_available_energy >= 0, break, end
+    if min_available_energy >= 0, break, end
 %         % requiring edge energy above the tolerance to continue exploring !!!!!! not fair to verticies with worse energy
 %         if min_available_energy >= energy_map( vertex_locations( current_strel_vertex_index )) ...
 %                                  * ( 1 - energy_tolerance )                                  , break, end
@@ -203,10 +206,10 @@ while true
 
     %% redefine the energy for the current neighborhood (strel), accounting for...
 
-    current_strel_energies = energy_map_backup( current_strel );    
+    current_strel_energies = energy_map_temp( current_strel );    
 %     current_strel_energies = energy_map( current_strel ); % SAM 1/27/22 (and earlier?)
 
-%         %% energy
+%         %% energy !!!!!!!!!!!!! this section will not work without update: energy_map( vertex_locations( current_vertex_index ))) -> vertex_energies( current_vertex_index )
 % %     % redefine energy in terms of similarity to vertex eneergy to prevent low energy vertices from
 % %     moving up
 %     current_strel_energies =          ...    energy_map( vertex_locations( current_vertex_index )) * ...
@@ -478,7 +481,7 @@ while true
 %         current_strel_energies( is_energy_above_watershed_in_strel ) = 0 ;
 
         is_energy_tolerated_in_strel = current_strel_energies ...
-                                     < energy_map_backup( vertex_locations( current_strel_vertex_index )) ...
+                                     < vertex_energies( current_strel_vertex_index ) ... < energy_map_temp( vertex_locations( current_strel_vertex_index )) ...
                                      * ( 1 - energy_tolerance )                                  ;        
 
 % %         is_energy_tolerated_in_strel = is_energy_tolerated_in_strel .... % also enforce that vertices can only explore the watershed in the "uphill" direction (edge traces will be monotonic increasing for the first half, and monotonic decreasing for the second half, in energy. (if the next best move is downstream towards another watershed, then it is illegal (because it is not within the current vertex's watershed).
@@ -527,26 +530,26 @@ while true
 
                     
                     if seed_idx == 1 % for speed, assume that a primary seed will be closer to the bottom (better) of the list of possible energies, and a secondary seed will be closer to the top (worse) of the list
-                         if                                 energy_map_backup( available_locations(  1  )) ...
-                                                         <= energy_map_backup(      next_location        )
+                         if                                 energy_map_temp( available_locations(  1  )) ...
+                                                         <= energy_map_temp(      next_location        )
                                                      
                                 location_idx = 1 ;
                          else
                              
-                                location_idx = 1 +  find(    energy_map_backup( available_locations       )            ...
-                                                          >  energy_map_backup(      next_location        ), 1, 'last'  );
+                                location_idx = 1 +  find(    energy_map_temp( available_locations       )            ...
+                                                          >  energy_map_temp(      next_location        ), 1, 'last'  );
                          end
-                    else,if                                  energy_map_backup( available_locations( end )) ...
-                                                          >= energy_map_backup(      next_location        )
+                    else,if                                  energy_map_temp( available_locations( end )) ...
+                                                          >= energy_map_temp(      next_location        )
                                                       
                             if is_current_location_clear                     
-                                location_idx = 1 + numel(                       available_locations                     );
+                                location_idx = 1 + numel(                     available_locations                     );
                             else
-                                location_idx = 	   numel(                       available_locations                     );
+                                location_idx = 	   numel(                     available_locations                     );
                             end
                         else
-                                location_idx =      find(    energy_map_backup( available_locations       )             ...
-                                                        <  energy_map_backup(      next_location        ), 1, 'first' );
+                                location_idx =      find(    energy_map_temp( available_locations       )             ...
+                                                          <  energy_map_temp(      next_location        ), 1, 'first' );
                          end                            
                     end
 %                     if isempty( location_idx )
@@ -594,7 +597,7 @@ while true
                 for idx = idx_range , locations_to_reset_reindexed( idx ) = find( available_locations == locations_to_reset( idx ), 1, 'first' ); end
                     
                 available_locations( locations_to_reset_reindexed ) = [ ]; % SAM 1/27/22 condensed all array downsizing to one line (down from two seperate lines (one of which was inside the FOR loop))
-
+                
                 if ~ vertex_adjacency_matrix( next_vertex_index, current_strel_vertex_index ) % not( all( empty )) is false
 
                     number_of_edges = number_of_edges + 1 ;                
