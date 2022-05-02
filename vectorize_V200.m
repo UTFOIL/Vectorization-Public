@@ -678,39 +678,48 @@ end % IF no optional input provided
                 mat2tif( mask_image, [ optional_input( 1 : end - 4 ), '_mask.tif' ]);
 
                 mask_image = logical( mask_image );
-                
-                original_image = double( original_image );
-                
-%                 % baseline correction
-%                 original_image( mask_image ) = original_image( mask_image ) - min( original_image( mask_image ));
 
-                disp('Notice: performing log transform and normalization')
+                is_log_transforming_tiled_inputs = false ;
+                
+                if is_log_transforming_tiled_inputs
+                
+                    disp('Notice: performing log transform and normalization')
 
-                % data normalization
-                original_image( ~ mask_image ) = 1e3 * (      original_image( ~ mask_image )  - min( original_image( ~ mask_image ))) ...
-                                                     / ( max( original_image( ~ mask_image )) - min( original_image( ~ mask_image )));                
-                
-                % data conditioning to stabilize the log
-                original_image( ~ mask_image ) = original_image( ~ mask_image ) + median( original_image( ~ mask_image ));
-                
-                % log transform
-                original_image(   mask_image ) = 1 ;
-                
-                original_image = log( original_image );
-                                                
-                % setting the fill value to the average intensity of the images (in the region
-                % where they are defined/supported)
-                original_image( mask_image ) = mean( original_image( ~ mask_image ));
+                    original_image = double( original_image );
 
-                % full scale contrast stretch
-                original_image( : ) = 2^15 * (      original_image( : )  - min( original_image( : ))) ...
-                                          ./ ( max( original_image( : )) - min( original_image( : )));
-                                  
-                original_image = uint16( original_image );
-                
+    %                 % baseline correction
+    %                 original_image( mask_image ) = original_image( mask_image ) - min( original_image( mask_image ));
+
+                    % data normalization
+                    original_image( ~ mask_image ) = 1e3 * (      original_image( ~ mask_image )  - min( original_image( ~ mask_image ))) ...
+                                                         / ( max( original_image( ~ mask_image )) - min( original_image( ~ mask_image )));                
+
+                    % data conditioning to stabilize the log
+                    original_image( ~ mask_image ) = original_image( ~ mask_image ) + median( original_image( ~ mask_image ));
+
+                    % log transform
+                    original_image(   mask_image ) = 1 ;
+
+                    original_image = log( original_image );
+
+                    % setting the fill value to the average intensity of the images (in the region
+                    % where they are defined/supported)
+                    original_image( mask_image ) = mean( original_image( ~ mask_image ));
+
+                    % full scale contrast stretch
+                    original_image( : ) = 2^15 * (      original_image( : )  - min( original_image( : ))) ...
+                                              ./ ( max( original_image( : )) - min( original_image( : )));
+
+                    original_image = uint16( original_image );
+
+                else
+                    
+                    original_image( mask_image ) = mean( original_image( ~ mask_image ));
+                    
+                end
             end
             
-            h5create( path_to_original_data, '/d', size( original_image ), 'Datatype', class( original_image ));
+            h5create( path_to_original_data, '/d', size( original_image ), 'Datatype', class( original_image )); % ????????????? why is this variable type handling (class( original_image )) not found at other h5create calls ???? SAM 3/17/22
 
             mat2h5( path_to_original_data, original_image );
 
@@ -3195,6 +3204,7 @@ if productive( 4 )
     for ROI_index = ROI_index_range
         tic
         
+        %% definitions
         path_to_vertices              = [ vector_directory,             vertices_handle, ROI_names{ ROI_index }]; %  vectors path                    
         path_to_curated_vertices      = [ vector_directory, 'curated_', vertices_handle, ROI_names{ ROI_index }]; %  vectors path            
         path_to_edges                 = [ vector_directory,                edges_handle, ROI_names{ ROI_index }];  
@@ -3237,6 +3247,7 @@ if productive( 4 )
 % 
 %         catch
 
+        %% extraction
         max_edge_energy = 0 ;% deprecated
         step_size_per_origin_radius = 1 ;
 %             step_size_per_origin_radius = 2/3 ;
@@ -3263,6 +3274,7 @@ if productive( 4 )
 %         edge_scale_subscripts = edge_scale_subscripts_backup ;
 %         edges2vertices        = edges2vertices_backup        ;
           
+        %% Resample
         % linearly interpolate the extracted edges in L-inf space to have 1-voxel-length spacing %
         % SAM 11/2/21
         edge_subscripts = cellfun( @( x, y    ) [ double( x ), y    ], edge_space_subscripts,   ...
@@ -3316,7 +3328,8 @@ if productive( 4 )
 %         edges2vertices_backup = edges2vertices_backup( sorting_indices, : );
         
 %         setdiff( vertex_space_subscripts, cell2mat( edge_space_subscripts ), 'rows' )
-                       
+                  
+        %% edit output (smooth, trim, ... )
         % preserve the unsmoothed edges.  Only use the smoothed edges for the crop_edges function.
         % Need unsmoothed edges for many clean_edges functions such as for identifying children
         % parent relationships
@@ -3520,13 +3533,19 @@ if productive( 4 )
 
         mean_edge_energies = get_edge_metric( edge_energies ); % !!!!!!!!!! name is misleading it is an average, but not necesserily the arithmetic mean
               
+        %% energy normalization
         % adjust edge energies by normalizing each one by the energy of its higher energy vertex.
-        edges2energy_of_worse_vertex = max( vertex_energies( edges2vertices ), [ ], 2 );
+%         edges2worse_vertex_energy = max( vertex_energies( edges2vertices ), [ ], 2 );
+%         edges2min_energy = cellfun( @min, edge_energies );
+%         edges2median_energy = cellfun( @median, edge_energies ); % !!!! not attempted
+%         edges2vertices_energy = mean( vertex_energies( edges2vertices ), 2 );  % !!!! not attempted
+%         edges2vertices_energy = cellfun( @( x ) ( x( end ) + x( 1 )) / 2, edge_energies );
+        edges2vertices_energy = cellfun( @( x ) - ( x( end ) * x( 1 )) ^ 0.5, edge_energies );
         
-        mean_edge_energies =   - mean_edge_energies ./         edges2energy_of_worse_vertex ;
-             edge_energies = cellfun( @( x, y ) - x ./ y,                                               ...
-                                      edge_energies, num2cell( edges2energy_of_worse_vertex ), ...
-                                      'UniformOutput', false                                          );
+        mean_edge_energies =   - mean_edge_energies ./         edges2vertices_energy ;
+             edge_energies = cellfun( @( x, y ) - x ./ y,                          ...
+                                      edge_energies, num2cell( edges2vertices_energy ), ...
+                                      'UniformOutput', false                       );
 
 %         edges2vertex_energies = vertex_energies( edges2vertices );
 %         
@@ -4107,7 +4126,7 @@ if any( special_output )
 %                 z_threshold_min = 100 ;                
 %                 z_threshold_max = 200 ;
                 z_threshold_min = 200 ;                
-                z_threshold_max = 600 ;
+                z_threshold_max = 800 ; % previously 600 % SAM 4/23/22
                 
                 strand_ave_pos_z          = cellfun( @( x ) mean(   x( 2 : end    , 3 )                                 ...
                                                                   + x( 1 : end - 1, 3 )) / 2 .* microns_per_voxel( 3 ), ...
@@ -4131,7 +4150,8 @@ if any( special_output )
             area_histogram_plotter( strand_subscripts, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, number_of_bins, ROI_names{ ROI_index }( 2 : end ), network_handle );            
             
             statistics_to_plot = { }; % code for default: all statistics listed
-            number_of_bins = 10 ;
+%             number_of_bins = 10 ;
+            number_of_bins = 40 ;
             network_histogram_plotter( network_statistics, statistics_to_plot, number_of_bins, ROI_names{ ROI_index }( 2 : end ), network_handle )
                             
         end        
