@@ -2620,13 +2620,13 @@ for workflow_index = inputs_required
                 
                 % load defaults
                 sigma_strand_smoothing = 1 ;      % deprecated              
-                
+                is_combining_strands = false ;    % hidden
             end
                         
 %             if presumptive
                 % always presumptive:
                 addParameter( p, 'sigma_strand_smoothing', sigma_strand_smoothing )  % deprecated  
-            
+                addParameter( p, 'is_combining_strands',   is_combining_strands   )  % hidden
 %             else
 %                 
 %                 addParameter( p, 'sigma_strand_smoothing', 'prompt' )
@@ -2636,6 +2636,8 @@ for workflow_index = inputs_required
             parse( p, varargin{ : });
             
             temp_sigma_strand_smoothing = p.Results.sigma_strand_smoothing ;
+            temp_is_combining_strands   = p.Results.is_combining_strands   ;
+            
             %% --------------------------- sigma_strand_smoothing             ( hidden/deprepacted )
 
             if strcmp( temp_sigma_strand_smoothing, 'prompt' )
@@ -2664,14 +2666,27 @@ for workflow_index = inputs_required
                 error( 'Parameter sigma_strand_smoothing must be a numeric scalar' )
 
             end % IF valid parameter input
+            %% --------------------------- is_combining_strands               ( hidden )
+
+            if strcmp( temp_is_combining_strands, 'prompt' )
+
+                temp_is_combining_strands                                                                                                                                               ...
+                    = logical( input([ 'Please input true (1) if you wish to combine the two largest strands at every bifurcation, and false (0) otherwise [ ', num2str( is_combining_strands ), ' ]: ' ]));    
+
+                if isempty( temp_is_combining_strands ), temp_is_combining_strands = is_combining_strands ; end                                                                                                                            
+                                
+            end
             
+            is_combining_strands = temp_is_combining_strands ;
+
 %             disp([ 'sigma_strand_smoothing    =   ', num2str( sigma_strand_smoothing )])
             %% ---------------------- saving                                                        
 
             disp([ 'Saving network workflow settings file: ', path_to_network_settings ])        
 
             save(  path_to_network_settings, ...
-                  'sigma_strand_smoothing'   );            
+                  'sigma_strand_smoothing', ...
+                  'is_combining_strands'    );            
 
     end
 end % FOR INPUTS_REQUIRED
@@ -3981,12 +3996,13 @@ if productive( 5 )
               'network_runtime_in_seconds' , ...
               'network_statistics'         , ...
               'strands2vertices'             );
+                  
+        if is_combining_strands
+          
+            disp('Combining strands: merging two largest branches at every bifurcation')
+            threshold = 10 ; combine_strands( path_to_energy_settings, [ path_to_energy_data, '.mat' ], path_to_curated_edges, path_to_network, threshold ) % SAM 1/20/22
         
-%         % !!!!!!!!!!!!!! ________________ experimental line ________________________ !!!!!!!!!!!!!!!!!!!!!!!
-%         threshold = 10 ; combine_strands( path_to_energy_settings, [ path_to_energy_data, '.mat' ], path_to_curated_edges, path_to_network, threshold ) % SAM 1/20/22
-%         % !!!!!!!!!!!!!! ^^^^^^^^^^^^^^^^ experimental line ^^^^^^^^^^^^^^^^^^^^^^^^ !!!!!!!!!!!!!!!!!!!!!!!  
-        
-        
+        end
     end % FOR ROI
     
     production_times{ 5 } = attempted_production_times{ 5 };
