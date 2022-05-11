@@ -113,10 +113,10 @@
 % % %  energy_time_stamp = batch_time_stamp ;
 % % % network_time_stamp = '220205-030821' ;
 % 
-% output_directory = 'E:\Blinder\' ;
-%   batch_time_stamp = '220207-133605' ;
-%  energy_time_stamp = batch_time_stamp ;
-% network_time_stamp = '220207-150624' ;
+% % output_directory = 'E:\Blinder\' ;
+% %   batch_time_stamp = '220207-133605' ;
+% %  energy_time_stamp = batch_time_stamp ;
+% % network_time_stamp = '220207-150624' ;
 % 
 % % % SAM 1/5/22
 % % output_directory = 'E:\Annie\120827 Alankrit\hr_mf\' ;
@@ -124,6 +124,11 @@
 % %  energy_time_stamp = batch_time_stamp ;
 % % network_time_stamp = batch_time_stamp ;
 % 
+% % SAM 5/5/22
+% output_directory = 'E:\2P imaging\2021_Chronic_Imaging\Doug week 1\' ;
+%   batch_time_stamp = '220126-010215' ;
+%  energy_time_stamp = batch_time_stamp ;
+% network_time_stamp = '220505-042233' ;
 % 
 % [ batch_directory, visual_data_directory, visual_vector_directory, vector_directory, settings_directory ] = get_directories( output_directory, batch_time_stamp );
 % 
@@ -805,7 +810,7 @@ end % FOR k range
 if is_testing_machine_curation, if is_using_same_vertex_set, k_index_range = k_index_range_temp ; time_stamps_edges{ 2 } = time_stamps_edges{ 1 }; end, end
 
 is_first_time_running_vertices = false ;
-% %% Compare classification strength of rendered, weighted edges and of the observed intensity        
+%% Compare classification strength of rendered, weighted edges and of the observed intensity        
 
 % number_of_thresholds = 101 ;
 

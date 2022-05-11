@@ -76,13 +76,13 @@ strand_max_delta_length = cellfun( @( x ) max( abs(   x( 2 : end    , 1 : 3 )   
                                                     - x( 1 : end - 1, 1 : 3 )), [ ], 'all' ), ...
                                    strand_subscripts                                          );
                                
-if any( strand_max_delta_length > 1 + exp( -15 ))
+if any( strand_max_delta_length > 2)
     
     warning('discontinuity in strand')
     
-    strand_subscripts{strand_max_delta_length > 1 + exp( -15 )}
-    strand_max_delta_length(strand_max_delta_length > 1 + exp( -15 ))
-    find(strand_max_delta_length > 1 + exp( -15 ))
+    strand_subscripts{strand_max_delta_length > 2}
+    strand_max_delta_length(strand_max_delta_length > 2)
+    find(strand_max_delta_length > 2)
     
 end
 

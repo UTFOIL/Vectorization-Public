@@ -37,11 +37,12 @@
 
 % input_names{ 1 } = 'Eddy_Fused_Raw_w3.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Eddy week 3\' ; % SAM 6/16/21
 % input_names{ 1 } = 'Eddy_Fused_Raw_w5.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Eddy week 5\' ; % SAM 6/18/21
-input_names{ 1 } = 'Doug_Fused_Raw_w1.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Doug week 1\' ; % SAM 6/26/21  %% SAM 3/17/22
+% input_names{ 1 } = 'Doug_Fused_Raw_w1.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Doug week 1\' ; % SAM 6/26/21  %% SAM 3/17/22
 % input_names{ 1 } = 'Dan_w1_01.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Dan week 1\' ; % SAM 8/6/21 SAM
 % input_names{ 2 } = 'Dan_w1_02.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Dan week 1\' ; % SAM 8/10/21 SAM
 % for idx = 3 : 6, input_names{ idx - 2 } = [ 'Dan_w1_0', num2str(idx), '.tif' ]; end, OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Dan week 1\' ; % SAM 8/10/21 SAM
 % input_names{ 1 } = 'Dan_Fused_Raw_w1.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Dan week 1\fused\' ; % SAM 9/2/21
+input_names{ 1 } = 'Elmer_Fused_Raw_w1.tif' ; OutputDirectory = 'E:\2P imaging\2021_Chronic_Imaging\Elmer week 1\' ; % SAM 6/26/21  %% SAM 3/17/22
 
 microns_per_voxel = [ ];
 % microns_per_voxel( 1, 1 : 3 ) = [1.34, 1.36, 3]; % [ y, x, z ] == microns_per_voxel - SAM 3/19/21
@@ -56,8 +57,8 @@ stackID_range = 1 : number_of_stacks ;
 % start_workflow = 'energy' ;
 % start_workflow = 'vertices' ;
 % start_workflow = 'edges' ;
-% start_workflow = 'network' ;
-start_workflow = 'none' ;
+start_workflow = 'network' ;
+% start_workflow = 'none' ;
 
 % Settings:
 
@@ -113,7 +114,7 @@ for stackID = stackID_range
                      ...                   'Visual',                           'vertices',      ...
                                         'NewBatch',                         'no',              ...
                                         'Presumptive',                       true,             ...
-                       ...                 'VertexCuration',                   'manual',          ...
+                     ...                   'VertexCuration',                   'manual',          ...
                             ...            'VertexCuration',                   'none',          ...
                            ...             'VertexCuration',                   'mutual edges',          ...
                            ...          'VertexCuration',                   'auto',          ...
@@ -121,16 +122,17 @@ for stackID = stackID_range
                                         'number_of_edges_per_vertex',       2,               ... 
                             ...            'number_of_edges_per_vertex',       4,               ...
                                         'sigma_edge_smoothing',             0.5,               ...
-                            ...            'EdgeCuration',                     'manual', ...
+                           ...             'EdgeCuration',                     'manual', ...
                            ...             'EdgeCuration',                     'none', ...
     ...                                    'SpecialOutput', { 'depth', 'strands', 'directions', 'upsampled', '3D-strands' }};
     ...                                    'SpecialOutput', { '3D-strands' }};
 ...                                        'SpecialOutput', { 'depth-stats' }};
-    ...                                    'SpecialOutput', { 'upsampled' }};    
+          ...                               'is_combining_strands', false,'SpecialOutput', { 'upsampled' }};    
     ...                                     'SpecialOutput', { 'depth', 'directions' }};
-   ...                                     'SpecialOutput', { 'histograms', 'vmv', 'depth', 'strands', 'directions' }};    
-    ...                                        'SpecialOutput', 'flow-field' };
-                                        'SpecialOutput', {'histograms'}};
+           ...                             'is_combining_strands', false,'SpecialOutput', { 'histograms', 'vmv', 'depth', 'strands', 'directions' }};    
+                                          'is_combining_strands', true, 'SpecialOutput', { 'histograms', 'flow-field' }};
+    ...                                    'SpecialOutput', {'histograms'}};
+           ...                               'SpecialOutput', { 'vmv', 'directions' }};
 
             time_stamp = vectorize_V200( name_value_pair_inputs{ 1, : }); 
     end            
