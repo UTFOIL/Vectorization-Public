@@ -128,8 +128,8 @@
 % output_directory = 'E:\2P imaging\2021_Chronic_Imaging\Doug week 1\' ;
 %   batch_time_stamp = '220126-010215' ;
 %  energy_time_stamp = batch_time_stamp ;
-% network_time_stamp = '220505-042233' ;
-% 
+% % network_time_stamp = '220505-042233' ;
+% network_time_stamp = '220506-190831' ;
 % [ batch_directory, visual_data_directory, visual_vector_directory, vector_directory, settings_directory ] = get_directories( output_directory, batch_time_stamp );
 % 
 % 
@@ -309,6 +309,7 @@
 % %          contrast_to_noise_range = [ 1; 4 ]; % 1/23/21, truncated sweep
 % %          contrast_to_noise_range = [ 2 ]; % 1/26/21, high-quality
 %          contrast_to_noise_range = [ 2; 10 ]; % 2/5/22
+% %          contrast_to_noise_range = [ 10 ]; % 7/11/22, high-quality
 % %          contrast_to_noise_range = [ 1; 2; 5; 10 ]; % 2/15/22 % !! use this for publication
 % 
 %         % CNR is contrast to noise is C / sqrt( 2 * B + C ) given by the mean and
@@ -481,6 +482,7 @@
 % %         k_range = [ 0.75, 1 ]; % SAM 1/14/22
 % %         k_range = [ 0.5, 0.75, 1 ] .^ 0.5 ; % SAM 1/14/22
 %         k_range = [ 0.5, 0.75 ] .^ 0.5 ; % SAM 2/14/22
+% %         k_range = [ 0.5 ] .^ 0.5 ; % SAM 7/11/22
 % 
 %                 
 %     case 'annular'
@@ -556,7 +558,8 @@
 %                                 'approximating_PSF',                        true,                       ...
 %                                 'excitation_wavelength',                    1.3 * PSF_fudge_factor,     ...
 % ...                                'scales_per_octave',                        3,                          ... 
-%                                 'scales_per_octave',                        1.5,                          ... 
+% ...                                'scales_per_octave',                        1.5,                          ... 
+%                                 'scales_per_octave',                        2/3*(( -log( 1 - k_range( k_index ) ^ 2 )/log(2)) ^ -1 ),                          ... 
 %                                 'max_voxels_per_node_energy',               1000000                     };
 % 
 %     if isempty( time_stamps_energy{ 1 })
@@ -718,220 +721,220 @@
 % 
 %     end % FOR noise
 % end % FOR contrast
-%% Extract edges from the different vertex sets                                                     
-
-% Threshold the vertices with a few different specifities constrained (with the help of the ROC
-% curve in the previous section).
-
-vertex_variables_to_edit = { 'vertex_space_subscripts'    , ...
-                             'vertex_scale_subscripts'    , ...
-                             'vertex_energies'              };
-time_stamps_edges = cell( number_of_k_indices, number_of_vertex_sets );
-
-is_using_same_vertex_set = true ;
-
-if is_testing_machine_curation, if is_using_same_vertex_set, k_index_range_temp = k_index_range; k_index_range = 1 ; end, end
-
-for k_index = k_index_range
-
-    for vertex_set_index = vertex_set_index_range
-        
-        for contrast_index = contrast_index_range
-
-            for noise_index = noise_index_range
-
-                if is_first_time_running_vertices
-                    
-                    load( path_to_vertices{ contrast_index, noise_index, k_index }, vertex_variables_to_edit{ 1, : })
-
-                    if vertex_set_index == 1
-
-                        save([ path_to_vertices{ contrast_index, noise_index, k_index }( 1 : end - 4 ), '_backup.mat' ], ...
-                               vertex_variables_to_edit{ 1, : }                                                          )
-
-                    end
-                else
-                    
-                    load([ path_to_vertices{ contrast_index, noise_index, k_index }( 1 : end - 4 ), '_backup.mat' ], ...
-                           vertex_variables_to_edit{ 1, : }                                                          )
-
-                end
-                
-                % threshold the vertex objects based on their energy.  Each successive threshold in
-                % this vertex set FOR loop is more and more restrictive.  So each vertex set is
-                % contained in the previous and may therefore overwrite the previous.
-                is_vertex_in_set = vertex_energies <= vertex_energy_thresholds( contrast_index, noise_index, k_index, vertex_set_index );
-
-%                 number_of_vertices_excluded = sum( ~ is_vertex_in_set )
-
-                vertex_energies         =         vertex_energies( is_vertex_in_set    );
-                vertex_scale_subscripts = vertex_scale_subscripts( is_vertex_in_set    );
-                vertex_space_subscripts = vertex_space_subscripts( is_vertex_in_set, : );
-
-                save( path_to_vertices{ contrast_index, noise_index, k_index }, ...
-                      vertex_variables_to_edit{ 1, : }, '-append'               );
-                  
-            end % FOR noise
-        end % FOR contrast
-
-        if is_using_same_vertex_set
-            
-            EdgeCuration_value = 'auto' ;
-            
-        else
-
-            if is_testing_machine_curation
-
-                if k_index == 1, EdgeCuration_value = 'machine-auto' ; else, EdgeCuration_value = 'auto' ; end
-
-            else
-
-                EdgeCuration_value = 'auto' ;
-
-            end
-        end
-        
-        name_value_pair_inputs = {  'OutputDirectory',                   output_directory_study,            ...
-                                    'PreviousBatch',                     time_stamps_energy{ 1 },           ...
-                                    'PreviousWorkflow',                  time_stamps_vertices{ k_index },   ...
-                                    'EdgeCuration',                      EdgeCuration_value,                ...
-                                    'StartWorkflow',                    'edges',                            ...
-                                    'FinalWorkflow',                    'one',                              ...
-                                    'Visual',                           'productive',                       ...
-                                    'NewBatch',                     	'no',                               ...
-                                    'Presumptive',                       true,                              ...
-                                    'max_edge_length_per_origin_radius', 100                                };
-
-        time_stamps_edges{ k_index, vertex_set_index } = vectorize_V200( name_value_pair_inputs{ 1, : });
-
-    end % FOR vertex set
-end % FOR k range
-
-if is_testing_machine_curation, if is_using_same_vertex_set, k_index_range = k_index_range_temp ; time_stamps_edges{ 2 } = time_stamps_edges{ 1 }; end, end
-
-is_first_time_running_vertices = false ;
-%% Compare classification strength of rendered, weighted edges and of the observed intensity        
-
-% number_of_thresholds = 101 ;
-
-areas_under_ROC_curves_energy    = zeros( number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
-areas_under_ROC_curves_intensity = zeros( number_of_contrast_indices, number_of_noise_indices,                     1                      );
-
-edge_energy_thresholds           = zeros( number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
- max_accuracies_energy           = zeros( number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
-
-% edge_names                       = cell(  number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
-path_to_edges                    = cell(  number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
-path_to_visual_edges             = cell(  number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
-
-sensitivities_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
-specificities_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
-   thresholds_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
-   accuracies_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
-   
-if ~exist('ground_truth_image','var')
-    ground_truth_image = double(tif2mat( [ output_directory, 'batch_', batch_time_stamp, '\visual_data\ground_truth_image.tif' ]))/visual_contrast;
-end
-
-for contrast_index = contrast_index_range
-
-    for noise_index = noise_index_range
-        
-        input_image = double( tif2mat( input_tif_paths{ contrast_index, noise_index }));     
-        
-        [ sensitivities_intensity, specificities_intensity, thresholds_intensities, accuracies_intensities ] ...
-                         = get_sens_and_spec( ground_truth_image, - input_image, number_of_thresholds, volume_frac_of_interest );
-                     
-        [ max_accuracies_intensity( contrast_index, noise_index ), max_accuracy_index( contrast_index, noise_index )] = max( accuracies_intensities );
-                     
-        clear( 'input_image' );
-
-        for k_index = k_index_range
-
-            for vertex_set_index = vertex_set_index_range
-
-                if is_using_same_vertex_set
-
-                    if is_testing_machine_curation
-
-                        if k_index == 1, EdgeCuration_value = 'machine-auto' ; else, EdgeCuration_value = 'auto' ; end
-
-                    else
-
-                        EdgeCuration_value = 'auto' ;
-
-                    end
-                    
-                    name_value_pair_inputs = {  'OutputDirectory',                   output_directory_study,            ...
-                                                'PreviousBatch',                     time_stamps_energy{ 1 },           ...
-                                                'PreviousWorkflow',                  time_stamps_edges{  1 },   ... % both edges curations start from the same edges set
-                                                'EdgeCuration',                      EdgeCuration_value,                ...
-                                                'StartWorkflow',                    'none',                            ...
-                                                'Visual',                           'productive',                       ... % default, no? 
-                                                'NewBatch',                     	'no',                               ... % also default, no? 
-                                                'Presumptive',                       true,                              }; % also default?
-
-                    vectorize_V200( name_value_pair_inputs{ 1, : });
-                    
-                end
-
-%                 edge_name_visual = [ 'curated_edges_', time_stamps_edges{ k_index, vertex_set_index }, '_decomposed_', input_tif_names{ contrast_index, noise_index }( 1 : end - 4 )];
-                edge_name_visual = [ 'curated_edges_', time_stamps_edges{ k_index, vertex_set_index }, '_spheres_', input_tif_names{ contrast_index, noise_index }( 1 : end - 4 )];
-                edge_name_vector = [ 'curated_edges_', time_stamps_edges{ k_index, vertex_set_index },         '_', input_tif_names{ contrast_index, noise_index }( 1 : end - 4 )];
-
-                       path_to_edges{ contrast_index, noise_index, k_index, vertex_set_index } = [        vector_directory, edge_name_vector, '.mat' ];              
-                path_to_visual_edges{ contrast_index, noise_index, k_index, vertex_set_index } = [ visual_vector_directory, edge_name_visual, '.tif' ];  
-
-                edge_energy_image = - double( tif2mat( path_to_visual_edges{ contrast_index, noise_index, k_index, vertex_set_index }));         
-
-                [ sensitivities_energies( k_index, vertex_set_index, : ),                                      ...
-                  specificities_energies( k_index, vertex_set_index, : ),                                      ...
-                     thresholds_energies( k_index, vertex_set_index, : ),                                      ...
-                     accuracies_energies( k_index, vertex_set_index, : )  ]                                    ...
-                            = get_sens_and_spec( ground_truth_image, edge_energy_image, number_of_thresholds, volume_frac_of_interest );
-
-            end % FOR vertex set
-        end % FOR k
-
-        clear( 'edge_energy_image' );
-        
-        [ max_accuracies_energy( contrast_index, noise_index, :, : ),                               ...
-          max_accuracies_indices                                      ]                             ...
-                                                                = max( accuracies_energies, [ ], 3 );
-
-%         [ max_accuracies_energy( contrast_index, noise_index, :, : ),                               ...
-%           max_accuracies_indices                                      ]                             ...
-%                                                                 = max( sensitivities_energies .^ 2 + specificities_energies .^ 2, [ ], 3 );
-
-%         [ max_accuracies_energy( contrast_index, noise_index, :, : ),                               ...
-%           max_accuracies_indices                                      ]                             ...
-%                                                                 = min(( 1 - sensitivities_energies ) .^ 2 + ( 1 - specificities_energies ).^ 2, [ ], 3 );
+% %% Extract edges from the different vertex sets                                                     
 % 
-
+% % Threshold the vertices with a few different specifities constrained (with the help of the ROC
+% % curve in the previous section).
+% 
+% vertex_variables_to_edit = { 'vertex_space_subscripts'    , ...
+%                              'vertex_scale_subscripts'    , ...
+%                              'vertex_energies'              };
+% time_stamps_edges = cell( number_of_k_indices, number_of_vertex_sets );
+% 
+% is_using_same_vertex_set = true ;
+% 
+% if is_testing_machine_curation, if is_using_same_vertex_set, k_index_range_temp = k_index_range; k_index_range = 1 ; end, end
+% 
+% for k_index = k_index_range
+% 
+%     for vertex_set_index = vertex_set_index_range
+%         
+%         for contrast_index = contrast_index_range
+% 
+%             for noise_index = noise_index_range
+% 
+%                 if is_first_time_running_vertices
+%                     
+%                     load( path_to_vertices{ contrast_index, noise_index, k_index }, vertex_variables_to_edit{ 1, : })
+% 
+%                     if vertex_set_index == 1
+% 
+%                         save([ path_to_vertices{ contrast_index, noise_index, k_index }( 1 : end - 4 ), '_backup.mat' ], ...
+%                                vertex_variables_to_edit{ 1, : }                                                          )
+% 
+%                     end
+%                 else
+%                     
+%                     load([ path_to_vertices{ contrast_index, noise_index, k_index }( 1 : end - 4 ), '_backup.mat' ], ...
+%                            vertex_variables_to_edit{ 1, : }                                                          )
+% 
+%                 end
+%                 
+%                 % threshold the vertex objects based on their energy.  Each successive threshold in
+%                 % this vertex set FOR loop is more and more restrictive.  So each vertex set is
+%                 % contained in the previous and may therefore overwrite the previous.
+%                 is_vertex_in_set = vertex_energies <= vertex_energy_thresholds( contrast_index, noise_index, k_index, vertex_set_index );
+% 
+% %                 number_of_vertices_excluded = sum( ~ is_vertex_in_set )
+% 
+%                 vertex_energies         =         vertex_energies( is_vertex_in_set    );
+%                 vertex_scale_subscripts = vertex_scale_subscripts( is_vertex_in_set    );
+%                 vertex_space_subscripts = vertex_space_subscripts( is_vertex_in_set, : );
+% 
+%                 save( path_to_vertices{ contrast_index, noise_index, k_index }, ...
+%                       vertex_variables_to_edit{ 1, : }, '-append'               );
+%                   
+%             end % FOR noise
+%         end % FOR contrast
+% 
+%         if is_using_same_vertex_set
+%             
+%             EdgeCuration_value = 'auto' ;
+%             
+%         else
+% 
+%             if is_testing_machine_curation
+% 
+%                 if k_index == 1, EdgeCuration_value = 'machine-auto' ; else, EdgeCuration_value = 'auto' ; end
+% 
+%             else
+% 
+%                 EdgeCuration_value = 'auto' ;
+% 
+%             end
+%         end
+%         
+%         name_value_pair_inputs = {  'OutputDirectory',                   output_directory_study,            ...
+%                                     'PreviousBatch',                     time_stamps_energy{ 1 },           ...
+%                                     'PreviousWorkflow',                  time_stamps_vertices{ k_index },   ...
+%                                     'EdgeCuration',                      EdgeCuration_value,                ...
+%                                     'StartWorkflow',                    'edges',                            ...
+%                                     'FinalWorkflow',                    'one',                              ...
+%                                     'Visual',                           'productive',                       ...
+%                                     'NewBatch',                     	'no',                               ...
+%                                     'Presumptive',                       true,                              ...
+%                                     'max_edge_length_per_origin_radius', 100                                };
+% 
+%         time_stamps_edges{ k_index, vertex_set_index } = vectorize_V200( name_value_pair_inputs{ 1, : });
+% 
+%     end % FOR vertex set
+% end % FOR k range
+% 
+% if is_testing_machine_curation, if is_using_same_vertex_set, k_index_range = k_index_range_temp ; time_stamps_edges{ 2 } = time_stamps_edges{ 1 }; end, end
+% 
+% is_first_time_running_vertices = false ;
+% %% Compare classification strength of rendered, weighted edges and of the observed intensity        
+% 
+% % number_of_thresholds = 101 ;
+% 
+% areas_under_ROC_curves_energy    = zeros( number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
+% areas_under_ROC_curves_intensity = zeros( number_of_contrast_indices, number_of_noise_indices,                     1                      );
+% 
+% edge_energy_thresholds           = zeros( number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
+%  max_accuracies_energy           = zeros( number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
+% 
+% % edge_names                       = cell(  number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
+% path_to_edges                    = cell(  number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
+% path_to_visual_edges             = cell(  number_of_contrast_indices, number_of_noise_indices, number_of_k_indices, number_of_vertex_sets );
+% 
+% sensitivities_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
+% specificities_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
+%    thresholds_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
+%    accuracies_energies           = zeros( number_of_k_indices, number_of_vertex_sets, number_of_thresholds );
+%    
+% if ~exist('ground_truth_image','var')
+%     ground_truth_image = double(tif2mat( [ output_directory, 'batch_', batch_time_stamp, '\visual_data\ground_truth_image.tif' ]))/visual_contrast;
+% end
+% 
+% for contrast_index = contrast_index_range
+% 
+%     for noise_index = noise_index_range
+%         
+%         input_image = double( tif2mat( input_tif_paths{ contrast_index, noise_index }));     
+%         
+%         [ sensitivities_intensity, specificities_intensity, thresholds_intensities, accuracies_intensities ] ...
+%                          = get_sens_and_spec( ground_truth_image, - input_image, number_of_thresholds, volume_frac_of_interest );
+%                      
+%         [ max_accuracies_intensity( contrast_index, noise_index ), max_accuracy_index( contrast_index, noise_index )] = max( accuracies_intensities );
+%                      
+%         clear( 'input_image' );
+% 
+%         for k_index = k_index_range
+% 
+%             for vertex_set_index = vertex_set_index_range
+% 
+%                 if is_using_same_vertex_set
+% 
+%                     if is_testing_machine_curation
+% 
+%                         if k_index == 1, EdgeCuration_value = 'machine-auto' ; else, EdgeCuration_value = 'auto' ; end
+% 
+%                     else
+% 
+%                         EdgeCuration_value = 'auto' ;
+% 
+%                     end
+%                     
+%                     name_value_pair_inputs = {  'OutputDirectory',                   output_directory_study,            ...
+%                                                 'PreviousBatch',                     time_stamps_energy{ 1 },           ...
+%                                                 'PreviousWorkflow',                  time_stamps_edges{  1 },   ... % both edges curations start from the same edges set
+%                                                 'EdgeCuration',                      EdgeCuration_value,                ...
+%                                                 'StartWorkflow',                    'none',                            ...
+%                                                 'Visual',                           'productive',                       ... % default, no? 
+%                                                 'NewBatch',                     	'no',                               ... % also default, no? 
+%                                                 'Presumptive',                       true,                              }; % also default?
+% 
+%                     vectorize_V200( name_value_pair_inputs{ 1, : });
+%                     
+%                 end
+% 
+% %                 edge_name_visual = [ 'curated_edges_', time_stamps_edges{ k_index, vertex_set_index }, '_decomposed_', input_tif_names{ contrast_index, noise_index }( 1 : end - 4 )];
+%                 edge_name_visual = [ 'curated_edges_', time_stamps_edges{ k_index, vertex_set_index }, '_spheres_', input_tif_names{ contrast_index, noise_index }( 1 : end - 4 )];
+%                 edge_name_vector = [ 'curated_edges_', time_stamps_edges{ k_index, vertex_set_index },         '_', input_tif_names{ contrast_index, noise_index }( 1 : end - 4 )];
+% 
+%                        path_to_edges{ contrast_index, noise_index, k_index, vertex_set_index } = [        vector_directory, edge_name_vector, '.mat' ];              
+%                 path_to_visual_edges{ contrast_index, noise_index, k_index, vertex_set_index } = [ visual_vector_directory, edge_name_visual, '.tif' ];  
+% 
+%                 edge_energy_image = - double( tif2mat( path_to_visual_edges{ contrast_index, noise_index, k_index, vertex_set_index }));         
+% 
+%                 [ sensitivities_energies( k_index, vertex_set_index, : ),                                      ...
+%                   specificities_energies( k_index, vertex_set_index, : ),                                      ...
+%                      thresholds_energies( k_index, vertex_set_index, : ),                                      ...
+%                      accuracies_energies( k_index, vertex_set_index, : )  ]                                    ...
+%                             = get_sens_and_spec( ground_truth_image, edge_energy_image, number_of_thresholds, volume_frac_of_interest );
+% 
+%             end % FOR vertex set
+%         end % FOR k
+% 
+%         clear( 'edge_energy_image' );
+%         
 %         [ max_accuracies_energy( contrast_index, noise_index, :, : ),                               ...
 %           max_accuracies_indices                                      ]                             ...
-%                                                                 = max( - ( 1 - sensitivities_energies ) .^ 2 + specificities_energies .^ 2, [ ], 3 ); % SAM 10/29/21
-
-        edge_energy_thresholds( contrast_index, noise_index, :, : ) = thresholds_energies( k_index_vertex_set_mesh + number_of_k_indices_by_vertex_sets * ( max_accuracies_indices - 1 ) );
-
-%         edge_energy_thresholds( contrast_index, noise_index, :, : )                                                        ...
-%             = apply_specificity_constraints( specificities_energies, thresholds_energies, specificity_constraints, 'edges' );
-            
-        % Compute ROC curves and the areas undereath them
-        [ areas_under_ROC_curves_energy(    contrast_index, noise_index, :, : ),                    ...
-          areas_under_ROC_curves_intensity( contrast_index, noise_index       ) ]                   ...
-                                       = get_ROC( sensitivities_intensity, specificities_intensity, ...
-                                                  sensitivities_energies,  specificities_energies,  ...
-                                                  contrast_index, noise_index,                      ...
-                                             max_accuracies_energy( contrast_index, noise_index, :, : ),   ...
-                                                                                    max_accuracies_indices, ...
-                                          max_accuracies_intensity( contrast_index, noise_index ),  ...
-                                                max_accuracy_index( contrast_index, noise_index ), k_range, is_testing_machine_curation   );
-
-    end % FOR noise
-end % FOR contrast
-
-is_first_time_running_edges = true ;
+%                                                                 = max( accuracies_energies, [ ], 3 );
+% 
+% %         [ max_accuracies_energy( contrast_index, noise_index, :, : ),                               ...
+% %           max_accuracies_indices                                      ]                             ...
+% %                                                                 = max( sensitivities_energies .^ 2 + specificities_energies .^ 2, [ ], 3 );
+% 
+% %         [ max_accuracies_energy( contrast_index, noise_index, :, : ),                               ...
+% %           max_accuracies_indices                                      ]                             ...
+% %                                                                 = min(( 1 - sensitivities_energies ) .^ 2 + ( 1 - specificities_energies ).^ 2, [ ], 3 );
+% % 
+% 
+% %         [ max_accuracies_energy( contrast_index, noise_index, :, : ),                               ...
+% %           max_accuracies_indices                                      ]                             ...
+% %                                                                 = max( - ( 1 - sensitivities_energies ) .^ 2 + specificities_energies .^ 2, [ ], 3 ); % SAM 10/29/21
+% 
+%         edge_energy_thresholds( contrast_index, noise_index, :, : ) = thresholds_energies( k_index_vertex_set_mesh + number_of_k_indices_by_vertex_sets * ( max_accuracies_indices - 1 ) );
+% 
+% %         edge_energy_thresholds( contrast_index, noise_index, :, : )                                                        ...
+% %             = apply_specificity_constraints( specificities_energies, thresholds_energies, specificity_constraints, 'edges' );
+%             
+%         % Compute ROC curves and the areas undereath them
+%         [ areas_under_ROC_curves_energy(    contrast_index, noise_index, :, : ),                    ...
+%           areas_under_ROC_curves_intensity( contrast_index, noise_index       ) ]                   ...
+%                                        = get_ROC( sensitivities_intensity, specificities_intensity, ...
+%                                                   sensitivities_energies,  specificities_energies,  ...
+%                                                   contrast_index, noise_index,                      ...
+%                                              max_accuracies_energy( contrast_index, noise_index, :, : ),   ...
+%                                                                                     max_accuracies_indices, ...
+%                                           max_accuracies_intensity( contrast_index, noise_index ),  ...
+%                                                 max_accuracy_index( contrast_index, noise_index ), k_range, is_testing_machine_curation   );
+% 
+%     end % FOR noise
+% end % FOR contrast
+% 
+% is_first_time_running_edges = true ;
 
 %% Select most accurate rendering to observe the confusion images and compute network graph         
 
@@ -1076,12 +1079,13 @@ for k_index = k_index_range
                       image_statistics_output( contrast_index, noise_index, k_index, vertex_set_index )     = original_image_statistics ;
                       
 %                target_image_statistics(        contrast_index, noise_index, k_index, vertex_set_index ).CNR = contrast_to_noise_range( CNR_index ); % this was the target CNR for the simulated image
-                
-                   error_in_statistics( 1,                 CNR_index,       k_index, vertex_set_index )     = (     image_statistics_output( contrast_index, noise_index, k_index, vertex_set_index ).CNR   ...
-                                                                                                                -   contrast_to_noise_range( CNR_index ) ) ...
-                                                                                                           ./       contrast_to_noise_range( CNR_index )   ;               
-               
+                               
                 end % IF first time through loop
+                
+               error_in_statistics( 1,                 CNR_index,       k_index, vertex_set_index )     = (     image_statistics_output( contrast_index, noise_index, k_index, vertex_set_index ).CNR   ...
+                                                                                                            -   contrast_to_noise_range( CNR_index ) ) ...
+                                                                                                       ./       contrast_to_noise_range( CNR_index )   ;               
+                
             end % FOR noise
         end % FOR contrast
     end % FOR vertex set

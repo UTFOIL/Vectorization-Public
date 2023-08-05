@@ -68,7 +68,10 @@ chosen_vertex_original_indices = zeros( number_of_vertices, 1, 'uint32' );
 
 % intialize the painted_image with a blank canvas
 painted_image = zeros( size_of_image, 'logical' );
+  scale_image = zeros( size_of_image, 'uint8' ); % !!!!! number of scales limited to 256
 
+num_voxels = prod( size_of_image );
+  
 % initialize chosen vertex counter
 number_of_chosen_vertices = uint32( 0 );
 
@@ -77,28 +80,51 @@ vertex_position_linear_indices =   space_subscripts( :, 1 )                     
                                + ( space_subscripts( :, 2 ) - 1 ) * size_of_image( 1 )                    ...
                                + ( space_subscripts( :, 3 ) - 1 ) * size_of_image( 1 ) * size_of_image( 2 );
 
-vertex_position_linear_indices_cell = num2cell( vertex_position_linear_indices );
-
-structuring_element_linear_indexing = structuring_element_linear_indexing_templates( scale_subscripts );
-                           
-vertex_structure_positions_linear_indexing = cellfun( @plus, structuring_element_linear_indexing,   ...
-                                                               vertex_position_linear_indices_cell, ...
-                                                                             'UniformOutput', false );
+% vertex_position_linear_indices_cell = num2cell( vertex_position_linear_indices );
+% 
+% structuring_element_linear_indexing = structuring_element_linear_indexing_templates( scale_subscripts );
+%                            
+% vertex_structure_positions_linear_indexing = cellfun( @plus, structuring_element_linear_indexing,   ...
+%                                                                vertex_position_linear_indices_cell, ...
+%                                                                              'UniformOutput', false );
               
 % loop through the vertices from best to worst (lowest to highest energy). Should be sorted before
 % this function.
 for vertex_index = vertex_index_range 
                 
-    % check if this area has already been painted
-    if all( ~ painted_image( vertex_structure_positions_linear_indexing{ vertex_index }))
+    vertex_structure_positions_linear_indexing = translate_strel_template( vertex_position_linear_indices(                              vertex_index ), ...
+                                                                       structuring_element_linear_indexing_templates{ scale_subscripts( vertex_index )});
+    
+	% check if this area has already been painted
+%     if all( ~ painted_image( vertex_structure_positions_linear_indexing{ vertex_index }))
+    if all( ~ painted_image( vertex_structure_positions_linear_indexing ))
        
         % accumulate the current vertex into the list of the chosen ones
         number_of_chosen_vertices = number_of_chosen_vertices + 1 ;
         
         chosen_vertex_original_indices( number_of_chosen_vertices ) = vertex_index ;
         
+%         scale_in_vertex = max( scale_image( vertex_structure_positions_linear_indexing ));
+%         
+%         % adopt previously defined scale if present
+%         if scale_in_vertex, scale_subscripts( vertex_index ) = scale_in_vertex ; end
+        
+        vertex_structure_positions_linear_indexing = translate_strel_template( vertex_position_linear_indices(                              vertex_index ), ...
+                                                                           structuring_element_linear_indexing_templates{ scale_subscripts( vertex_index )});
+        
+                    vertex_structure_positions_linear_indexing                  ...
+        = min( max( vertex_structure_positions_linear_indexing, 1 ), num_voxels );
+                                                                       
         % paint the image to mark this newly chosen vertex        
-        painted_image( vertex_structure_positions_linear_indexing{ vertex_index }) = true ;
+%         painted_image( vertex_structure_positions_linear_indexing{ vertex_index }) = true ;
+        painted_image( vertex_structure_positions_linear_indexing ) = true ;
+        
+    else
+        
+        % record the scale of this vertex within its volume
+                 scale_image( vertex_structure_positions_linear_indexing ) ...
+          = max( scale_subscripts( vertex_index ), ...
+                 scale_image( vertex_structure_positions_linear_indexing ));
         
     end % IF area is blank canvas (unpainted with any previous vertices)
                                            
@@ -109,3 +135,13 @@ end % vertex FOR
 chosen_vertex_original_indices = chosen_vertex_original_indices( 1 : number_of_chosen_vertices );
 
 end % FUNCTION
+
+function vertex_structure_positions_linear_indexing = translate_strel_template( vertex_position_linear_index, structuring_element_linear_indexing_template )
+
+    vertex_structure_positions_linear_indexing ...
+         = structuring_element_linear_indexing_template ...
+         +     vertex_position_linear_index                            ;
+
+     
+end
+

@@ -13,8 +13,8 @@ extracting_intensity_statistics = logical(numel(intersect(extraction_type_list,{
 extracting_spatial_and_energy_info = logical(numel(intersect(extraction_type_list,{'original'})));
 if logical(numel(intersect(extraction_type_list,{'all'})))
     extracting_derivatives = true;
-    extracting_intensity_statistics = true;
-    extracting_spatial_and_energy_info = true;
+    extracting_intensity_statistics = true; % !!! no features defined later %SAM 220530
+    extracting_spatial_and_energy_info = true; % !!! no features defined later
 end
 
 %% This scripts gets feature info of noncurated (and curated for training) vertices for machine learning curation.

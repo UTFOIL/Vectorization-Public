@@ -270,7 +270,7 @@ original_image_crop_2D      = [ ];
 adjusted_original_image_2D  = [ ];
 are_intensity_limits_binarized  = true ;
 counter_toggle              = 0 ;
-counter_swipe_toggle        = [ ] ;
+counter_swipe_toggle        = [ ];
 counter_threshold           = 0 ;
 counter_add_vertex          = 0 ;
 elapsed_time                = 0 ;
@@ -294,6 +294,11 @@ vertex_structure_positions_linear_indexing = [ ];
    
 size_of_minimap             = 100;
 energy_threshold            = 0 ; 
+
+toggle_methods     = { 'rect', ...
+                       'line', ...
+                       'circ. comp.'};
+toggle_method_idx = 1 ;
 
 % SAM 4/23/21 for display purposes translated vertex energy to - log( 1 - energy )
 
@@ -324,6 +329,7 @@ in_view_vertices_xy       = ones(  length_of_vertex_lists, 1, 'logical' );
 in_view_vertices          = ones(  length_of_vertex_lists, 1, 'logical' );
 deleted_vertices          = zeros( length_of_vertex_lists, 1, 'logical' );
 displayed_vertices        = zeros( length_of_vertex_lists, 1, 'logical' );
+toggled_vertices          = zeros( length_of_vertex_lists, 1, 'logical' );
 
 % mark the background and place holders as deleted and not displayed or in view
 deleted_vertices(    vertex_space_subscripts( :, 1 ) <= 0 ) = true  ;
@@ -380,6 +386,7 @@ autosave_variables = {     'true_vertices', ...
                     'counter_add_vertex',   ...
                     'counter_toggle'    ,   ...
                     'counter_swipe_toggle', ...
+                        'toggled_vertices', ...
                     'counter_threshold',    ...
                   'is_intensity_inverted',  ...
                          'dimension_order', ...
@@ -399,8 +406,7 @@ save_variables = [ autosave_variables{ : }, ...
 structuring_element_linear_indexing_templates = construct_structuring_elements( lumen_radius_in_microns_range, microns_per_pixel, size_of_image );
 
 %% User interfaces                          
-
-% main display controls
+%% main display controls
 
 % positions normalized to lock them in place upon re-scaling WDS oct. '18
 save_button           = uicontrol( display_figure, 'Style'   , 'pushbutton',                    ...
@@ -520,7 +526,16 @@ toggle_button         = uicontrol( display_figure, 'Style'   , 'pushbutton',    
                                                    'FontSize', 0.5,                             ...                                                                                                      
                                                    'Position', [ 0.825, 0.0125, 0.125, 0.05],   ...
                                                    'Callback', @toggle_callback                 );                                                      
-                                                                                                                                                                                                          
+
+toggle_method_button  = uicontrol( display_figure, 'Style'   , 'pushbutton',                    ...
+                                                   'String'  , toggle_methods{toggle_method_idx},...
+                                                   'Units'   , 'normalized',                    ...
+                                                   'FontName', 'Times New Roman',               ...
+                                                   'FontUnits', 'normalized',                   ...
+                                                   'FontSize', 0.75,                             ...                                                                                                      
+                                                   'Position', [ 0.925, 0.025, 0.045, 0.025],   ...
+                                                   'Callback', @toggle_method_callback          );                                                      
+
 %% intensity histogram controls                                               
 intensity_min_text_box = uicontrol( intensity_histo_figure,                                     ...
                                                     'Style'   , 'edit',                         ...
@@ -600,8 +615,23 @@ energy_threshold_text_box = uicontrol( energy_histo_figure,                     
                                                     'FontUnits', 'normalized',                  ...
                                                     'FontSize', 0.5,                            ...                                                   
                                                     'String'  , '0',                            ...
-                                                    'Callback', @apply_energy_threshold         );
+                                                    'Callback', @apply_energy_threshold_textbox         );
                                                         
+% Adding A Slider with similar function of the text box here
+
+
+energy_threshold_slider    = uicontrol( energy_histo_figure, 'Style'   , 'slider',                        ...
+      ...                                          'Orientation', 'Vertical',                      ...
+                                                   'Min'     , -log(1-(energy_limits(1))),                               ...
+                                                   'Max'     , -log(1-(energy_limits(2))),              ...
+                                                   'SliderStep', [ 1,5]/100 ,     ...                                                   
+                                                   'Value'    , -log(1-(energy_limits(2))),                             ...
+                                                   'Units'   , 'normalized',                    ...
+                                                   'Position', [ 0.1, 0.175, 0.8, 0.05 ],   ...
+                                                   'Callback',  @apply_energy_threshold_slider              );
+
+
+
 
 energy_min_label          = uicontrol( energy_histo_figure, ...
                                                     'Style'   , 'text',                         ...
@@ -1115,7 +1145,7 @@ intensity_histo_figure.Visible = 'on';
 %        histogram( vertex_energies( in_view_vertices & displayed_vertices ), 'Parent', energy_histo_axes, 'FaceColor', [0, 0, 0], 'EdgeColor', 'white' );
 %        energy_histo_axes.Color = [1 1 1 0];
 %        h.Color = 'none';
-        xlabel(energy_histo_axes, 'Vertex - ln( 1 - Energy )')    
+        xlabel(energy_histo_axes, 'Vertex Energy')
 
         zoom( energy_histo_axes, 'yon' )
 
@@ -1644,7 +1674,7 @@ intensity_histo_figure.Visible = 'on';
 
             else % volume conflicts with at least one higher energy vertex
                 
-                displayed_vertices( vertex_index ) = false ;
+                displayed_vertices( vertex_index ) = false ; % ??? does this line ever get reached ??? !!! hopefully not during an undo/redo call !!! SAM 9/26/22
                 
             end % IF area is blank canvas (no conflicts with any higher energy vertices)
         end % vertex FOR
@@ -1675,7 +1705,7 @@ intensity_histo_figure.Visible = 'on';
         to_be_deleted_indices( to_be_deleted_indices == 1 ) = [ ];
                 
         % reset environmental variables for each vertex to be deleted
-        displayed_vertices( to_be_deleted_indices ) = false ;
+        displayed_vertices( to_be_deleted_indices ) = false ; %%% !!!!! this line appears to be a mistake. Comment it out to fix small bug % 9/26/22 SAM
           deleted_vertices( to_be_deleted_indices ) =  true ;
              true_vertices( to_be_deleted_indices ) = false ;
 
@@ -1883,18 +1913,27 @@ intensity_histo_figure.Visible = 'on';
 
         end
     end
-        %% toggling and placing                     
+        %% toggling and placing
+    function toggle_method_callback( ~, ~ )
+
+        toggle_method_idx = mod( toggle_method_idx, length(toggle_methods)) + 1 ;
+
+%         toggle_method = 'linear trace''
+
+        set(  toggle_method_button, 'string', toggle_methods{toggle_method_idx} );
+
+
+    end
+
     function toggle_callback( ~, ~ )
         
-        toggle_method = 'rectangle/point-and-click';
+        is_vertex_in_swipe = [ ];
+
+              vertex_index = [ ];
+
+        switch toggle_method_idx
         
-%         toggle_method = 'linear trace''
-        
-        
-        
-        switch toggle_method
-        
-            case 'rectangle/point-and-click'
+            case 1 % point-and-click and rectangular box
                 
         %         toggle_button.Enable = 'off';
 
@@ -1916,23 +1955,19 @@ intensity_histo_figure.Visible = 'on';
                 if    y_ave > FOV_limits( dimension_order( 1 ), 1 ) && y_ave < FOV_limits( dimension_order( 1 ), 2 ) ...
                    && x_ave > FOV_limits( dimension_order( 2 ), 1 ) && x_ave < FOV_limits( dimension_order( 2 ), 2 )
 
-                    backup_curation
-
+                    is_inside_FOV = true ;
+                    
                     is_toggling_threshold = 2 ;      
 
-                    is_toggling = rect_click( 3 ) ^ 2 + rect_click( 4 ) ^ 2 < is_toggling_threshold ^ 2 ;
+                    is_toggling_single = rect_click( 3 ) ^ 2 + rect_click( 4 ) ^ 2 < is_toggling_threshold ^ 2 ;
 
-                    if is_toggling
+                    if is_toggling_single
 
         %                 % This will fail if user clicks outside the image. Exit the recursive function in that case.
         %                 try vertex_index = index_image_2D( round( y_click ), round( x_click )); catch, return, end
 
-                        vertex_index = index_image_2D( round( y_click ), round( x_click ));
-
-                        counter_toggle = counter_toggle + 1 ;
-                        
-                        % Toggle the truth of the selected vertex.      
-                        true_vertices( vertex_index ) = ~ true_vertices( vertex_index );
+                        vertex_index = index_image_2D( round( y_click ), ...
+                                                       round( x_click ));
 
                     else % is_swipe_toggling
 
@@ -1942,44 +1977,169 @@ intensity_histo_figure.Visible = 'on';
                                              & vertex_space_subscripts( :, dimension_order( 2 )) <= x_max ;
 
                         % logical vector, not truly vertex_indices ( = find( vertex_indices ))
-                        is_vertex_in_swipe = in_swipe_vertices_xy & in_view_vertices_z ;
+                        is_vertex_in_swipe = in_swipe_vertices_xy & in_view_vertices_z & displayed_vertices & ~ deleted_vertices ; % SAM 5/19/22 added " & displayed_vertices & ~ deleted_vertices"
 
-                        counter_swipe_toggle( end + 1 ) = sum( is_vertex_in_swipe );
-
-                        number_of_true_vertices = sum( true_vertices( is_vertex_in_swipe )) ;
-
-                        number_of_vertices_in_rectangle = sum(is_vertex_in_swipe) ;
-
-                        fraction_true_vertices = number_of_true_vertices / number_of_vertices_in_rectangle ;
-
-                        if number_of_vertices_in_rectangle == 0
-
-                        else %Fraction_true_vertices is well defined
-                            if fraction_true_vertices < 0.5
-                                true_vertices(is_vertex_in_swipe) = true ;
-                            else
-                                true_vertices(is_vertex_in_swipe) = false ;
-                            end
-                        end
                     end % is_toggling
 
-                    update_truth_image, update_overlay            
-
-                    % recall this function to select anew
-                    toggle_callback ;
-
+                    
         %         else % ELSE center of rectangle is outside the field of view
         %
         %             toggle_button.Enable = 'on';
         %             return % Exit the recursive function
+                else
+
+                    is_inside_FOV = false ;
 
                 end % IF center of rectangle is inside the field of view    
-            case 'linear trace'
+            
+            case 2 % linear trace
                 
-                
+                polyline = drawpolyline ;
+
+                points = unique( round( polyline.Position ), 'rows' );
+
+%                 head_to_tail_ave = (   points( end, : ) ...
+%                                      + points(  1 , : )) / 2 ;
+% 
+%                 y_ave = head_to_tail_ave( 2 );
+%                 x_ave = head_to_tail_ave( 1 );
+% 
+%                 y_ave = points( end, 2 )
+
+                % IF end of line is outside the FOV
+                is_inside_FOV = ~ isempty( points ) ...
+                             && ~ (    points( end, 2 ) + 1 > FOV_limits( dimension_order( 1 ), 2 ) || points( end, 2 ) - 1 < FOV_limits( dimension_order( 1 ), 1 ) ...
+                                    || points( end, 1 ) + 1 > FOV_limits( dimension_order( 2 ), 2 ) || points( end, 1 ) - 1 < FOV_limits( dimension_order( 2 ), 1 ));
+
+                if is_inside_FOV
+
+                    is_toggling_single = size( points, 1 ) == 1 ;
+
+                    if is_toggling_single
+
+                        vertex_index = index_image_2D( points( 2 ), ...
+                                                       points( 1 ));
+
+                    else % is_toggling_ GROUP
+    
+                        is_inside_FOV = true ;
+    
+                        cumulative_lengths = [ 0; cumsum( max( abs((   points( 1 + 1 : end    , 1 : 2 )           ...
+                                                                     - points( 1     : end - 1, 1 : 2 ))), [ ], 2 ))];
+                        
+                        sample_lengths = linspace( 0, cumulative_lengths( end ), ceil( cumulative_lengths( end )) + 1 )' ;
+                    
+                        trace_xy = interp1( cumulative_lengths, ...
+                                                        points, ...
+                                                sample_lengths  );
+            
+                        trace_linear = sub2ind( size_of_image( dimension_order( 1 : 2 )), round( trace_xy( :, 2 )), round( trace_xy( :, 1 )));
+    
+                        vertex_indices = unique( index_image_2D( trace_linear ));
+            
+                        is_vertex_in_swipe = zeros( size( displayed_vertices ), 'logical' );
+            
+                        is_vertex_in_swipe( vertex_indices ) = true ;
+               
+                    end
+                end
+            case 3
+
+                [ ptsx, ptsy ] = getpts(display_axes);
+        
+                pxls = [ ptsy, ptsx ];
+
+                % IF  second click for the radius is inside the image (center can be outside image)
+                if    ptsy( 2 ) > FOV_limits( dimension_order( 1 ), 1 ) && ptsy( 2 ) < FOV_limits( dimension_order( 1 ), 2 ) ...
+                   && ptsx( 2 ) > FOV_limits( dimension_order( 2 ), 1 ) && ptsx( 2 ) < FOV_limits( dimension_order( 2 ), 2 )
+
+                    is_inside_FOV = true ;
+
+                    center = pxls( 1, : );
+    
+                    squared_radius = sum((   pxls( 1, : )       ...
+                                           - pxls( 2, : )) .^ 2 );
+    
+                    in_swipe_vertices_xy = sum(( double(vertex_space_subscripts( :, dimension_order( 1 : 2 ))) - center ) .^ 2 , 2 ) > squared_radius ;
+    
+                    % logical vector, not truly vertex_indices ( = find( vertex_indices ))
+                    is_vertex_in_swipe = in_swipe_vertices_xy & in_view_vertices_z & displayed_vertices & ~ deleted_vertices ; % SAM 5/19/22 added " & displayed_vertices & ~ deleted_vertices"
+    
+                else
+
+                    is_inside_FOV = false ;
+
+                end
+            
+            case 4
+
+                drawpolygon
                 
         end
 
+        % propogate the toggle selection to the global variables
+        is_toggling = false ;
+
+        if ~ isempty( vertex_index )
+            if vertex_index > 1 % not a background click
+
+                backup_curation
+
+                is_toggling = true ;
+
+                counter_toggle = counter_toggle + 1 ;
+                
+                % Toggle the truth of the selected vertex.      
+                true_vertices( vertex_index ) = ~ true_vertices( vertex_index );
+
+            end
+        end            
+
+        if ~ isempty( is_vertex_in_swipe )
+                  
+            number_of_true_vertices = sum( true_vertices( is_vertex_in_swipe )) ;
+    
+            number_of_vertices_in_rectangle = sum(is_vertex_in_swipe) ;
+    
+            fraction_true_vertices = number_of_true_vertices / number_of_vertices_in_rectangle ;
+    
+            if number_of_vertices_in_rectangle > 0
+    
+                backup_curation
+
+                is_toggling = true ;
+
+                counter_swipe_toggle( end + 1 ) = sum( is_vertex_in_swipe );
+    
+                toggled_vertices = toggled_vertices | is_vertex_in_swipe ;
+                            
+
+                if fraction_true_vertices < 0.5
+                    true_vertices(is_vertex_in_swipe) = true ;
+                else
+                    true_vertices(is_vertex_in_swipe) = false ;
+                end
+            end
+        end 
+
+%         update_truth_image, update_overlay            
+
+        if is_inside_FOV
+       
+            if ~ is_toggling
+
+                update_truth_image, update_overlay
+
+            end
+
+            % recall this function to select anew
+            toggle_callback ;
+
+        else
+    
+            update_truth_image, update_overlay            
+
+        end
     end % vertex_toggler
 
     function add_callback( ~, ~ )
@@ -2137,11 +2297,14 @@ intensity_histo_figure.Visible = 'on';
 
     end % change_intensity_limits
 
-    function apply_energy_threshold( source, ~ )                     
+    function apply_energy_threshold_slider(  source, ~ ),source_value  =        (source.Value)  ; apply_energy_threshold( source_value ); set(energy_threshold_text_box,'String',num2str(source_value)); end
+    function apply_energy_threshold_textbox( source, ~ ),source_value  = str2num(source.String ); apply_energy_threshold( source_value ); set(energy_threshold_slider  ,'Value' ,        source_value) ; end
+
+    function apply_energy_threshold( source_value )                     
 
         backup_curation
 
-        energy_threshold = max( 1 - exp( - str2num( source.String )), min( vertex_energies ));
+        energy_threshold = max( 1 - exp( - source_value), min( vertex_energies ));
 
         true_vertices( in_view_vertices ) = vertex_energies( in_view_vertices ) ...
                                           < energy_threshold                    ;
@@ -2153,9 +2316,9 @@ intensity_histo_figure.Visible = 'on';
 
 %         if energy_threshold > 0 || imag( energy_threshold ) ~= 0, warning( 'energy threshold should be non-positive real number' ), end
 
-        if energy_limits( 2 ) <= energy_threshold, warning('The energy threshold should be below the max'), end
+        if energy_limits( 2 ) < energy_threshold, warning('The energy threshold should be below the max'), end
 
-        if energy_limits( 1 ) >= energy_threshold, warning('The energy threshold should be above the min'), end
+        if energy_limits( 1 ) > energy_threshold, warning('The energy threshold should be above the min'), end
 
     end % apply_energy_threshold
 

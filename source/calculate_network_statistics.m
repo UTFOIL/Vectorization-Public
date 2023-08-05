@@ -1,4 +1,4 @@
-function [ network_statistics ] = calculate_network_statistics( strand_subscripts, bifurcation_vertices, lumen_radius_in_microns_range, microns_per_voxel, size_of_image )
+function [ network_statistics ] = calculate_network_statistics( strand_subscripts, bifurcation_vertices, lumen_radius_in_microns_range, microns_per_voxel, size_of_image, origin_location )
 %% calculate_network_statistics SAM 5/25/19
 % This function calculates network statistics for the input vectorized network. Some statistics are
 % network totals, some are densities (totals over total volume), while others are on a per strand
@@ -41,6 +41,44 @@ network_statistics.strand_areas             = cellfun( @( delta_l, r ) pi * sum(
 % volume by strand (trapezoidal method integration of cross-sectional area (pi*r^2) respect to length)
 network_statistics.strand_volumes           = cellfun( @( delta_l, r ) pi * sum( delta_l .* ( r( 2 : end ) .^ 2 + r( 1 : end - 1 ) .^ 2 ) / 2 ),  strand_delta_lengths, strand_radii );
 
+% strand depth (z component)
+network_statistics.strand_depths            = cellfun( @( x ) mean( x( :, 3 )) * microns_per_voxel( 3 ), strand_subscripts );                              
+
+if exist( 'origin_location', 'var' ), if ~ isempty( origin_location ) %#ok<ALIGN> 
+    
+%     origin_location = varargin{ 1 };
+
+    if abs( origin_location( 3 )) == inf, dimensionality = 2 ;
+    else,                                 dimensionality = 3 ;
+    end
+
+    strand_r = cellfun( @( x ) (                 x( :, 1 :  dimensionality ) ...
+                                 - origin_location( :, 1 :  dimensionality ))...
+                             .*  microns_per_voxel( :, 1 :  dimensionality ) , strand_subscripts, 'UniformOutput', false );
+
+    network_statistics.strand_r = strand_r ;
+
+	strand_d = cellfun( @( x ) sum( x .^ 2, 2 ) .^ 0.5 , strand_r, 'UniformOutput', false );
+
+	network_statistics.strand_ave_d          = cellfun( @mean, strand_d );
+    
+%     % !!!!! this line appears incorrect. Take the mean of the projection, not the projection of the mean !!!!!! SAM 10/27/22
+%     network_statistics.strand_ave_r_component = cellfun( @( r, d, v ) abs( sum( mean( r ./ d, 1 ) .* v )), strand_r, ...
+%                                                                                                            strand_d, ...
+%                                                          mat2cell(                      network_statistics.strand_ave_directions( :, 1 : dimensionality ),           ...
+%                                                                             ones( size( network_statistics.strand_ave_directions( :, 1 : dimensionality ), 1 ), 1 ), ...
+%                                                                                                                                          dimensionality              ));
+
+    network_statistics.strand_ave_r_component = cellfun( @( r, d, v ) mean( abs( sum( r ./ d .* v, 2 ))),  strand_r, ...
+                                                                                                           strand_d, ...
+                                                         mat2cell(                      network_statistics.strand_ave_directions( :, 1 : dimensionality ),           ...
+                                                                            ones( size( network_statistics.strand_ave_directions( :, 1 : dimensionality ), 1 ), 1 ), ...
+                                                                                                                                         dimensionality              ));
+
+    network_statistics.origin_dimensionality = dimensionality ;
+    
+end, end
+
 %% network total statistics
 
 % total length
@@ -70,5 +108,7 @@ network_statistics.bifurcation_density   = network_statistics.num_bifurcations /
 %% derived statistics
 
 network_statistics.strand_z_direction = abs( network_statistics.strand_ave_directions( :, 3 ));
+
+network_statistics.strand_depths      = cellfun( @( x ) mean( x( :, 3 )) .* microns_per_voxel( 3 ), strand_subscripts );
 
 end % FUNCTION

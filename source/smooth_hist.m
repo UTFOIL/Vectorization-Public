@@ -21,7 +21,7 @@ if isempty( varargin ), weights = ones( size( stats )); else, weights = varargin
 % x = unique([stats;regular_sampling']); % SAM 3/18/22
 
 num_samples = ceil((   max( stats ) ...
-                      - min( stats )) / sd );
+                     - min( stats )) / sd - eps( 10 )); % rounding errors: eps(1) was not enough to correct... % SAM 7/11/22
 
 x = linspace( min( stats ), max( stats ), num_samples )';
 
@@ -50,9 +50,32 @@ bin_widths = [  x( 2       ) - x( 1            )     ; ...
 
 pdf = s_hist ./ bin_widths ;
 
-function [gd] = gauss(x, mu, sd) % Calculate Gaussian curve
+function [gtotal] = gauss(x, mu, sd) % Calculate Gaussian curve
 %    gd = 1/(2*pi*sd)*exp(-(x-mu).^2/(2*sd^2));
-    gd = exp(-(x-mu).^2/(2*sd^2));
-    gd = gd / sum( gd ); % normalized to have total weighting of 1 % SAM 3/11/22
+
+     left_z_margin = (    mu - x( 1 )) / sd ;
+    right_z_margin = ( x( end ) - mu ) / sd ;
+
+     left_weight = erf( -  left_z_margin/sqrt(2)) / 2 + 0.5 ; % portion of weight left off gaussian because data limit
+    right_weight = erf( - right_z_margin/sqrt(2)) / 2 + 0.5 ;
+
+    middle_weight = 1 -  left_weight ...
+                      - right_weight ;
+
+                               %    !     sharper gaussians on left and right, sd decreased by factor of 2
+      gleft = exp(-(x-x(  1  )).^2/(0.5*sd^2));
+     gright = exp(-(x-x( end )).^2/(0.5*sd^2));
+    gmiddle = exp(-(x-   mu   ).^2/(  2*sd^2));
+
+      gleft =   left_weight *   gleft / sum(   gleft );
+     gright =  right_weight *  gright / sum(  gright ); 
+    gmiddle = middle_weight * gmiddle / sum( gmiddle );
+    
+    gtotal =   gleft ...
+           +  gright ...
+           + gmiddle ; % normalized to have total weighting of 1 % SAM 3/11/22
+
+    gtotal = gtotal / sum( gtotal ); % normalized to have total weighting of 1 % SAM 3/11/22
+    
 end
 end

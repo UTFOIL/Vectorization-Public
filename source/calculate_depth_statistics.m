@@ -146,11 +146,11 @@ subplot( 5, 1, 3 ), hold on, ylabel({                 'volume density', '[um^3/u
 box_plotter( x, y, dx, dy )
 xlim( x_axes_limits )
 
-subplot( 5, 1, 4 ), hold on, ylabel({ 'lat. area-weighted radius'     , '[um]'        }), dy = z_bin_ave_radius ;
+subplot( 5, 1, 4 ), hold on, ylabel({ 'avg. radius'     , '[um]'        }), dy = z_bin_ave_radius ;
 box_plotter( x, y, dx, dy )
 xlim( x_axes_limits )
 
-subplot( 5, 1, 5 ), hold on, ylabel({ 'lat. area-weighted inclination', '[z component]'   }), dy = z_bin_ave_inclination ;
+subplot( 5, 1, 5 ), hold on, ylabel({ 'avg. inclination', '[z component]'   }), dy = z_bin_ave_inclination ;
 box_plotter( x, y, dx, dy )
 xlim( x_axes_limits )
 

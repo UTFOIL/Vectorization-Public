@@ -1,6 +1,6 @@
-function visualize_strands_via_color_3D_V2( strand_subscripts, max_strand_energies,                 ...
+function visualize_strands_via_color_3D_V2( strand_subscripts, vessel_directions, max_strand_energies,                 ...
                                             microns_per_pixel_min, lumen_radius_in_pixels_range,     ...
-                                            resolution_factor, y_limits, x_limits, z_limits, contrast_limit, ROI_name, network_handle, color_code )
+                                            resolution_factor, y_limits, x_limits, z_limits, contrast_limit, ROI_name, network_handle, color_code, is_decomposing_strands )
 %% SAM 12/12/17 
 % adapted from the function with the same name in the folder AA
 %
@@ -76,17 +76,30 @@ function visualize_strands_via_color_3D_V2( strand_subscripts, max_strand_energi
 % create more objects and avoid unfilled spaces between vectors after resolution enhancement. SAM
 % 7/18/18
 
+%% flip z dimension and swap x and y
+z_limits = - z_limits([ 2, 1 ]);
+
+v_limits = y_limits ;
+y_limits = x_limits ;
+x_limits = v_limits ;
+
+lumen_radius_in_pixels_range = lumen_radius_in_pixels_range( :, [ 2, 1, 3    ]);
+
+vessel_directions = cellfun( @( x ) [ 1, 1, -1    ] .*    x( :, [ 2, 1, 3    ]), vessel_directions, 'UniformOutput', false );
+strand_subscripts = cellfun( @( x ) [ 1, 1, -1, 1 ] .*    x( :, [ 2, 1, 3, 4 ]), strand_subscripts, 'UniformOutput', false );
+
+%% additional aesthetic
 is_box_in_center = false ;
 
-% erasing strands that are above the upper energy limit
+%% erasing strands that are above the upper energy limit
 logical_strands_below_upper_energy_limit = max_strand_energies < contrast_limit;
 
 max_strand_energies       =       max_strand_energies( logical_strands_below_upper_energy_limit );
 strand_subscripts         =         strand_subscripts( logical_strands_below_upper_energy_limit );
 
-% erasing strands that don't lie in the crop at least partially
-max_subscripts = cell2mat( cellfun( @max,  strand_subscripts, 'UniformOutput', false ));
-min_subscripts = cell2mat( cellfun( @min,  strand_subscripts, 'UniformOutput', false ));
+%% erasing strands that don't lie in the crop at least partially
+max_subscripts = cell2mat( cellfun( @( x ) max( x, [ ], 1 ),  strand_subscripts, 'UniformOutput', false ));
+min_subscripts = cell2mat( cellfun( @( x ) min( x, [ ], 1 ),  strand_subscripts, 'UniformOutput', false ));
 
 radii_in_pixels = lumen_radius_in_pixels_range( round( max_subscripts( :, 4 )), : );
 
@@ -100,10 +113,11 @@ logical_strands_in_crop = max_subscripts( :, 1 ) + radii_in_pixels( :, 1 ) >= y_
 max_strand_energies       =       max_strand_energies( logical_strands_in_crop );
 strand_subscripts         =         strand_subscripts( logical_strands_in_crop );
 
-% sorting trajectories by max energy in descending order (most negative at end)
+%% sorting trajectories by max energy in descending order (most negative at end)
 [ max_strand_energies, indices_sorted_by_mean ] = sort( max_strand_energies, 'descend' );
 
 strand_subscripts         =         strand_subscripts( indices_sorted_by_mean );
+vessel_directions         =         vessel_directions( indices_sorted_by_mean );
 
 % histogram( max_strand_energies );
 
@@ -113,10 +127,10 @@ strand_subscripts         =         strand_subscripts( indices_sorted_by_mean );
 % max_strand_energies_binary( max_strand_energies >  contrast_limit ) = 0   ;
 % max_strand_energies_binary( max_strand_energies <= contrast_limit ) = 255 ;
 
-max_strand_energies( max_strand_energies >   contrast_limit ) = 0   ;
-max_strand_energies( max_strand_energies <=  contrast_limit ) = 1   ;
+max_strand_energies( max_strand_energies >=  contrast_limit ) = 0   ;
+max_strand_energies( max_strand_energies <   contrast_limit ) = 1   ;
 
-% interpolate vectors to be isotropic consistent with the dimension with the best resolution and
+%% interpolate vectors to be isotropic consistent with the dimension with the best resolution and
 % then scale by the resolution_factor
 resolution_factors = resolution_factor     * max( lumen_radius_in_pixels_range( 1, : )) ./ lumen_radius_in_pixels_range( 1, : );
 microns_per_voxel  = microns_per_pixel_min * max( lumen_radius_in_pixels_range( 1, : )) ./ lumen_radius_in_pixels_range( 1, : ); % SAM 4/23/21
@@ -125,24 +139,41 @@ y_limits = round(( y_limits - 1 ) * resolution_factors( 1 )) + 1 ;
 x_limits = round(( x_limits - 1 ) * resolution_factors( 2 )) + 1 ;
 z_limits = round(( z_limits - 1 ) * resolution_factors( 3 )) + 1 ;
 
-% calculate unit vectors of strands
+%% calculate unit vectors of strands
 
-strand_positions = cellfun( @( x ) x( :, 1 : 3 ) .* microns_per_voxel, strand_subscripts, 'UniformOutput', false );
+% strand_positions = cellfun( @( x ) x( :, 1 : 3 ) .* microns_per_voxel, strand_subscripts, 'UniformOutput', false );
+% 
+% strand_starts  = cell2mat( cellfun( @( x ) x(   1, : ), strand_positions, 'UniformOutput', false ));
+% strand_ends    = cell2mat( cellfun( @( x ) x( end, : ), strand_positions, 'UniformOutput', false ));
+% strand_vectors = strand_starts - strand_ends ;
+% strand_lengths = sum( strand_vectors .^ 2, 2 ) .^ 0.5 ;
+% 
+% strand_unit_directions_abs = abs( strand_vectors ) ./ strand_lengths ;
 
-strand_starts  = cell2mat( cellfun( @( x ) x(   1, : ), strand_positions, 'UniformOutput', false ));
-strand_ends    = cell2mat( cellfun( @( x ) x( end, : ), strand_positions, 'UniformOutput', false ));
-strand_vectors = strand_starts - strand_ends ;
-strand_lengths = sum( strand_vectors .^ 2, 2 ) .^ 0.5 ;
+%% double the number of entries in the size look up table ( resolution_factor( 4 ) == 2 )
+[ ~, lumen_radius_in_pixels_range, strand_subscripts, vessel_directions ] ...
+                                    = resample_vectors( lumen_radius_in_pixels_range, [ resolution_factors, 2 ], strand_subscripts, 0, vessel_directions );
 
-strand_unit_directions_abs = abs( strand_vectors ) ./ strand_lengths ;
+%% is_decomposing_strands
+if is_decomposing_strands
 
-% double the number of entries in the size look up table ( resolution_factor( 4 ) == 2 )
-[ ~, lumen_radius_in_pixels_range, strand_subscripts ] ...
-                                    = resample_vectors( lumen_radius_in_pixels_range, [ resolution_factors, 2 ], strand_subscripts, 0 );
-                                
+    strand_subscripts_mat = cell2mat( strand_subscripts );
+    strand_subscripts = mat2cell(     strand_subscripts_mat, ...
+                          ones( size( strand_subscripts_mat, 1 ), 1 ), 4 );
+
+    vessel_directions_mat = cell2mat( vessel_directions );
+    vessel_directions = mat2cell(     vessel_directions_mat, ...
+                          ones( size( vessel_directions_mat, 1 ), 1 ), 3 );
+
+    max_strand_energies = strand_subscripts_mat( :, 1 ) * 0 + 1 ; % set all to +1
+
+end
+
 strand_subscripts = cellfun( @round, strand_subscripts, 'UniformOutput', false );
 
-% precacalculate the spherical elements
+strand_unit_directions_abs = abs( cell2mat( cellfun( @( x ) sum( x, 1 ) / size( x, 1 ), vessel_directions, 'UniformOutput', false )));
+
+%% precacalculate the spherical elements
 number_of_scales = size( lumen_radius_in_pixels_range, 1 );
 
 structuring_element_linear_indexing = cell( number_of_scales, 1 );
@@ -158,7 +189,7 @@ size_of_outer_crop = size_of_inner_crop + 2 * outer_crop_margin ;
 
 for scale_index = 1 : number_of_scales
 
-    % find all pixel locations within the ellipsoid radii from the vertex position
+    %% find all pixel locations within the ellipsoid radii from the vertex position
     structuring_element_linear_indexing{ scale_index }                                                               ...
         = construct_structuring_element( lumen_radius_in_pixels_range( scale_index, : ),     size_of_outer_crop );
     
@@ -167,7 +198,7 @@ for scale_index = 1 : number_of_scales
             
 end % scale FOR
 
-% loop through the strands to build the contrast and strand indexed strands images
+%% loop through the strands to build the contrast and strand indexed strands images
 number_of_strands     = numel( strand_subscripts );
 
 strand_index_range = 1 : number_of_strands ;
@@ -185,7 +216,7 @@ for strand_index = strand_index_range
     subscripts_at_strand( :, 2 ) = subscripts_at_strand( :, 2 ) - x_limits( 1 ) + 1 + outer_crop_margin ;
     subscripts_at_strand( :, 3 ) = subscripts_at_strand( :, 3 ) - z_limits( 1 ) + 1 + outer_crop_margin ;
     
-    % trim the vectors whose center positions leave the crop
+    %% trim the vectors whose center positions leave the crop
     within_bounds_strands_logical = subscripts_at_strand( :, 1 ) >= 1                       + outer_crop_margin ...
                                   & subscripts_at_strand( :, 1 ) <= size_of_outer_crop( 1 ) - outer_crop_margin ...
                                   & subscripts_at_strand( :, 2 ) >= 1                       + outer_crop_margin ...
@@ -318,21 +349,22 @@ end
 
 % extract the colored isosurface from the crop and render it in 3D with lighting
 
-% flip the z dimension to be consistent with the normal orientation of the brain
-strands_image      = flip(      strands_image, 3 );
-strand_index_image = flip( strand_index_image, 3 );
-
-% flip the y dimension to be consistent with the other z projected special outputs of vectorize()
-strands_image      = flip(      strands_image, 1 );
-strand_index_image = flip( strand_index_image, 1 );
-
-% strands_image      = flip(      strands_image, 2 );
-% strand_index_image = flip( strand_index_image, 2 );
+% % flip the z dimension to be consistent with the normal orientation of the brain
+% strands_image      = flip(      strands_image, 3 );
+% strand_index_image = flip( strand_index_image, 3 );
+% 
+% % flip the y dimension to be consistent with the other z projected special outputs of vectorize()
+% strands_image      = flip(      strands_image, 1 );
+% strand_index_image = flip( strand_index_image, 1 );
+% 
+% % strands_image      = flip(      strands_image, 2 );
+% % strand_index_image = flip( strand_index_image, 2 );
 
 number_of_strands     = numel( strand_subscripts );
 
 if is_box_in_center
 
+    % !!!!!! this code incompatible with non default color_code options, modularize !!!!!  % SAM 11/12/22
     custom_colormap = 0.1 + 0.8 * rand( number_of_strands + 1, 3 ); % default matlab colormaps have 64 values
 
     % % set the first entry to gray and reserve it for the box
@@ -345,12 +377,33 @@ else
     switch color_code
     
         case 'strands'
-            
+            % !!!!!!!! 0.1 -> 0.2 % SAM 11/12/22
             custom_colormap = 0.1 + 0.8 * rand( number_of_strands, 3 ); % default matlab colormaps have 64 values
 
-        case 'directions'
+        case {   'directions', ...
+               'z-directions', ...
+               'r-directions', ...
+              'xy-directions'  }
+ 
+        custom_colormap = strand_unit_directions_abs ;
+
+            switch color_code
+
+%                 case    'directions' % default case, do notjhing
+        
+                case  'z-directions'
+                
+                    custom_colormap( :, [ 1, 2 ]) = sum( custom_colormap( :, [ 1, 2 ]) .^ 2, 2 ) .^ 0.5 ;
+        
+                case  'r-directions'
+                
+                case 'xy-directions'
+       
+            end
+        case 'depth' % !!!!!!!!!!!! wishlist
+
+        case 'radius' % !!!!!!!!!!!! wishlist
             
-            custom_colormap = strand_unit_directions_abs ;
             
     end
             
@@ -367,9 +420,15 @@ strands_image = strands_image( 1 + outer_crop_margin : size_of_outer_crop( 1 ) -
                                1 + outer_crop_margin : size_of_outer_crop( 3 ) - outer_crop_margin  );
                        
 strand_index_image ...
-     = strand_index_image( 1 + outer_crop_margin : size_of_outer_crop( 1 ) - outer_crop_margin, ...
-                           1 + outer_crop_margin : size_of_outer_crop( 2 ) - outer_crop_margin, ...
-                           1 + outer_crop_margin : size_of_outer_crop( 3 ) - outer_crop_margin  );
+         = strand_index_image( 1 + outer_crop_margin : size_of_outer_crop( 1 ) - outer_crop_margin, ...
+                               1 + outer_crop_margin : size_of_outer_crop( 2 ) - outer_crop_margin, ...
+                               1 + outer_crop_margin : size_of_outer_crop( 3 ) - outer_crop_margin  );
+
+strand_index_image_nnz_idxs                = find( strand_index_image );
+
+color_image = zeros([ 3,                     size( strand_index_image          )]);
+color_image(          :,                           strand_index_image_nnz_idxs ) ...
+    = custom_colormap(         strand_index_image( strand_index_image_nnz_idxs ), : )';
 
 % begin citation: https://www.mathworks.com/help/matlab/ref/isosurface.html SAM 6/14/18
 [ F, V ] = isosurface( strands_image, 0.5 );
@@ -377,10 +436,27 @@ strand_index_image ...
 % convert color coding from vertices (for interp) to faces (for 'flat' FaceColor)
 
 % do nearest neighbor interpolation (instead of whatever isosurface does without option)
-C = interp3( strand_index_image, V( :, 1 ), V( :, 2 ), V( :, 3 ), 'nearest' );
+C = interp3( strand_index_image, V( :, 1 ), ...
+                                 V( :, 2 ), ...
+                                 V( :, 3 ), 'nearest' );
+% !!!!!!!!!!!!!!!! put this interp3 in a for loop across x, y, z and replace the index image with
+% the color directly (and then go from color to index into the color map if needed by nearest neighbor
+% interpolation of the 3D map index function over R, G, B color space), need color map to uniformly sample the
+% surface of a 1/8 color sphere with R,G, and B at the x,y, and z poles, respectively
 
-% C = C( F( :, 1 ));    
-C = median( C( F ), 2 );    
+R = interp3( squeeze( color_image( 1, :, :, : )),    V( :, 1 ), ...
+                                                     V( :, 2 ), ...
+                                                     V( :, 3 ) );
+G = interp3( squeeze( color_image( 2, :, :, : )),    V( :, 1 ), ...
+                                                     V( :, 2 ), ...
+                                                     V( :, 3 )  );
+B = interp3( squeeze( color_image( 3, :, :, : )),    V( :, 1 ), ...
+                                                     V( :, 2 ), ...
+                                                     V( :, 3 )  );
+
+
+% % C = C( F( :, 1 ));    
+% C = median( C( F ), 2 );    
 
 if is_box_in_center
     
@@ -402,7 +478,7 @@ if is_box_in_center
 
     % make objects transparent
     p = patch('Vertices',[ ver; V ],'Faces',[ fac; F ],'FaceVertexCData', [ color; C ],...
-              'FaceColor','flat', 'EdgeColor','none', ...
+              'FaceColor', 'flat',        'EdgeColor', 'none', ...
               'FaceAlpha', 'flat', 'AlphaDataMapping', 'none', ...
               'FaceVertexAlphaData', [ 0.25 * ones( size( color )); 1 * ones( size( C ))]);
 
@@ -415,24 +491,45 @@ else
 %     p = patch('Vertices',V ,'Faces',F ,'FaceVertexCData', C ,...
 %               'FaceColor','flat', 'EdgeColor','none');
 
-    p = patch('Vertices',V ,'Faces',F ,'FaceVertexCData', C ,...
-              'FaceColor', 'flat', 'FaceAlpha',0.75, 'EdgeColor','none');
+    p = patch('Vertices', V , ...
+                 'Faces', F , ...
+       ...'FaceVertexCData', C , ...
+       'FaceVertexCData', [ R, G, B ], ...
+             'FaceColor', 'flat',    ...
+             'FaceAlpha',     0.75, ...
+             'EdgeColor','none');
 
 end
 
-isonormals( strands_image,p)
+isonormals( strands_image, p )
 
 % convert the vertex coordinates to microns
 p.Vertices      = ( p.Vertices      - 1 ) / resolution_factor * microns_per_pixel_min ;
-% p.VertexNormals =   p.VertexNormals       * resolution_factor / microns_per_pixel_xy ; % transpose of the inverse transformation is done to normals (simplifies to a purely scaling transformation)
-% p.VertexNormals = p.VertexNormals ./ sum( p.VertexNormals .^ 2, 2 ) .^ 0.5 ;
+% % p.VertexNormals =   p.VertexNormals       * resolution_factor / microns_per_pixel_min ; % transpose of the inverse transformation is done to normals (simplifies to a purely scaling transformation)
+% % p.VertexNormals = p.VertexNormals ./ sum( p.VertexNormals .^ 2, 2 ) .^ 0.5 ;
+
+if is_decomposing_strands
+
+%     vessel_position = ( cell2mat( strand_subscripts ) - 1 ) / resolution_factor * microns_per_pixel_min ;
+    vessel_position = ( cell2mat( strand_subscripts ) - [ y_limits( 1 ), ...
+                                                          x_limits( 1 ), ...
+                                                          z_limits( 1 ), ...
+                                                              1          ] + 1 );
+
+    p.VertexNormals = ( V - vessel_position( C, [ 2, 1, 3 ])) ; ... .* vessel_directions_mat( C, : );
+
+    p.VertexNormals = p.VertexNormals ./ ( sum( p.VertexNormals .^ 2 ) .^ 0.5 );
+
+end
 
 % p.FaceColor = 'red';
 % p.EdgeColor = 'none';
 daspect([1 1 1])
-view(0,0); 
+% view(90,30); 
+view(90,45);
 axis tight
 camlight right
+camlight left
 material dull
 lighting gouraud
 % end citation: https://www.mathworks.com/help/matlab/ref/isosurface.html SAM 6/14/18
